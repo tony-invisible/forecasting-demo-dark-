@@ -503,6 +503,23 @@
         // Initialize Lucide icons
         lucide.createIcons();
 
+        // Runtime enterprise theming via URL param (?theme=enterprise)
+        (function applyRuntimeTheme() {
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('theme') === 'enterprise') {
+                document.documentElement.style.setProperty('--border', '#98A2B3');
+                document.documentElement.style.setProperty('--surface', '#FFFFFF');
+                document.documentElement.style.setProperty('--surface-muted', '#F4F6F8');
+                document.documentElement.style.setProperty('--brand-600', '#1F3AAE');
+                document.body.style.background = '#EDF1F5';
+                document.querySelectorAll('.kpi-card').forEach(el => {
+                    el.style.borderWidth = '2px';
+                    el.style.borderLeft = '6px solid var(--brand-600)';
+                    el.style.background = 'var(--surface)';
+                });
+            }
+        })();
+
         // App state
         let currentRole = 'ops';
         let isV1View = false;
