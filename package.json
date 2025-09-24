@@ -1,0 +1,14 @@
+{
+  "name": "forecasting-demo",
+  "version": "1.0.0",
+  "description": "Forecasting 2.0 Demo for Neuron",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "python3 -m http.server 3000",
+    "serve": "python3 -m http.server 3000"
+  },
+  "keywords": ["forecasting", "demo", "retail", "analytics"],
+  "author": "Neuron",
+  "license": "MIT"
+}

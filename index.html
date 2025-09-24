@@ -1,0 +1,1150 @@
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forecasting 2.0 Demo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script src="https://unpkg.com/recharts@2.8.0/umd/Recharts.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Roboto+Mono:wght@400;500&display=swap');
+        
+        :root {
+            --primary: #1E4DD8;
+            --secondary: #059669;
+            --alert: #DC2626;
+            --warning: #F59E0B;
+            --canvas: #fafafa;
+            --text: #111111;
+            --text-secondary: #444444;
+            --border: #E5E7EB;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #fafafa;
+            color: #111111;
+            min-height: 100vh;
+        }
+        
+        /* Professional hover effects */
+        .card-hover {
+            transition: all 0.2s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        
+        .kpi-card {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            transition: all 0.2s ease;
+        }
+        
+        .kpi-card:hover {
+            border-color: #1E4DD8;
+            box-shadow: 0 0 0 1px rgba(30, 77, 216, 0.1);
+        }
+        
+        .role-btn {
+            transition: all 0.15s ease;
+        }
+        
+        .role-btn:hover {
+            background-color: #f3f4f6;
+        }
+        
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+        
+        .status-high { background-color: #6b7280; }
+        .status-medium { background-color: #9ca3af; }
+        .status-low { background-color: #374151; }
+        
+        .text-positive { color: #111111; }
+        .text-negative { color: #374151; }
+        .text-warning { color: #6b7280; }
+        
+        .bg-positive { background-color: #f9fafb; }
+        .bg-negative { background-color: #f3f4f6; }
+        .bg-warning { background-color: #f9fafb; }
+        
+        .font-mono {
+            font-family: 'Roboto Mono', monospace;
+        }
+    </style>
+</head>
+<body>
+    <div id="app" class="flex h-screen bg-gray-50">
+        <!-- Left Navigation Panel -->
+        <div class="w-64 bg-white border-r border-gray-200 flex flex-col">
+            <!-- Brand/Logo -->
+            <div class="p-6 border-b border-gray-200">
+                <div class="flex items-center space-x-3 cursor-pointer hover:bg-gray-50 rounded-lg p-2 -m-2" onclick="goToHomepage()">
+                    <div class="w-8 h-8 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg flex items-center justify-center">
+                        <i data-lucide="zap" class="w-5 h-5 text-white"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-lg font-bold text-gray-900">Invisible</h1>
+                        <p class="text-sm text-gray-500">NEURON</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Group Identifier -->
+            <div class="px-6 py-3 border-b border-gray-200">
+                <p class="text-sm font-medium text-gray-700">G Group Alpha</p>
+            </div>
+
+            <!-- Navigation Menu -->
+            <nav class="flex-1 p-4 space-y-2">
+                <a href="#" class="flex items-center space-x-3 px-3 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded-md">
+                    <i data-lucide="clock" class="w-4 h-4"></i>
+                    <span>Pipeline Status</span>
+                </a>
+                <a href="#" class="flex items-center space-x-3 px-3 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded-md">
+                    <i data-lucide="settings" class="w-4 h-4"></i>
+                    <span>Data Quality</span>
+                </a>
+                <a href="#" class="flex items-center space-x-3 px-3 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded-md">
+                    <i data-lucide="network" class="w-4 h-4"></i>
+                    <span>Data Ontology</span>
+                </a>
+                <a href="#" class="flex items-center space-x-3 px-3 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-md">
+                    <i data-lucide="trending-up" class="w-4 h-4"></i>
+                    <span>Forecasting</span>
+                </a>
+            </nav>
+
+            <!-- Bottom Section -->
+            <div class="p-4 border-t border-gray-200">
+                <a href="#" class="flex items-center space-x-2 text-sm text-gray-500 hover:text-gray-700 mb-4">
+                    <i data-lucide="chevron-left" class="w-4 h-4"></i>
+                    <span>Collapse Navigation</span>
+                </a>
+                <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
+                        <i data-lucide="user" class="w-4 h-4 text-gray-600"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium text-gray-900">Tony</p>
+                        <p class="text-xs text-gray-500">tony@alpha.com</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Top Header -->
+            <header class="bg-white border-b border-gray-200 px-6 py-4">
+                <div class="flex flex-col lg:flex-row lg:justify-between lg:items-center space-y-4 lg:space-y-0">
+                    <!-- Page Title and Breadcrumbs -->
+                    <div class="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-y-0 lg:space-x-6">
+                        <div>
+                            <h1 class="text-2xl font-semibold text-gray-900">Forecasting</h1>
+                            <p class="text-sm text-gray-500">Predict future demand with confidence to empower accurate and agile demand planning</p>
+                        </div>
+                        <!-- Breadcrumbs -->
+                        <nav class="flex items-center space-x-2 text-sm text-gray-500" id="breadcrumbs">
+                            <span class="cursor-pointer hover:text-blue-600" onclick="goToPortfolio()">Portfolio</span>
+                            <span>/</span>
+                            <span class="text-gray-900">Overview</span>
+                        </nav>
+                    </div>
+
+                    <!-- Controls -->
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
+                        <!-- V1/V2 Toggle -->
+                        <button id="v1-toggle" class="flex items-center space-x-2 px-3 py-2 rounded-md border border-gray-300 hover:bg-gray-50 transition-colors">
+                            <i data-lucide="toggle-right" class="w-4 h-4 text-blue-600"></i>
+                            <span class="text-sm text-blue-600">V2 View</span>
+                        </button>
+
+                        <!-- Role Switcher -->
+                        <div class="flex items-center space-x-1 bg-gray-100 rounded-lg p-1">
+                            <button class="role-btn active flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium bg-white text-gray-900 shadow-sm" data-role="ops">
+                                <i data-lucide="users" class="w-4 h-4"></i>
+                                <span class="hidden sm:inline">Head of Ops</span>
+                            </button>
+                            <button class="role-btn flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium text-gray-500 hover:text-gray-900" data-role="engineer">
+                                <i data-lucide="bar-chart-3" class="w-4 h-4"></i>
+                                <span class="hidden sm:inline">Engineer</span>
+                            </button>
+                            <button class="role-btn flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium text-gray-500 hover:text-gray-900" data-role="marketer">
+                                <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+                                <span class="hidden sm:inline">Marketer</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Main Content -->
+            <main class="flex-1 overflow-auto p-6">
+            <!-- Hero Section -->
+            <div class="mb-8">
+                <h1 class="text-3xl font-semibold text-gray-900 mb-2">Portfolio Overview</h1>
+                <p class="text-gray-500" id="role-description">
+                    Revenue risk and inventory insights for operational decisions
+                </p>
+            </div>
+
+            <!-- Hero KPIs -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="kpi-card card-hover rounded-xl p-6 shadow-lg cursor-pointer" onclick="drillDown('portfolio')">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-500 mb-1">Total Revenue</p>
+                            <p class="text-2xl font-semibold text-gray-900">$2.4M</p>
+                            <p class="text-sm text-gray-500 mt-1">Last 24 months</p>
+                        </div>
+                        <div class="text-blue-600">
+                            <i data-lucide="dollar-sign" class="w-6 h-6"></i>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-1 mt-3">
+                        <i data-lucide="trending-up" class="w-4 h-4 text-green-600"></i>
+                        <span class="text-sm font-medium text-green-600">+12.3%</span>
+                    </div>
+                </div>
+
+                <div class="kpi-card card-hover rounded-xl p-6 shadow-lg cursor-pointer" onclick="drillDown('forecast')">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-500 mb-1">Forecast Revenue</p>
+                            <p class="text-2xl font-semibold text-gray-900">$2.7M</p>
+                            <p class="text-sm text-gray-500 mt-1">Next 3 months</p>
+                        </div>
+                        <div class="text-blue-600">
+                            <i data-lucide="trending-up" class="w-6 h-6"></i>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-1 mt-3">
+                        <i data-lucide="trending-up" class="w-4 h-4 text-green-600"></i>
+                        <span class="text-sm font-medium text-green-600">+12.3%</span>
+                    </div>
+                </div>
+
+                <div class="kpi-card card-hover rounded-xl p-6 shadow-lg cursor-pointer" onclick="drillDown('misses')">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-500 mb-1">Miss Rate</p>
+                            <p class="text-2xl font-semibold text-gray-900">8.2%</p>
+                            <p class="text-sm text-gray-500 mt-1">Model vs Baseline</p>
+                        </div>
+                        <div class="text-blue-600">
+                            <i data-lucide="alert-triangle" class="w-6 h-6"></i>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-1 mt-3">
+                        <i data-lucide="trending-down" class="w-4 h-4 text-red-600"></i>
+                        <span class="text-sm font-medium text-red-600">-5.2%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Role-specific KPIs -->
+            <div id="role-specific-kpis" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <!-- Ops KPIs -->
+                <div class="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-500 mb-1">Inventory Risk</p>
+                            <p class="text-2xl font-semibold text-gray-900">Medium</p>
+                            <p class="text-sm text-gray-500 mt-1">3 categories at risk</p>
+                        </div>
+                        <div class="text-blue-600">
+                            <i data-lucide="package" class="w-6 h-6"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-500 mb-1">Stockout Risk</p>
+                            <p class="text-2xl font-semibold text-gray-900">Low</p>
+                            <p class="text-sm text-gray-500 mt-1">2 SKUs flagged</p>
+                        </div>
+                        <div class="text-blue-600">
+                            <i data-lucide="alert-triangle" class="w-6 h-6"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Chart -->
+            <div class="bg-white rounded-lg border border-gray-200 p-6 shadow-sm mb-8">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-900">Revenue Forecast vs Actuals</h3>
+                    <div class="flex items-center space-x-4">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-3 h-3 bg-blue-600 rounded-full"></div>
+                            <span class="text-sm text-gray-500">Model Forecast</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <div class="w-3 h-3 bg-gray-400 rounded-full"></div>
+                            <span class="text-sm text-gray-500">Baseline</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <div class="w-3 h-3 bg-green-600 rounded-full"></div>
+                            <span class="text-sm text-gray-500">Actual</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="h-64 bg-gray-50 rounded-lg flex items-center justify-center">
+                    <div class="text-center">
+                        <i data-lucide="bar-chart-3" class="w-12 h-12 text-gray-400 mx-auto mb-2"></i>
+                        <p class="text-gray-500">Chart will be rendered here</p>
+                        <p class="text-sm text-gray-400">24 months actual + baseline + model</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Callouts Panel -->
+            <div class="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Top Insights</h3>
+                <div class="space-y-3">
+                    <div class="flex items-start space-x-3">
+                        <div class="w-2 h-2 bg-green-600 rounded-full mt-2"></div>
+                        <div>
+                            <p class="text-sm font-medium text-gray-900">Electronics category up 22%</p>
+                            <p class="text-xs text-gray-500">Supply down. Reorder now.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start space-x-3">
+                        <div class="w-2 h-2 bg-yellow-500 rounded-full mt-2"></div>
+                        <div>
+                            <p class="text-sm font-medium text-gray-900">Clothing confidence low</p>
+                            <p class="text-xs text-gray-500">Sparse history. Investigate.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start space-x-3">
+                        <div class="w-2 h-2 bg-red-600 rounded-full mt-2"></div>
+                        <div>
+                            <p class="text-sm font-medium text-gray-900">Toys & Games forecast down 15%</p>
+                            <p class="text-xs text-gray-500">Weeks of supply >8. Markdown recommended.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CTA Tiles -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+                <button class="bg-white rounded-lg border border-gray-200 p-6 shadow-sm hover:shadow-md transition-shadow text-left">
+                    <div class="flex items-center space-x-3 mb-2">
+                        <i data-lucide="bar-chart-3" class="w-5 h-5 text-blue-600"></i>
+                        <h4 class="font-semibold text-gray-900">View Categories</h4>
+                    </div>
+                    <p class="text-sm text-gray-500">Drill down into category performance</p>
+                </button>
+                
+                <button class="bg-white rounded-lg border border-gray-200 p-6 shadow-sm hover:shadow-md transition-shadow text-left">
+                    <div class="flex items-center space-x-3 mb-2">
+                        <i data-lucide="alert-triangle" class="w-5 h-5 text-yellow-500"></i>
+                        <h4 class="font-semibold text-gray-900">View Misses</h4>
+                    </div>
+                    <p class="text-sm text-gray-500">Analyze forecast errors</p>
+                </button>
+                
+                <button class="bg-white rounded-lg border border-gray-200 p-6 shadow-sm hover:shadow-md transition-shadow text-left">
+                    <div class="flex items-center space-x-3 mb-2">
+                        <i data-lucide="package" class="w-5 h-5 text-green-600"></i>
+                        <h4 class="font-semibold text-gray-900">View Actions</h4>
+                    </div>
+                    <p class="text-sm text-gray-500">Take recommended actions</p>
+                </button>
+            </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- V1 View (Hidden by default) -->
+    <div id="v1-view" class="hidden flex h-screen bg-gray-50">
+        <!-- Left Navigation Panel (Same as V2) -->
+        <div class="w-64 bg-white border-r border-gray-200 flex flex-col">
+            <!-- Brand/Logo -->
+            <div class="p-6 border-b border-gray-200">
+                <div class="flex items-center space-x-3 cursor-pointer hover:bg-gray-50 rounded-lg p-2 -m-2" onclick="goToHomepage()">
+                    <div class="w-8 h-8 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg flex items-center justify-center">
+                        <i data-lucide="zap" class="w-5 h-5 text-white"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-lg font-bold text-gray-900">Invisible</h1>
+                        <p class="text-sm text-gray-500">NEURON</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Group Identifier -->
+            <div class="px-6 py-3 border-b border-gray-200">
+                <p class="text-sm font-medium text-gray-700">G Group Alpha</p>
+            </div>
+
+            <!-- Navigation Menu -->
+            <nav class="flex-1 p-4 space-y-2">
+                <a href="#" class="flex items-center space-x-3 px-3 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded-md">
+                    <i data-lucide="clock" class="w-4 h-4"></i>
+                    <span>Pipeline Status</span>
+                </a>
+                <a href="#" class="flex items-center space-x-3 px-3 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded-md">
+                    <i data-lucide="settings" class="w-4 h-4"></i>
+                    <span>Data Quality</span>
+                </a>
+                <a href="#" class="flex items-center space-x-3 px-3 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded-md">
+                    <i data-lucide="network" class="w-4 h-4"></i>
+                    <span>Data Ontology</span>
+                </a>
+                <a href="#" class="flex items-center space-x-3 px-3 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-md">
+                    <i data-lucide="trending-up" class="w-4 h-4"></i>
+                    <span>Forecasting</span>
+                </a>
+            </nav>
+
+            <!-- Bottom Section -->
+            <div class="p-4 border-t border-gray-200">
+                <a href="#" class="flex items-center space-x-2 text-sm text-gray-500 hover:text-gray-700 mb-4">
+                    <i data-lucide="chevron-left" class="w-4 h-4"></i>
+                    <span>Collapse Navigation</span>
+                </a>
+                <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
+                        <i data-lucide="user" class="w-4 h-4 text-gray-600"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium text-gray-900">Tony</p>
+                        <p class="text-xs text-gray-500">tony@alpha.com</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Top Header -->
+            <header class="bg-white border-b border-gray-200 px-6 py-4">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h1 class="text-2xl font-semibold text-gray-900">Forecasting 1.0</h1>
+                        <p class="text-sm text-gray-500">Legacy forecasting interface</p>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- V1 Content -->
+            <main class="flex-1 overflow-auto p-6">
+                <div class="bg-white rounded-lg border border-gray-200 p-8 shadow-sm">
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-gray-100 rounded-lg mx-auto mb-4 flex items-center justify-center">
+                            <i data-lucide="bar-chart-3" class="w-8 h-8 text-gray-400"></i>
+                        </div>
+                        <h2 class="text-xl font-semibold text-gray-900 mb-2">V1 View Placeholder</h2>
+                        <p class="text-gray-500 mb-6">
+                            This is where the V1 screenshot will be displayed. 
+                            The old clunky table view will be shown here for contrast.
+                        </p>
+                        <div class="bg-gray-50 rounded-lg p-6 text-left">
+                            <div class="text-sm text-gray-500 mb-2">Legacy Forecasting 1.0 Interface</div>
+                            <div class="font-mono text-xs text-gray-400">
+                                [Static table with basic metrics would be displayed here]
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // App state
+        let currentRole = 'ops';
+        let isV1View = false;
+        let currentView = 'portfolio'; // portfolio, category, sku
+        let selectedCategory = null;
+        let selectedSKU = null;
+
+        // Role descriptions
+        const roleDescriptions = {
+            ops: 'Revenue risk and inventory insights for operational decisions',
+            engineer: 'Model performance and data quality metrics',
+            marketer: 'Demand patterns and promotional effectiveness'
+        };
+
+        // Role-specific KPIs
+        const roleKPIs = {
+            ops: [
+                { title: 'Inventory Risk', value: 'Medium', subtitle: '3 categories at risk', icon: 'package' },
+                { title: 'Stockout Risk', value: 'Low', subtitle: '2 SKUs flagged', icon: 'alert-triangle' }
+            ],
+            engineer: [
+                { title: 'Model Accuracy', value: '87.3%', subtitle: 'MAPE improvement', icon: 'bar-chart-3', change: '+2.1%' },
+                { title: 'Data Quality', value: 'High', subtitle: '98.2% completeness', icon: 'eye' }
+            ],
+            marketer: [
+                { title: 'Demand Spikes', value: '12', subtitle: 'SKUs with >20% increase', icon: 'trending-up' },
+                { title: 'Promo Effectiveness', value: '+34%', subtitle: 'Average lift', icon: 'dollar-sign', change: '+8.2%' }
+            ]
+        };
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Role switcher
+            document.querySelectorAll('.role-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Remove active class from all buttons
+                    document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active', 'bg-white', 'text-gray-900', 'shadow-sm'));
+                    document.querySelectorAll('.role-btn').forEach(b => b.classList.add('text-gray-500'));
+                    
+                    // Add active class to clicked button
+                    this.classList.add('active', 'bg-white', 'text-gray-900', 'shadow-sm');
+                    this.classList.remove('text-gray-500');
+                    
+                    // Update role
+                    currentRole = this.dataset.role;
+                    updateRoleContent();
+                });
+            });
+
+            // V1/V2 toggle
+            document.getElementById('v1-toggle').addEventListener('click', function() {
+                isV1View = !isV1View;
+                toggleV1View();
+            });
+        });
+
+        function updateRoleContent() {
+            // Update description
+            document.getElementById('role-description').textContent = roleDescriptions[currentRole];
+            
+            // Update role-specific KPIs
+            const kpiContainer = document.getElementById('role-specific-kpis');
+            const kpis = roleKPIs[currentRole];
+            
+            kpiContainer.innerHTML = kpis.map(kpi => `
+                <div class="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-500 mb-1">${kpi.title}</p>
+                            <p class="text-2xl font-semibold text-gray-900">${kpi.value}</p>
+                            <p class="text-sm text-gray-500 mt-1">${kpi.subtitle}</p>
+                        </div>
+                        <div class="text-blue-600">
+                            <i data-lucide="${kpi.icon}" class="w-6 h-6"></i>
+                        </div>
+                    </div>
+                    ${kpi.change ? `
+                        <div class="flex items-center space-x-1 mt-3">
+                            <i data-lucide="trending-up" class="w-4 h-4 text-green-600"></i>
+                            <span class="text-sm font-medium text-green-600">${kpi.change}</span>
+                        </div>
+                    ` : ''}
+                </div>
+            `).join('');
+            
+            // Re-initialize icons
+            lucide.createIcons();
+        }
+
+        function toggleV1View() {
+            const mainApp = document.getElementById('app');
+            const v1View = document.getElementById('v1-view');
+            const toggleBtn = document.getElementById('v1-toggle');
+            
+            if (isV1View) {
+                mainApp.classList.add('hidden');
+                v1View.classList.remove('hidden');
+                toggleBtn.innerHTML = `
+                    <i data-lucide="toggle-left" class="w-4 h-4 text-gray-400"></i>
+                    <span class="text-sm text-gray-500">V1 View</span>
+                `;
+            } else {
+                mainApp.classList.remove('hidden');
+                v1View.classList.add('hidden');
+                toggleBtn.innerHTML = `
+                    <i data-lucide="toggle-right" class="w-4 h-4 text-blue-600"></i>
+                    <span class="text-sm text-blue-600">V2 View</span>
+                `;
+            }
+            
+            // Re-initialize icons
+            lucide.createIcons();
+        }
+
+        // Drilldown functionality
+        function drillDown(type) {
+            if (type === 'portfolio') {
+                showCategories();
+            } else if (type === 'forecast') {
+                showForecastDetail();
+            } else if (type === 'misses') {
+                showMisses();
+            }
+        }
+
+        function showCategories() {
+            currentView = 'category';
+            updateBreadcrumbs();
+            showCategoryView();
+        }
+
+        function showCategoryView() {
+            const mainContent = document.querySelector('main');
+            mainContent.innerHTML = `
+                <div class="mb-8">
+                    <h1 class="text-3xl font-semibold text-gray-900 mb-2">Categories</h1>
+                    <p class="text-gray-500">Drill down into category performance</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                    <div class="kpi-card card-hover rounded-lg p-6 shadow-sm cursor-pointer" onclick="selectCategory('electronics')">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-semibold text-gray-900">Electronics</h3>
+                            <div class="status-dot status-high"></div>
+                        </div>
+                        <div class="space-y-3">
+                            <div class="flex justify-between">
+                                <span class="text-sm text-gray-500">Revenue</span>
+                                <span class="font-semibold text-gray-900">$850K</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-sm text-gray-500">Forecast</span>
+                                <span class="font-semibold text-positive">+22%</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-sm text-gray-500">Confidence</span>
+                                <span class="font-semibold text-positive">High (87%)</span>
+                            </div>
+                        </div>
+                        <div class="mt-4 p-3 bg-warning rounded-lg">
+                            <p class="text-sm text-warning">Supply down. Reorder now.</p>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card card-hover rounded-lg p-6 shadow-sm cursor-pointer" onclick="selectCategory('clothing')">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-semibold text-gray-900">Clothing</h3>
+                            <div class="status-dot status-medium"></div>
+                        </div>
+                        <div class="space-y-3">
+                            <div class="flex justify-between">
+                                <span class="text-sm text-gray-500">Revenue</span>
+                                <span class="font-semibold text-gray-900">$420K</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-sm text-gray-500">Forecast</span>
+                                <span class="font-semibold text-negative">-8%</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-sm text-gray-500">Confidence</span>
+                                <span class="font-semibold text-negative">Low (35%)</span>
+                            </div>
+                        </div>
+                        <div class="mt-4 p-3 bg-negative rounded-lg">
+                            <p class="text-sm text-negative">Sparse history. Investigate.</p>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card card-hover rounded-lg p-6 shadow-sm cursor-pointer" onclick="selectCategory('toys')">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-semibold text-gray-900">Toys & Games</h3>
+                            <div class="status-dot status-low"></div>
+                        </div>
+                        <div class="space-y-3">
+                            <div class="flex justify-between">
+                                <span class="text-sm text-gray-500">Revenue</span>
+                                <span class="font-semibold text-gray-900">$180K</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-sm text-gray-500">Forecast</span>
+                                <span class="font-semibold text-negative">-15%</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-sm text-gray-500">Confidence</span>
+                                <span class="font-semibold text-positive">High (78%)</span>
+                            </div>
+                        </div>
+                        <div class="mt-4 p-3 bg-negative rounded-lg">
+                            <p class="text-sm text-negative">Weeks of supply >8. Markdown recommended.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Category Performance</h3>
+                    <div class="h-64 bg-gray-50 rounded-lg flex items-center justify-center">
+                        <div class="text-center">
+                            <i data-lucide="bar-chart-3" class="w-12 h-12 text-gray-400 mx-auto mb-2"></i>
+                            <p class="text-gray-500">Category performance chart</p>
+                            <p class="text-sm text-gray-400">Revenue by category with confidence bands</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Re-initialize icons
+            lucide.createIcons();
+        }
+
+        function selectCategory(categoryId) {
+            selectedCategory = categoryId;
+            currentView = 'sku';
+            updateBreadcrumbs();
+            showSKUView();
+        }
+
+        function showSKUView() {
+            const mainContent = document.querySelector('main');
+            mainContent.innerHTML = `
+                <div class="mb-8">
+                    <h1 class="text-3xl font-semibold text-gray-900 mb-2">SKUs - ${selectedCategory}</h1>
+                    <p class="text-gray-500">Individual SKU performance and actions</p>
+                </div>
+
+                <div class="bg-white rounded-xl border border-gray-200 shadow-lg overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">SKU</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Revenue</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Units</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Miss Rate</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Confidence</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <tr class="hover:bg-gray-50 cursor-pointer" onclick="selectSKU('sku_001')">
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <div class="w-2 h-2 bg-gray-400 rounded-full mr-3"></div>
+                                            <div>
+                                                <div class="text-sm font-medium text-gray-900">iPhone 15 Pro</div>
+                                                <div class="text-sm text-gray-500">Electronics</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">$45,200</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">156</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">3.2%</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">High (89%)</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <button class="bg-gray-800 text-white px-3 py-1 rounded-md text-xs hover:bg-gray-900 transition-colors">Reorder</button>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50 cursor-pointer" onclick="selectSKU('sku_002')">
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <div class="w-2 h-2 bg-gray-500 rounded-full mr-3"></div>
+                                            <div>
+                                                <div class="text-sm font-medium text-gray-900">Nike Air Max</div>
+                                                <div class="text-sm text-gray-500">Clothing</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">$12,800</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">64</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">15.7%</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">Low (42%)</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <button class="bg-gray-600 text-white px-3 py-1 rounded-md text-xs hover:bg-gray-700 transition-colors">Investigate</button>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50 cursor-pointer" onclick="selectSKU('sku_003')">
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <div class="w-2 h-2 bg-gray-600 rounded-full mr-3"></div>
+                                            <div>
+                                                <div class="text-sm font-medium text-gray-900">LEGO Set</div>
+                                                <div class="text-sm text-gray-500">Toys & Games</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">$8,400</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">28</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">22.1%</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">High (91%)</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <button class="bg-gray-800 text-white px-3 py-1 rounded-md text-xs hover:bg-gray-900 transition-colors">Markdown</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+            
+            // Re-initialize icons
+            lucide.createIcons();
+        }
+
+        function selectSKU(skuId) {
+            selectedSKU = skuId;
+            currentView = 'sku-detail';
+            updateBreadcrumbs();
+            showSKUDetail();
+        }
+
+        function showSKUDetail() {
+            const mainContent = document.querySelector('main');
+            mainContent.innerHTML = `
+                <div class="mb-8">
+                    <h1 class="text-3xl font-semibold text-gray-900 mb-2">SKU Detail - ${selectedSKU}</h1>
+                    <p class="text-gray-500">Individual SKU forecasting and backtesting</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                    <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-lg">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Historical Performance</h3>
+                        <div class="h-64 bg-gradient-to-r from-blue-50 to-green-50 rounded-lg flex items-center justify-center">
+                            <div class="text-center">
+                                <i data-lucide="trending-up" class="w-12 h-12 text-blue-600 mx-auto mb-2"></i>
+                                <p class="text-gray-600">Historical actuals vs baseline vs model</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-lg">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Forward Projection</h3>
+                        <div class="h-64 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg flex items-center justify-center">
+                            <div class="text-center">
+                                <i data-lucide="target" class="w-12 h-12 text-purple-600 mx-auto mb-2"></i>
+                                <p class="text-gray-600">3-month forecast with confidence bands</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-lg">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Confidence Analysis</h3>
+                        <div class="space-y-3">
+                            <div class="flex justify-between">
+                                <span class="text-sm text-gray-500">Overall Confidence</span>
+                                <span class="font-semibold text-green-600">High (87%)</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-sm text-gray-500">Data Quality</span>
+                                <span class="font-semibold text-green-600">Excellent</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-sm text-gray-500">Seasonality</span>
+                                <span class="font-semibold text-green-600">Strong</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-lg">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Backtest Results</h3>
+                        <div class="space-y-3">
+                            <div class="flex justify-between">
+                                <span class="text-sm text-gray-500">Model MAPE</span>
+                                <span class="font-semibold text-green-600">8.2%</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-sm text-gray-500">Baseline MAPE</span>
+                                <span class="font-semibold text-red-600">15.7%</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-sm text-gray-500">Improvement</span>
+                                <span class="font-semibold text-green-600">+47.8%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-lg">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Recommended Action</h3>
+                        <div class="p-4 bg-blue-50 rounded-lg">
+                            <div class="flex items-center mb-2">
+                                <i data-lucide="package" class="w-5 h-5 text-blue-600 mr-2"></i>
+                                <span class="font-semibold text-blue-900">Reorder</span>
+                            </div>
+                            <p class="text-sm text-blue-800">Forecast up 22%. Supply down. Reorder now.</p>
+                            <button class="mt-3 bg-blue-600 text-white px-4 py-2 rounded-md text-sm hover:bg-blue-700 transition-colors">
+                                Execute Action
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Re-initialize icons
+            lucide.createIcons();
+        }
+
+        function updateBreadcrumbs() {
+            const breadcrumbElement = document.querySelector('nav');
+            if (currentView === 'portfolio') {
+                breadcrumbElement.innerHTML = `
+                    <span class="cursor-pointer hover:text-blue-600" onclick="goToPortfolio()">Portfolio</span>
+                    <span>/</span>
+                    <span class="text-gray-900">Overview</span>
+                `;
+            } else if (currentView === 'category') {
+                breadcrumbElement.innerHTML = `
+                    <span class="cursor-pointer hover:text-blue-600" onclick="goToPortfolio()">Portfolio</span>
+                    <span>/</span>
+                    <span class="text-gray-900">Categories</span>
+                `;
+            } else if (currentView === 'sku') {
+                breadcrumbElement.innerHTML = `
+                    <span class="cursor-pointer hover:text-blue-600" onclick="goToPortfolio()">Portfolio</span>
+                    <span>/</span>
+                    <span class="cursor-pointer hover:text-blue-600" onclick="goToCategories()">Categories</span>
+                    <span>/</span>
+                    <span class="text-gray-900">SKUs</span>
+                `;
+            } else if (currentView === 'sku-detail') {
+                breadcrumbElement.innerHTML = `
+                    <span class="cursor-pointer hover:text-blue-600" onclick="goToPortfolio()">Portfolio</span>
+                    <span>/</span>
+                    <span class="cursor-pointer hover:text-blue-600" onclick="goToCategories()">Categories</span>
+                    <span>/</span>
+                    <span class="cursor-pointer hover:text-blue-600" onclick="goToSKUs()">SKUs</span>
+                    <span>/</span>
+                    <span class="text-gray-900">SKU Detail</span>
+                `;
+            }
+        }
+
+        // Navigation functions
+        function goToHomepage() {
+            currentView = 'portfolio';
+            selectedCategory = null;
+            selectedSKU = null;
+            showPortfolioView();
+        }
+
+        function goToPortfolio() {
+            currentView = 'portfolio';
+            selectedCategory = null;
+            selectedSKU = null;
+            showPortfolioView();
+        }
+
+        function goToCategories() {
+            currentView = 'category';
+            selectedSKU = null;
+            updateBreadcrumbs();
+            showCategoryView();
+        }
+
+        function goToSKUs() {
+            currentView = 'sku';
+            updateBreadcrumbs();
+            showSKUView();
+        }
+
+        function showPortfolioView() {
+            const mainContent = document.querySelector('main');
+            mainContent.innerHTML = `
+                <!-- Hero Section -->
+                <div class="mb-8">
+                    <h1 class="text-3xl font-semibold text-gray-900 mb-2">Portfolio Overview</h1>
+                    <p class="text-gray-500" id="role-description">
+                        Revenue risk and inventory insights for operational decisions
+                    </p>
+                </div>
+
+                <!-- Hero KPIs -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div class="kpi-card card-hover rounded-xl p-6 shadow-lg cursor-pointer" onclick="drillDown('portfolio')">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-500 mb-1">Total Revenue</p>
+                                <p class="text-2xl font-semibold text-gray-900">$2.4M</p>
+                                <p class="text-sm text-gray-500 mt-1">Last 24 months</p>
+                            </div>
+                            <div class="text-blue-600">
+                                <i data-lucide="dollar-sign" class="w-6 h-6"></i>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-1 mt-3">
+                            <i data-lucide="trending-up" class="w-4 h-4 text-green-600"></i>
+                            <span class="text-sm font-medium text-green-600">+12.3%</span>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card card-hover rounded-xl p-6 shadow-lg cursor-pointer" onclick="drillDown('forecast')">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-500 mb-1">Forecast Revenue</p>
+                                <p class="text-2xl font-semibold text-gray-900">$2.7M</p>
+                                <p class="text-sm text-gray-500 mt-1">Next 3 months</p>
+                            </div>
+                            <div class="text-blue-600">
+                                <i data-lucide="trending-up" class="w-6 h-6"></i>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-1 mt-3">
+                            <i data-lucide="trending-up" class="w-4 h-4 text-green-600"></i>
+                            <span class="text-sm font-medium text-green-600">+12.3%</span>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card card-hover rounded-xl p-6 shadow-lg cursor-pointer" onclick="drillDown('misses')">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-500 mb-1">Miss Rate</p>
+                                <p class="text-2xl font-semibold text-gray-900">8.2%</p>
+                                <p class="text-sm text-gray-500 mt-1">Model vs Baseline</p>
+                            </div>
+                            <div class="text-blue-600">
+                                <i data-lucide="alert-triangle" class="w-6 h-6"></i>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-1 mt-3">
+                            <i data-lucide="trending-down" class="w-4 h-4 text-red-600"></i>
+                            <span class="text-sm font-medium text-red-600">-5.2%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Role-specific KPIs -->
+                <div id="role-specific-kpis" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <!-- Ops KPIs -->
+                    <div class="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-500 mb-1">Inventory Risk</p>
+                                <p class="text-2xl font-semibold text-gray-900">Medium</p>
+                                <p class="text-sm text-gray-500 mt-1">3 categories at risk</p>
+                            </div>
+                            <div class="text-blue-600">
+                                <i data-lucide="package" class="w-6 h-6"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-500 mb-1">Stockout Risk</p>
+                                <p class="text-2xl font-semibold text-gray-900">Low</p>
+                                <p class="text-sm text-gray-500 mt-1">2 SKUs flagged</p>
+                            </div>
+                            <div class="text-blue-600">
+                                <i data-lucide="alert-triangle" class="w-6 h-6"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Chart -->
+                <div class="bg-white rounded-lg border border-gray-200 p-6 shadow-sm mb-8">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-gray-900">Revenue Forecast vs Actuals</h3>
+                        <div class="flex items-center space-x-4">
+                            <div class="flex items-center space-x-2">
+                                <div class="w-3 h-3 bg-blue-600 rounded-full"></div>
+                                <span class="text-sm text-gray-500">Model Forecast</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <div class="w-3 h-3 bg-gray-400 rounded-full"></div>
+                                <span class="text-sm text-gray-500">Baseline</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <div class="w-3 h-3 bg-green-600 rounded-full"></div>
+                                <span class="text-sm text-gray-500">Actual</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="h-64 bg-gray-50 rounded-lg flex items-center justify-center">
+                        <div class="text-center">
+                            <i data-lucide="bar-chart-3" class="w-12 h-12 text-gray-400 mx-auto mb-2"></i>
+                            <p class="text-gray-500">Chart will be rendered here</p>
+                            <p class="text-sm text-gray-400">24 months actual + baseline + model</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Callouts Panel -->
+                <div class="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Top Insights</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-start space-x-3">
+                            <div class="w-2 h-2 bg-green-600 rounded-full mt-2"></div>
+                            <div>
+                                <p class="text-sm font-medium text-gray-900">Electronics category up 22%</p>
+                                <p class="text-xs text-gray-500">Supply down. Reorder now.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-3">
+                            <div class="w-2 h-2 bg-yellow-500 rounded-full mt-2"></div>
+                            <div>
+                                <p class="text-sm font-medium text-gray-900">Clothing confidence low</p>
+                                <p class="text-xs text-gray-500">Sparse history. Investigate.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-3">
+                            <div class="w-2 h-2 bg-red-600 rounded-full mt-2"></div>
+                            <div>
+                                <p class="text-sm font-medium text-gray-900">Toys & Games forecast down 15%</p>
+                                <p class="text-xs text-gray-500">Weeks of supply >8. Markdown recommended.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CTA Tiles -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+                    <button class="bg-white rounded-lg border border-gray-200 p-6 shadow-sm hover:shadow-md transition-shadow text-left" onclick="showCategories()">
+                        <div class="flex items-center space-x-3 mb-2">
+                            <i data-lucide="bar-chart-3" class="w-5 h-5 text-blue-600"></i>
+                            <h4 class="font-semibold text-gray-900">View Categories</h4>
+                        </div>
+                        <p class="text-sm text-gray-500">Drill down into category performance</p>
+                    </button>
+                    
+                    <button class="bg-white rounded-lg border border-gray-200 p-6 shadow-sm hover:shadow-md transition-shadow text-left">
+                        <div class="flex items-center space-x-3 mb-2">
+                            <i data-lucide="alert-triangle" class="w-5 h-5 text-yellow-500"></i>
+                            <h4 class="font-semibold text-gray-900">View Misses</h4>
+                        </div>
+                        <p class="text-sm text-gray-500">Analyze forecast errors</p>
+                    </button>
+                    
+                    <button class="bg-white rounded-lg border border-gray-200 p-6 shadow-sm hover:shadow-md transition-shadow text-left">
+                        <div class="flex items-center space-x-3 mb-2">
+                            <i data-lucide="package" class="w-5 h-5 text-green-600"></i>
+                            <h4 class="font-semibold text-gray-900">View Actions</h4>
+                        </div>
+                        <p class="text-sm text-gray-500">Take recommended actions</p>
+                    </button>
+                </div>
+            `;
+            
+            updateBreadcrumbs();
+            updateRoleContent();
+            lucide.createIcons();
+        }
+    </script>
+</body>
+</html>
