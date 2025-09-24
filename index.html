@@ -164,30 +164,7 @@
                         </nav>
                     </div>
 
-                    <!-- Controls -->
-                    <div class="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
-                        <!-- V1/V2 Toggle -->
-                        <button id="v1-toggle" class="flex items-center space-x-2 px-3 py-2 rounded-md border border-gray-300 hover:bg-gray-50 transition-colors">
-                            <i data-lucide="toggle-right" class="w-4 h-4 text-blue-600"></i>
-                            <span class="text-sm text-blue-600">V2 View</span>
-                        </button>
-
-                        <!-- Role Switcher -->
-                        <div class="flex items-center space-x-1 bg-gray-100 rounded-lg p-1">
-                            <button class="role-btn active flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium bg-white text-gray-900 shadow-sm" data-role="ops">
-                                <i data-lucide="users" class="w-4 h-4"></i>
-                                <span class="hidden sm:inline">Head of Ops</span>
-                            </button>
-                            <button class="role-btn flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium text-gray-500 hover:text-gray-900" data-role="engineer">
-                                <i data-lucide="bar-chart-3" class="w-4 h-4"></i>
-                                <span class="hidden sm:inline">Engineer</span>
-                            </button>
-                            <button class="role-btn flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium text-gray-500 hover:text-gray-900" data-role="marketer">
-                                <i data-lucide="shopping-cart" class="w-4 h-4"></i>
-                                <span class="hidden sm:inline">Marketer</span>
-                            </button>
-                        </div>
-                    </div>
+                    <!-- Controls removed -->
                 </div>
             </header>
 
@@ -503,28 +480,29 @@
 
         // Event listeners
         document.addEventListener('DOMContentLoaded', function() {
-            // Role switcher
-            document.querySelectorAll('.role-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    // Remove active class from all buttons
-                    document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active', 'bg-white', 'text-gray-900', 'shadow-sm'));
-                    document.querySelectorAll('.role-btn').forEach(b => b.classList.add('text-gray-500'));
-                    
-                    // Add active class to clicked button
-                    this.classList.add('active', 'bg-white', 'text-gray-900', 'shadow-sm');
-                    this.classList.remove('text-gray-500');
-                    
-                    // Update role
-                    currentRole = this.dataset.role;
-                    updateRoleContent();
+            // Guarded role switcher (buttons may be removed)
+            const roleButtons = document.querySelectorAll('.role-btn');
+            if (roleButtons && roleButtons.length) {
+                roleButtons.forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active', 'bg-white', 'text-gray-900', 'shadow-sm'));
+                        document.querySelectorAll('.role-btn').forEach(b => b.classList.add('text-gray-500'));
+                        this.classList.add('active', 'bg-white', 'text-gray-900', 'shadow-sm');
+                        this.classList.remove('text-gray-500');
+                        currentRole = this.dataset.role;
+                        updateRoleContent();
+                    });
                 });
-            });
+            }
 
-            // V1/V2 toggle
-            document.getElementById('v1-toggle').addEventListener('click', function() {
-                isV1View = !isV1View;
-                toggleV1View();
-            });
+            // Guarded V1/V2 toggle (element may be removed)
+            const toggleEl = document.getElementById('v1-toggle');
+            if (toggleEl) {
+                toggleEl.addEventListener('click', function() {
+                    isV1View = !isV1View;
+                    toggleV1View();
+                });
+            }
         });
 
         function updateRoleContent() {
