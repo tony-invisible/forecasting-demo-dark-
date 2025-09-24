@@ -2,9 +2,9 @@
   "name": "forecasting-demo",
   "version": "1.0.0",
   "description": "Forecasting 2.0 Demo for Neuron",
-  "main": "server.js",
+  "main": "index.html",
   "scripts": {
-    "start": "node server.js",
+    "start": "python3 -m http.server 3000",
     "dev": "python3 -m http.server 3000",
     "serve": "python3 -m http.server 3000"
   },
