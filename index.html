@@ -29,7 +29,7 @@
         
         body {
             font-family: 'Inter', sans-serif;
-            background: #fafafa;
+            background: #f2f4f7; /* more enterprise, higher contrast */
             color: #111111;
             min-height: 100vh;
         }
@@ -45,8 +45,9 @@
         }
         
         .kpi-card {
-            background: var(--surface-muted);
-            border: 1px solid var(--border);
+            background: #f8fafc; /* visibly muted surface */
+            border: 2px solid var(--border);
+            border-left: 4px solid var(--brand-600); /* prominent brand accent */
             transition: all 0.2s ease;
         }
         
@@ -129,7 +130,7 @@
             .btn-secondary { @apply bg-white border text-gray-700; border-color: var(--border); }
             .btn-secondary:hover { background: #f8fafc; }
 
-            .card { @apply bg-white border; border-color: var(--border); box-shadow: var(--shadow-card); border-radius: var(--radius-lg); }
+            .card { @apply bg-white border; border-color: var(--border); box-shadow: var(--shadow-card); border-radius: var(--radius-lg); border-width: 2px; }
             .input { @apply w-full px-3 py-2 text-sm border rounded-md; border-color: var(--border); }
             .badge { @apply inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-md; }
             .badge-muted { @apply bg-gray-100 text-gray-700; }
