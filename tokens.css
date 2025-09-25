@@ -9,6 +9,7 @@
   --border: #A8B3C2; /* stronger border token */
   --text-primary: #111827;
   --text-secondary: #475569;
+  --radius-lg: 12px;
 }
 
 /* Make KPI cards visibly different sitewide */
