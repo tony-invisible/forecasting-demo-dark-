@@ -798,7 +798,15 @@
             const rail = document.getElementById('sku-action-rail');
             const palette = rec.action === 'Markdown' ? { rail: '#DC2626', tint: 'rgba(220,38,38,0.06)' } : rec.action === 'Investigate' ? { rail: 'var(--accent-amber-600)', tint: 'rgba(217,119,6,0.08)' } : { rail: '#2563EB', tint: 'rgba(37,99,235,0.06)' };
             if (rail) rail.style.backgroundColor = palette.rail;
+            // Shared visual language between action and stock cards
             el.style.backgroundColor = palette.tint;
+            const actionWrap = document.getElementById('sku-action-wrap');
+            if (actionWrap) actionWrap.style.borderTop = `2px solid ${palette.rail}`;
+            const stockWrap = document.getElementById('sku-stock-card');
+            if (stockWrap) {
+                stockWrap.style.backgroundColor = palette.tint;
+                stockWrap.style.borderTop = `2px solid ${palette.rail}`;
+            }
             el.innerHTML = `
                 <div class="flex items-start justify-between mb-3">
                     <div>
@@ -810,7 +818,7 @@
                 <div class="mb-3 flex flex-wrap gap-x-4 gap-y-2">
                     ${rec.metricChipsHTML}
                 </div>
-                <ul class="text-sm text-gray-800 list-disc pl-5 space-y-1 mb-3">
+                <ul class="text-sm text-gray-800 list-disc pl-5 space-y-1 mb-2">
                     ${rec.reasons.map(r => `<li>${r}</li>`).join('')}
                 </ul>
                 <div class="flex items-center gap-3">${rec.suggestionHTML} ${rec.calcHTML}</div>
