@@ -804,7 +804,8 @@
             const actionWrap = document.getElementById('sku-action-wrap');
             if (actionWrap) {
                 actionWrap.style.borderTop = '';
-                actionWrap.style.border = '';
+                actionWrap.style.border = `2px solid ${palette.rail}`; // blue (or action color) border on all four sides
+                actionWrap.style.borderRadius = '0.75rem';
             }
             // Stock & Risk: remove border entirely but keep tint to relate visually
             const stockWrap = document.getElementById('sku-stock-card');
