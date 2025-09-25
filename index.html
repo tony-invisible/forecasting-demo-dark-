@@ -673,10 +673,10 @@
             function currency(v){ return `$${v.toFixed(2)}M`; }
             const Chart = () => (
                 React.createElement(ResponsiveContainer, { width: '100%', height: '100%' },
-                    React.createElement(LineChart, { data, margin: { top: 8, right: 24, left: 0, bottom: 8 } },
+                    React.createElement(LineChart, { data, margin: { top: 8, right: 24, left: 8, bottom: 24 } },
                         React.createElement(CartesianGrid, { strokeDasharray: '3 3', stroke: '#E5E7EB' }),
-                        React.createElement(XAxis, { dataKey: 'month', label: { value: 'Month', position: 'insideBottomRight', offset: -5, fill: '#64748B' }, tick: { fill: '#64748B' }, axisLine: { stroke: '#CBD5E1' } }),
-                        React.createElement(YAxis, { label: { value: 'Revenue', angle: -90, position: 'insideLeft', fill: '#64748B' }, tick: { fill: '#64748B' }, axisLine: { stroke: '#CBD5E1' }, tickFormatter: currency }),
+                        React.createElement(XAxis, { dataKey: 'month', tick: { fill: '#64748B' }, tickMargin: 8, interval: 'preserveEnd', axisLine: { stroke: '#CBD5E1' } }),
+                        React.createElement(YAxis, { tick: { fill: '#64748B' }, width: 60, axisLine: { stroke: '#CBD5E1' }, domain: [0, 'auto'], tickFormatter: currency }),
                         React.createElement(Tooltip, { formatter: (v, n) => [currency(v), n === 'actual' ? 'Actuals' : n === 'baseline' ? 'Baseline' : 'Model Forecast'] }),
                         React.createElement(Legend, { verticalAlign: 'bottom', height: 24 }),
                         React.createElement(Line, { type: 'monotone', dataKey: 'actual', name: 'Actuals', stroke: '#2563EB', dot: false, strokeWidth: 2 }),
