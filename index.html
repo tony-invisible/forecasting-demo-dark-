@@ -489,6 +489,7 @@
         let selectedSKUName = null;
         let categoryChartScope = 'category'; // 'category' | 'portfolio'
         let selectedSubcategory = null; // subcategory within a category
+        let selectedComparisons = []; // up to 2 competitor overlays
 
         // Deep-linking helpers
         function readParams() {
@@ -740,6 +741,44 @@
             ReactDOM.render(React.createElement(Chart), mount);
         }
 
+        function populateCompareDropdown() {
+            const ddl = document.getElementById('comp-select');
+            if (!ddl || !selectedCategory) return;
+            const list = generateSKUs(selectedCategory);
+            ddl.innerHTML = '<option value="">Compare with…</option>' +
+                list.slice(0, 12).map(s => `<option value="${s.id}" ${s.id===selectedSKU?'disabled':''}>${s.name}</option>`).join('');
+            const addBtn = document.getElementById('comp-add');
+            if (addBtn) addBtn.onclick = () => {
+                const val = ddl.value;
+                if (!val) return;
+                if (val === selectedSKU) return;
+                if (selectedComparisons.includes(val)) return;
+                if (selectedComparisons.length >= 2) { selectedComparisons.shift(); }
+                selectedComparisons.push(val);
+                renderCompareChips();
+                renderSKUHistoricalChart();
+            };
+        }
+
+        function renderCompareChips() {
+            const wrap = document.getElementById('comp-chips');
+            if (!wrap) return;
+            const list = generateSKUs(selectedCategory);
+            wrap.innerHTML = selectedComparisons.map(id => {
+                const s = list.find(x => x.id === id);
+                const label = s ? s.name : id;
+                return `<span class="inline-flex items-center gap-1 px-2 py-0.5 text-xs rounded-md bg-gray-100 text-gray-700">${label}<button data-rm="${id}" class="text-gray-500 hover:text-gray-800">×</button></span>`;
+            }).join('');
+            wrap.querySelectorAll('[data-rm]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const id = btn.getAttribute('data-rm');
+                    selectedComparisons = selectedComparisons.filter(x => x !== id);
+                    renderCompareChips();
+                    renderSKUHistoricalChart();
+                });
+            });
+        }
+
         function updateCategoryScopeButtons() {
             const btnCat = document.getElementById('btn-scope-category');
             const btnPort = document.getElementById('btn-scope-portfolio');
@@ -783,12 +822,18 @@
             if (!mount) return;
             if (window.ReactDOM && ReactDOM.unmountComponentAtNode) { try { ReactDOM.unmountComponentAtNode(mount); } catch(_){} }
             mount.innerHTML = '';
-            const data = buildSKUBaseSeries();
+            const base = buildSKUBaseSeries();
+            const list = generateSKUs(selectedCategory || 'electronics');
+            const overlays = (selectedComparisons || []).map((id, idx) => {
+                const colorPalette = ['#9333EA','#059669'];
+                const color = colorPalette[idx % colorPalette.length];
+                return { id, color };
+            });
             const { ResponsiveContainer, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Line } = Recharts;
             function currency(v){ return `$${v.toFixed(2)}M`; }
             const Chart = () => (
                 React.createElement(ResponsiveContainer, { width: '100%', height: '100%' },
-                    React.createElement(LineChart, { data, margin: { top: 8, right: 24, left: 8, bottom: 8 } },
+                    React.createElement(LineChart, { data: base, margin: { top: 8, right: 24, left: 8, bottom: 8 } },
                         React.createElement(CartesianGrid, { strokeDasharray: '3 3', stroke: '#E5E7EB' }),
                         React.createElement(XAxis, { dataKey: 'month', tick: { fill: '#64748B' }, axisLine: { stroke: '#CBD5E1' } }),
                         React.createElement(YAxis, { tick: { fill: '#64748B' }, width: 60, tickFormatter: currency, axisLine: { stroke: '#CBD5E1' } }),
@@ -796,7 +841,17 @@
                         React.createElement(Legend, { verticalAlign: 'bottom', height: 24 }),
                         React.createElement(Line, { type: 'monotone', dataKey: 'actual', name: 'Actuals', stroke: '#2563EB', dot: false, strokeWidth: 2 }),
                         React.createElement(Line, { type: 'monotone', dataKey: 'baseline', name: 'Baseline', stroke: '#64748B', dot: false, strokeWidth: 2 }),
-                        React.createElement(Line, { type: 'monotone', dataKey: 'model', name: 'Model', stroke: '#EF4444', dot: false, strokeWidth: 2 })
+                        React.createElement(Line, { type: 'monotone', dataKey: 'model', name: 'Model', stroke: '#EF4444', dot: false, strokeWidth: 2 }),
+                        ...overlays.map((ov) => React.createElement(Line, {
+                            key: `comp-${ov.id}`,
+                            type: 'monotone',
+                            dataKey: 'model',
+                            name: (list.find(x => x.id === ov.id)?.name || ov.id),
+                            stroke: ov.color,
+                            dot: false,
+                            strokeWidth: 2,
+                            data: buildSKUBaseSeries() // reuse shape for demo overlay
+                        }))
                     )
                 )
             );
@@ -1426,10 +1481,17 @@
 
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
                     <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-lg">
-                        <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center justify-between mb-2">
                             <h3 class="text-lg font-semibold text-gray-900">Historical Performance</h3>
-                            <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-md bg-gray-100 text-gray-700">Confidence ${confPct}%</span>
+                            <div class="flex items-center gap-2">
+                                <select id="comp-select" class="input w-auto text-sm">
+                                    <option value="">Compare with…</option>
+                                </select>
+                                <button id="comp-add" class="btn btn-secondary text-xs px-2 py-1">Add</button>
+                            </div>
                         </div>
+                        <div id="comp-chips" class="flex flex-wrap gap-2 mb-2"></div>
+                        <div class="flex items-center justify-end mb-2"><span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-md bg-gray-100 text-gray-700">Confidence ${confPct}%</span></div>
                         <div class="h-64 bg-white rounded-lg">
                             <div id="sku-historical-chart" class="w-full h-full"></div>
                         </div>
@@ -1451,7 +1513,7 @@
             
             // Re-initialize icons
             lucide.createIcons();
-            setTimeout(() => { renderSKUHistoricalChart(); renderSKUProjectionChart(); renderSKUAction(); renderSKUMarginCard(); renderSKUPriceCostCard(); renderSKUDiagnostics(); }, 50);
+            setTimeout(() => { renderSKUHistoricalChart(); renderSKUProjectionChart(); renderSKUAction(); renderSKUMarginCard(); renderSKUPriceCostCard(); renderSKUDiagnostics(); populateCompareDropdown(); renderCompareChips(); }, 50);
         }
 
         function getSKUConfidence() {
