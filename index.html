@@ -492,6 +492,7 @@
         let currentView = 'portfolio'; // portfolio, category, sku
         let selectedCategory = null;
         let selectedSKU = null;
+        let categoryChartScope = 'category'; // 'category' | 'portfolio'
 
         // Deep-linking helpers
         function readParams() {
@@ -661,15 +662,21 @@
             const mount = document.getElementById('category-chart');
             if (!mount) return;
             mount.innerHTML = '';
-            const data = categorySeries[selectedCategory || 'electronics'] || categorySeries.electronics;
+            const subtitleEl = document.getElementById('category-chart-subtitle');
+            const activeCat = selectedCategory || 'electronics';
+            const data = categoryChartScope === 'portfolio' ? chartData : (categorySeries[activeCat] || categorySeries.electronics);
+            if (subtitleEl) {
+                const label = categoryChartScope === 'portfolio' ? 'Portfolio (all categories)' : `Category: ${activeCat}`;
+                subtitleEl.textContent = label;
+            }
             const { ResponsiveContainer, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Line } = Recharts;
             function currency(v){ return `$${v.toFixed(2)}M`; }
             const Chart = () => (
                 React.createElement(ResponsiveContainer, { width: '100%', height: '100%' },
                     React.createElement(LineChart, { data, margin: { top: 8, right: 24, left: 0, bottom: 8 } },
                         React.createElement(CartesianGrid, { strokeDasharray: '3 3', stroke: '#E5E7EB' }),
-                        React.createElement(XAxis, { dataKey: 'month', tick: { fill: '#64748B' }, axisLine: { stroke: '#CBD5E1' } }),
-                        React.createElement(YAxis, { tick: { fill: '#64748B' }, axisLine: { stroke: '#CBD5E1' }, tickFormatter: currency }),
+                        React.createElement(XAxis, { dataKey: 'month', label: { value: 'Month', position: 'insideBottomRight', offset: -5, fill: '#64748B' }, tick: { fill: '#64748B' }, axisLine: { stroke: '#CBD5E1' } }),
+                        React.createElement(YAxis, { label: { value: 'Revenue', angle: -90, position: 'insideLeft', fill: '#64748B' }, tick: { fill: '#64748B' }, axisLine: { stroke: '#CBD5E1' }, tickFormatter: currency }),
                         React.createElement(Tooltip, { formatter: (v, n) => [currency(v), n === 'actual' ? 'Actuals' : n === 'baseline' ? 'Baseline' : 'Model Forecast'] }),
                         React.createElement(Legend, { verticalAlign: 'bottom', height: 24 }),
                         React.createElement(Line, { type: 'monotone', dataKey: 'actual', name: 'Actuals', stroke: '#2563EB', dot: false, strokeWidth: 2 }),
@@ -679,6 +686,32 @@
                 )
             );
             ReactDOM.render(React.createElement(Chart), mount);
+        }
+
+        function updateCategoryScopeButtons() {
+            const btnCat = document.getElementById('btn-scope-category');
+            const btnPort = document.getElementById('btn-scope-portfolio');
+            if (!btnCat || !btnPort) return;
+            if (categoryChartScope === 'category') {
+                btnCat.classList.add('bg-white','shadow-sm');
+                btnCat.classList.remove('text-gray-600');
+                btnPort.classList.remove('bg-white','shadow-sm');
+                btnPort.classList.add('text-gray-600');
+            } else {
+                btnPort.classList.add('bg-white','shadow-sm');
+                btnPort.classList.remove('text-gray-600');
+                btnCat.classList.remove('bg-white','shadow-sm');
+                btnCat.classList.add('text-gray-600');
+            }
+        }
+
+        // Helper when clicking a category tile to keep scope UI intact
+        function chooseCategory(cat) {
+            selectedCategory = cat;
+            currentView = 'category';
+            updateBreadcrumbs();
+            showCategoryView();
+            updateURL('category', selectedCategory, null);
         }
 
         function updateRoleContent() {
@@ -766,7 +799,7 @@
                 </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                    <div class="kpi-card card-hover p-6 shadow-sm cursor-pointer" onclick="selectCategory('electronics')">
+                    <div class="kpi-card card-hover p-6 shadow-sm cursor-pointer" onclick="chooseCategory('electronics')">
                         <div class="flex items-center justify-between mb-4">
                             <h3 class="text-lg font-semibold text-gray-900">Electronics</h3>
                             <div class="status-dot status-high"></div>
@@ -790,7 +823,7 @@
                         </div>
                     </div>
 
-                    <div class="kpi-card card-hover p-6 shadow-sm cursor-pointer" onclick="selectCategory('clothing')">
+                    <div class="kpi-card card-hover p-6 shadow-sm cursor-pointer" onclick="chooseCategory('clothing')">
                         <div class="flex items-center justify-between mb-4">
                             <h3 class="text-lg font-semibold text-gray-900">Clothing</h3>
                             <div class="status-dot status-medium"></div>
@@ -814,7 +847,7 @@
                         </div>
                     </div>
 
-                    <div class="kpi-card card-hover p-6 shadow-sm cursor-pointer" onclick="selectCategory('toys')">
+                    <div class="kpi-card card-hover p-6 shadow-sm cursor-pointer" onclick="chooseCategory('toys')">
                         <div class="flex items-center justify-between mb-4">
                             <h3 class="text-lg font-semibold text-gray-900">Toys & Games</h3>
                             <div class="status-dot status-low"></div>
@@ -840,7 +873,14 @@
                 </div>
 
                 <div class="card p-6">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Category Performance</h3>
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="text-lg font-semibold text-gray-900">Category Performance</h3>
+                        <div class="inline-flex bg-gray-100 rounded-md p-1">
+                            <button id="btn-scope-category" class="px-3 py-1 text-sm rounded-md bg-white shadow-sm">Category</button>
+                            <button id="btn-scope-portfolio" class="px-3 py-1 text-sm rounded-md text-gray-600">Portfolio</button>
+                        </div>
+                    </div>
+                    <div id="category-chart-subtitle" class="text-sm text-gray-500 mb-2"></div>
                     <div class="h-80 bg-white rounded-lg">
                         <div id="category-chart" class="w-full h-full"></div>
                     </div>
@@ -849,6 +889,14 @@
             
             // Re-initialize icons
             lucide.createIcons();
+            // Wire scope buttons
+            const btnCat = document.getElementById('btn-scope-category');
+            const btnPort = document.getElementById('btn-scope-portfolio');
+            if (btnCat && btnPort) {
+                btnCat.onclick = () => { categoryChartScope = 'category'; updateCategoryScopeButtons(); renderCategoryChart(); };
+                btnPort.onclick = () => { categoryChartScope = 'portfolio'; updateCategoryScopeButtons(); renderCategoryChart(); };
+            }
+            updateCategoryScopeButtons();
             setTimeout(renderCategoryChart, 50);
         }
 
