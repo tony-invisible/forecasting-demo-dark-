@@ -494,9 +494,10 @@
         function readParams() {
             const p = new URLSearchParams(window.location.search);
             const view = p.get('view') || 'portfolio';
-            const cat = p.get('cat');
-            const sku = p.get('sku');
-            const sub = p.get('sub');
+            const sanitize = (v) => v ? v.split(/[?&#]/)[0] : null;
+            const cat = sanitize(p.get('cat'));
+            const sku = sanitize(p.get('sku'));
+            const sub = sanitize(p.get('sub'));
             return { view, cat, sku, sub };
         }
 
