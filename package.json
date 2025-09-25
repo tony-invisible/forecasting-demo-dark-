@@ -6,9 +6,14 @@
   "scripts": {
     "start": "python3 -m http.server 3000",
     "dev": "python3 -m http.server 3000",
-    "serve": "python3 -m http.server 3000"
+    "serve": "python3 -m http.server 3000",
+    "build": "astro build",
+    "preview": "astro preview --host"
   },
   "keywords": ["forecasting", "demo", "retail", "analytics"],
   "author": "Neuron",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "astro": "^4.12.0"
+  }
 }
