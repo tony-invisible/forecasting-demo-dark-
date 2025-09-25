@@ -1355,8 +1355,8 @@
             if (subcat && (subcategories[categoryId] || []).length) {
                 const subList = subcategories[categoryId];
                 const idx = Math.max(0, subList.indexOf(subcat));
+                // Partition catalog deterministically so each subcategory shows a distinct subset
                 names = names.filter((_, i) => i % subList.length === idx);
-                if (names.length < 6) names = (catalogs[categoryId] || []).slice(0, 6);
             }
             return names.slice(0, 12).map((name, i) => {
                 const id = `${categoryId}_${i}`;
