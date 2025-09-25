@@ -794,15 +794,26 @@
             const el = document.getElementById('sku-action-card');
             if (!el) return;
             const rec = getSKUActionRecommendation();
+            // Rail color and subtle tint based on action type
+            const rail = document.getElementById('sku-action-rail');
+            const palette = rec.action === 'Markdown' ? { rail: '#DC2626', tint: 'rgba(220,38,38,0.06)' } : rec.action === 'Investigate' ? { rail: '#D97706', tint: 'rgba(217,119,6,0.06)' } : { rail: '#2563EB', tint: 'rgba(37,99,235,0.06)' };
+            if (rail) rail.style.backgroundColor = palette.rail;
+            el.style.backgroundColor = palette.tint;
             el.innerHTML = `
-                <div class="flex items-center mb-2">
-                    <i data-lucide="package" class="w-5 h-5 text-blue-600 mr-2"></i>
-                    <span class="font-semibold text-blue-900">${rec.action}</span>
+                <div class="flex items-start justify-between mb-3">
+                    <div>
+                        <div class="text-xs uppercase tracking-wide text-gray-500 mb-1">Recommended Action</div>
+                        <div class="text-xl font-semibold text-gray-900">${rec.headline}</div>
+                    </div>
+                    ${rec.priorityHTML}
                 </div>
-                <ul class="text-sm text-blue-800 list-disc pl-5 space-y-1">
+                <div class="mb-3 flex flex-wrap gap-x-4 gap-y-2">
+                    ${rec.metricChipsHTML}
+                </div>
+                <ul class="text-sm text-gray-800 list-disc pl-5 space-y-1 mb-3">
                     ${rec.reasons.map(r => `<li>${r}</li>`).join('')}
                 </ul>
-                ${rec.suggestionHTML}
+                <div class="flex items-center gap-3">${rec.suggestionHTML} ${rec.calcHTML}</div>
             `;
             lucide.createIcons();
             const btn = document.getElementById('execute-action-btn');
@@ -823,6 +834,10 @@
             let action = 'Hold';
             const reasons = [];
             let suggestionHTML = '';
+            let priorityHTML = '';
+            let metricChipsHTML = '';
+            let headline = '';
+            let calcHTML = '';
 
             if (lift >= 10 && confidence >= 70 && wos < 4) {
                 action = 'Reorder';
@@ -830,23 +845,35 @@
                 const qty = Math.max(0, Math.ceil(targetWOS * weeklyForecast - stockOnHand));
                 reasons.push(`Forecast lift +${lift}%, confidence ${confidence}%`);
                 reasons.push(`Weeks of supply ${wos.toFixed(1)} < target ${targetWOS}`);
-                suggestionHTML = `<div class="mt-3"><button id="execute-action-btn" class="btn btn-primary">Execute Reorder (${qty} units)</button></div>`;
+                headline = `Reorder ${qty} units`;
+                suggestionHTML = `<button id="execute-action-btn" class="btn btn-primary">Execute Reorder (${qty} units)</button>`;
+                calcHTML = `<button class="btn btn-secondary" onclick="alert('Target WOS ${targetWOS} * weekly ${weeklyForecast} − stock ${stockOnHand} = ${Math.max(0, Math.ceil(targetWOS * weeklyForecast - stockOnHand))}')">View calculation</button>`;
+                if (wos < 3) priorityHTML = `<span class="inline-flex items-center text-xs font-medium px-2 py-1 rounded-md bg-red-50 text-red-700 border border-red-200">High priority</span>`;
             } else if ((lift <= -10 || wos > 10) && confidence >= 60 && improvement >= 5) {
                 action = 'Markdown';
                 const discount = Math.min(30, Math.max(10, Math.round((wos - 8) * 3)));
                 reasons.push(`Demand down/Large overstock (WOS ${wos.toFixed(1)})`);
                 reasons.push(`Model beats baseline by ${improvement.toFixed(1)}pp`);
-                suggestionHTML = `<div class="mt-3"><button id="execute-action-btn" class="btn btn-primary">Execute Markdown (${discount}% off)</button></div>`;
+                headline = `Markdown ${discount}%`;
+                suggestionHTML = `<button id="execute-action-btn" class="btn btn-primary">Execute Markdown (${discount}% off)</button>`;
+                calcHTML = `<button class="btn btn-secondary" onclick="alert('WOS-based discount heuristic: max 30%, typically (WOS-8)*3%')">View calculation</button>`;
             } else if (confidence < 55 || modelMAPE >= 15) {
                 action = 'Investigate';
                 reasons.push(`Low predictability (confidence ${confidence}%, MAPE ${modelMAPE}%)`);
-                suggestionHTML = `<div class="mt-3"><button id="execute-action-btn" class="btn btn-secondary">Open Investigation</button></div>`;
+                headline = 'Open Investigation';
+                suggestionHTML = `<button id="execute-action-btn" class="btn btn-secondary">Open Investigation</button>`;
             } else {
                 reasons.push('Monitor next 2 weeks; metrics within thresholds');
-                suggestionHTML = `<div class="mt-3"><button id="execute-action-btn" class="btn btn-secondary">Set Watch</button></div>`;
+                headline = 'Set Watch';
+                suggestionHTML = `<button id="execute-action-btn" class="btn btn-secondary">Set Watch</button>`;
             }
 
-            return { action, reasons, suggestionHTML };
+            metricChipsHTML = `
+                <span class="inline-flex items-center text-xs font-medium px-2 py-1 rounded-md bg-gray-100 text-gray-700">Lift +${lift}%</span>
+                <span class="inline-flex items-center text-xs font-medium px-2 py-1 rounded-md bg-gray-100 text-gray-700">Confidence ${confidence}%</span>
+                <span class="inline-flex items-center text-xs font-medium px-2 py-1 rounded-md bg-gray-100 text-gray-700">WOS ${wos.toFixed(1)}</span>`;
+
+            return { action, reasons, suggestionHTML, priorityHTML, metricChipsHTML, headline, calcHTML };
         }
 
         function openActionModal(rec) {
@@ -1203,6 +1230,16 @@
                     <p class="text-gray-500">Individual SKU forecasting and backtesting</p>
                 </div>
 
+                <!-- Prominent Action Card -->
+                <div class="mb-6">
+                    <div class="bg-white rounded-xl border border-gray-200 shadow-lg overflow-hidden" id="sku-action-wrap">
+                        <div id="sku-action-rail" class="h-full w-1.5 bg-blue-600 float-left"></div>
+                        <div class="p-6 md:p-7" id="sku-action-card">
+                            <!-- Populated by renderSKUAction() -->
+                        </div>
+                    </div>
+                </div>
+
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
                     <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-lg">
                         <h3 class="text-lg font-semibold text-gray-900 mb-4">Historical Performance</h3>
@@ -1256,12 +1293,7 @@
                         </div>
                     </div>
 
-                    <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-lg">
-                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Recommended Action</h3>
-                        <div class="p-4 bg-blue-50 rounded-lg" id="sku-action-card">
-                            <!-- Populated by renderSKUAction() -->
-                        </div>
-                    </div>
+                    <!-- placeholder removed; action card now above -->
                 </div>
             `;
             
