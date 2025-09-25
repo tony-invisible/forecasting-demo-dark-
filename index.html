@@ -542,24 +542,24 @@
             const roleButtons = document.querySelectorAll('.role-btn');
             if (roleButtons && roleButtons.length) {
                 roleButtons.forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active', 'bg-white', 'text-gray-900', 'shadow-sm'));
-                        document.querySelectorAll('.role-btn').forEach(b => b.classList.add('text-gray-500'));
-                        this.classList.add('active', 'bg-white', 'text-gray-900', 'shadow-sm');
-                        this.classList.remove('text-gray-500');
-                        currentRole = this.dataset.role;
-                        updateRoleContent();
-                    });
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active', 'bg-white', 'text-gray-900', 'shadow-sm'));
+                    document.querySelectorAll('.role-btn').forEach(b => b.classList.add('text-gray-500'));
+                    this.classList.add('active', 'bg-white', 'text-gray-900', 'shadow-sm');
+                    this.classList.remove('text-gray-500');
+                    currentRole = this.dataset.role;
+                    updateRoleContent();
                 });
+            });
             }
 
             // Guarded V1/V2 toggle (element may be removed)
             const toggleEl = document.getElementById('v1-toggle');
             if (toggleEl) {
                 toggleEl.addEventListener('click', function() {
-                    isV1View = !isV1View;
-                    toggleV1View();
-                });
+                isV1View = !isV1View;
+                toggleV1View();
+            });
             }
             // Initial route from URL
             const { view, cat, sku } = readParams();
@@ -661,10 +661,14 @@
         function renderCategoryChart() {
             const mount = document.getElementById('category-chart');
             if (!mount) return;
+            // Fully unmount any previous chart to avoid stale internal state
+            if (window.ReactDOM && ReactDOM.unmountComponentAtNode) {
+                try { ReactDOM.unmountComponentAtNode(mount); } catch (_) {}
+            }
             mount.innerHTML = '';
             const subtitleEl = document.getElementById('category-chart-subtitle');
             const activeCat = selectedCategory || 'electronics';
-            const data = categoryChartScope === 'portfolio' ? chartData : (categorySeries[activeCat] || categorySeries.electronics);
+            const data = categoryChartScope === 'portfolio' ? (Array.isArray(chartData) ? chartData.slice() : []) : (categorySeries[activeCat] || categorySeries.electronics);
             if (subtitleEl) {
                 const label = categoryChartScope === 'portfolio' ? 'Portfolio (all categories)' : `Category: ${activeCat}`;
                 subtitleEl.textContent = label;
@@ -693,14 +697,14 @@
             const btnPort = document.getElementById('btn-scope-portfolio');
             if (!btnCat || !btnPort) return;
             if (categoryChartScope === 'category') {
-                btnCat.classList.add('bg-white','shadow-sm');
+                btnCat.classList.add('bg-white','shadow-sm','border');
                 btnCat.classList.remove('text-gray-600');
-                btnPort.classList.remove('bg-white','shadow-sm');
+                btnPort.classList.remove('bg-white','shadow-sm','border');
                 btnPort.classList.add('text-gray-600');
             } else {
-                btnPort.classList.add('bg-white','shadow-sm');
+                btnPort.classList.add('bg-white','shadow-sm','border');
                 btnPort.classList.remove('text-gray-600');
-                btnCat.classList.remove('bg-white','shadow-sm');
+                btnCat.classList.remove('bg-white','shadow-sm','border');
                 btnCat.classList.add('text-gray-600');
             }
         }
@@ -798,7 +802,7 @@
                     <p class="text-gray-500">Drill down into category performance</p>
                 </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
                     <div class="kpi-card card-hover p-6 shadow-sm cursor-pointer" onclick="chooseCategory('electronics')">
                         <div class="flex items-center justify-between mb-4">
                             <h3 class="text-lg font-semibold text-gray-900">Electronics</h3>

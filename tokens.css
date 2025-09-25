@@ -28,3 +28,13 @@
 .card {
   border-color: var(--border) !important;
 }
+
+/* Elevate subtle action buttons */
+.btn-secondary {
+  background: #fff !important;
+  border: 1px solid var(--border) !important;
+  color: #1f2937 !important; /* gray-800 */
+}
+.btn-secondary:hover {
+  background: #f8fafc !important;
+}
