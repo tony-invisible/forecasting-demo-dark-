@@ -798,14 +798,20 @@
             const rail = document.getElementById('sku-action-rail');
             const palette = rec.action === 'Markdown' ? { rail: '#DC2626', tint: 'rgba(220,38,38,0.06)' } : rec.action === 'Investigate' ? { rail: 'var(--accent-amber-600)', tint: 'rgba(217,119,6,0.08)' } : { rail: '#2563EB', tint: 'rgba(37,99,235,0.06)' };
             if (rail) rail.style.backgroundColor = palette.rail;
-            // Shared visual language between action and stock cards
+            // Card styles per your direction
+            // Action card: keep full border on all sides (use default card border), keep tint
             el.style.backgroundColor = palette.tint;
             const actionWrap = document.getElementById('sku-action-wrap');
-            if (actionWrap) actionWrap.style.borderTop = `2px solid ${palette.rail}`;
+            if (actionWrap) {
+                actionWrap.style.borderTop = '';
+                actionWrap.style.border = '';
+            }
+            // Stock & Risk: remove border entirely but keep tint to relate visually
             const stockWrap = document.getElementById('sku-stock-card');
             if (stockWrap) {
                 stockWrap.style.backgroundColor = palette.tint;
-                stockWrap.style.borderTop = `2px solid ${palette.rail}`;
+                stockWrap.style.borderTop = '';
+                stockWrap.style.border = 'none';
             }
             el.innerHTML = `
                 <div class="flex items-start justify-between mb-3">
