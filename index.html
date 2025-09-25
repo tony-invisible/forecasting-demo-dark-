@@ -9,6 +9,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Forecasting 2.0 Demo</title>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
     <script src="https://unpkg.com/recharts@2.8.0/umd/Recharts.js"></script>
@@ -303,12 +305,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="h-64 bg-gray-50 rounded-lg flex items-center justify-center">
-                    <div class="text-center">
-                        <i data-lucide="bar-chart-3" class="w-12 h-12 text-gray-400 mx-auto mb-2"></i>
-                        <p class="text-gray-500">Chart will be rendered here</p>
-                        <p class="text-sm text-gray-400">24 months actual + baseline + model</p>
-                    </div>
+                <div class="h-80 bg-white rounded-lg">
+                    <div id="portfolio-chart" class="w-full h-full"></div>
                 </div>
             </div>
 
@@ -576,6 +574,9 @@
                 showPortfolioView();
             }
 
+            // Mount portfolio chart if container exists
+            setTimeout(renderPortfolioChart, 0);
+
             // Back/forward handling
             window.onpopstate = () => {
                 const { view: v2, cat: c2, sku: s2 } = readParams();
@@ -586,8 +587,44 @@
                 else if (v2 === 'sku') showSKUView();
                 else if (v2 === 'sku-detail') showSKUDetail();
                 else showPortfolioView();
+                setTimeout(renderPortfolioChart, 0);
             };
         });
+
+        // Fake data + Recharts render
+        const chartData = [
+            { month: '2024-07', actual: 4.6, baseline: 4.5, model: 4.6 },
+            { month: '2024-08', actual: 4.9, baseline: 4.7, model: 4.8 },
+            { month: '2024-09', actual: 4.7, baseline: 4.8, model: 4.7 },
+            { month: '2024-10', actual: 0.0, baseline: 5.2, model: 5.3 },
+            { month: '2024-11', actual: 0.0, baseline: 5.4, model: 5.6 },
+            { month: '2024-12', actual: 0.0, baseline: 5.6, model: 5.9 }
+        ];
+
+        function renderPortfolioChart() {
+            const mount = document.getElementById('portfolio-chart');
+            if (!mount) return;
+            const { ResponsiveContainer, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Line } = Recharts;
+
+            function currency(v){ return `$${v.toFixed(2)}M`; }
+
+            const Chart = () => (
+                React.createElement(ResponsiveContainer, { width: '100%', height: '100%' },
+                    React.createElement(LineChart, { data: chartData, margin: { top: 8, right: 24, left: 0, bottom: 8 } },
+                        React.createElement(CartesianGrid, { strokeDasharray: '3 3', stroke: '#E5E7EB' }),
+                        React.createElement(XAxis, { dataKey: 'month', tick: { fill: '#64748B' }, axisLine: { stroke: '#CBD5E1' } }),
+                        React.createElement(YAxis, { tick: { fill: '#64748B' }, axisLine: { stroke: '#CBD5E1' }, tickFormatter: currency }),
+                        React.createElement(Tooltip, { formatter: (v, n) => [currency(v), n === 'actual' ? 'Actuals' : n === 'baseline' ? 'Baseline' : 'Model Forecast'] }),
+                        React.createElement(Legend, { verticalAlign: 'bottom', height: 24 }),
+                        React.createElement(Line, { type: 'monotone', dataKey: 'actual', name: 'Actuals', stroke: '#2563EB', dot: false, strokeWidth: 2 }),
+                        React.createElement(Line, { type: 'monotone', dataKey: 'baseline', name: 'Baseline', stroke: '#64748B', dot: false, strokeWidth: 2 }),
+                        React.createElement(Line, { type: 'monotone', dataKey: 'model', name: 'Model Forecast', stroke: '#EF4444', dot: false, strokeWidth: 2 })
+                    )
+                )
+            );
+
+            ReactDOM.render(React.createElement(Chart), mount);
+        }
 
         function updateRoleContent() {
             // Update description
