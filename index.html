@@ -721,6 +721,155 @@
             updateURL('category', selectedCategory, null);
         }
 
+        // ---------- SKU detail charts & action ----------
+        function buildSKUBaseSeries() {
+            // Start from portfolio pattern but add SKU-specific noise
+            return chartData.map((p, i) => ({
+                month: p.month,
+                actual: Math.max(0, p.actual + (i%3-1)*0.05),
+                baseline: p.baseline + ((i%4-2)*0.03),
+                model: p.model + ((i%5-2)*0.04)
+            }));
+        }
+
+        function renderSKUHistoricalChart() {
+            const mount = document.getElementById('sku-historical-chart');
+            if (!mount) return;
+            if (window.ReactDOM && ReactDOM.unmountComponentAtNode) { try { ReactDOM.unmountComponentAtNode(mount); } catch(_){} }
+            mount.innerHTML = '';
+            const data = buildSKUBaseSeries();
+            const { ResponsiveContainer, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Line } = Recharts;
+            function currency(v){ return `$${v.toFixed(2)}M`; }
+            const Chart = () => (
+                React.createElement(ResponsiveContainer, { width: '100%', height: '100%' },
+                    React.createElement(LineChart, { data, margin: { top: 8, right: 24, left: 8, bottom: 8 } },
+                        React.createElement(CartesianGrid, { strokeDasharray: '3 3', stroke: '#E5E7EB' }),
+                        React.createElement(XAxis, { dataKey: 'month', tick: { fill: '#64748B' }, axisLine: { stroke: '#CBD5E1' } }),
+                        React.createElement(YAxis, { tick: { fill: '#64748B' }, width: 60, tickFormatter: currency, axisLine: { stroke: '#CBD5E1' } }),
+                        React.createElement(Tooltip, { formatter: (v, n) => [currency(v), n==='actual'?'Actuals':n==='baseline'?'Baseline':'Model'] }),
+                        React.createElement(Legend, { verticalAlign: 'bottom', height: 24 }),
+                        React.createElement(Line, { type: 'monotone', dataKey: 'actual', name: 'Actuals', stroke: '#2563EB', dot: false, strokeWidth: 2 }),
+                        React.createElement(Line, { type: 'monotone', dataKey: 'baseline', name: 'Baseline', stroke: '#64748B', dot: false, strokeWidth: 2 }),
+                        React.createElement(Line, { type: 'monotone', dataKey: 'model', name: 'Model', stroke: '#EF4444', dot: false, strokeWidth: 2 })
+                    )
+                )
+            );
+            ReactDOM.render(React.createElement(Chart), mount);
+        }
+
+        function renderSKUProjectionChart() {
+            const mount = document.getElementById('sku-projection-chart');
+            if (!mount) return;
+            if (window.ReactDOM && ReactDOM.unmountComponentAtNode) { try { ReactDOM.unmountComponentAtNode(mount); } catch(_){} }
+            mount.innerHTML = '';
+            const { ResponsiveContainer, AreaChart, CartesianGrid, XAxis, YAxis, Tooltip, Area, Legend } = Recharts;
+            function currency(v){ return `$${v.toFixed(2)}M`; }
+            // Next 3 months projection with bands
+            const last = chartData[chartData.length-1]?.model || 4.7;
+            const months = ['M+1','M+2','M+3'];
+            const proj = months.map((m, i) => {
+                const mean = last + 0.2*(i+1);
+                const band = 0.25 + i*0.05;
+                return { month: m, lower: Math.max(0, mean - band), mean, upper: mean + band };
+            });
+            const Chart = () => (
+                React.createElement(ResponsiveContainer, { width: '100%', height: '100%' },
+                    React.createElement(AreaChart, { data: proj, margin: { top: 8, right: 24, left: 8, bottom: 8 } },
+                        React.createElement(CartesianGrid, { strokeDasharray: '3 3', stroke: '#F1F5F9' }),
+                        React.createElement(XAxis, { dataKey: 'month', tick: { fill: '#64748B' } }),
+                        React.createElement(YAxis, { tick: { fill: '#64748B' }, width: 60, tickFormatter: currency }),
+                        React.createElement(Tooltip, { formatter: (v) => currency(v) }),
+                        React.createElement(Legend, { verticalAlign: 'bottom', height: 24 }),
+                        React.createElement(Area, { type: 'monotone', dataKey: 'upper', stroke: 'transparent', fill: '#93C5FD', fillOpacity: 0.2, activeDot: false }),
+                        React.createElement(Area, { type: 'monotone', dataKey: 'lower', stroke: 'transparent', fill: '#FFFFFF', fillOpacity: 1 }),
+                        React.createElement(Area, { type: 'monotone', dataKey: 'mean', name: 'Forecast', stroke: '#7C3AED', fill: 'none', strokeWidth: 2 })
+                    )
+                )
+            );
+            ReactDOM.render(React.createElement(Chart), mount);
+        }
+
+        function renderSKUAction() {
+            const el = document.getElementById('sku-action-card');
+            if (!el) return;
+            const rec = getSKUActionRecommendation();
+            el.innerHTML = `
+                <div class="flex items-center mb-2">
+                    <i data-lucide="package" class="w-5 h-5 text-blue-600 mr-2"></i>
+                    <span class="font-semibold text-blue-900">${rec.action}</span>
+                </div>
+                <ul class="text-sm text-blue-800 list-disc pl-5 space-y-1">
+                    ${rec.reasons.map(r => `<li>${r}</li>`).join('')}
+                </ul>
+                ${rec.suggestionHTML}
+            `;
+            lucide.createIcons();
+            const btn = document.getElementById('execute-action-btn');
+            if (btn) btn.onclick = () => openActionModal(rec);
+        }
+
+        function getSKUActionRecommendation() {
+            // Synthetic values for demo purposes
+            const weeklyForecast = 120; // units/week
+            const stockOnHand = 380; // units
+            const wos = stockOnHand / weeklyForecast; // weeks of supply
+            const lift = 22; // % vs baseline
+            const confidence = 87; // %
+            const modelMAPE = 8.2; // %
+            const baselineMAPE = 15.7; // %
+            const improvement = baselineMAPE - modelMAPE; // pp
+
+            let action = 'Hold';
+            const reasons = [];
+            let suggestionHTML = '';
+
+            if (lift >= 10 && confidence >= 70 && wos < 4) {
+                action = 'Reorder';
+                const targetWOS = 6;
+                const qty = Math.max(0, Math.ceil(targetWOS * weeklyForecast - stockOnHand));
+                reasons.push(`Forecast lift +${lift}%, confidence ${confidence}%`);
+                reasons.push(`Weeks of supply ${wos.toFixed(1)} < target ${targetWOS}`);
+                suggestionHTML = `<div class="mt-3"><button id="execute-action-btn" class="btn btn-primary">Execute Reorder (${qty} units)</button></div>`;
+            } else if ((lift <= -10 || wos > 10) && confidence >= 60 && improvement >= 5) {
+                action = 'Markdown';
+                const discount = Math.min(30, Math.max(10, Math.round((wos - 8) * 3)));
+                reasons.push(`Demand down/Large overstock (WOS ${wos.toFixed(1)})`);
+                reasons.push(`Model beats baseline by ${improvement.toFixed(1)}pp`);
+                suggestionHTML = `<div class="mt-3"><button id="execute-action-btn" class="btn btn-primary">Execute Markdown (${discount}% off)</button></div>`;
+            } else if (confidence < 55 || modelMAPE >= 15) {
+                action = 'Investigate';
+                reasons.push(`Low predictability (confidence ${confidence}%, MAPE ${modelMAPE}%)`);
+                suggestionHTML = `<div class="mt-3"><button id="execute-action-btn" class="btn btn-secondary">Open Investigation</button></div>`;
+            } else {
+                reasons.push('Monitor next 2 weeks; metrics within thresholds');
+                suggestionHTML = `<div class="mt-3"><button id="execute-action-btn" class="btn btn-secondary">Set Watch</button></div>`;
+            }
+
+            return { action, reasons, suggestionHTML };
+        }
+
+        function openActionModal(rec) {
+            // Simple confirm modal
+            const overlay = document.createElement('div');
+            overlay.className = 'fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50';
+            overlay.innerHTML = `
+                <div class="bg-white rounded-lg border border-gray-200 p-6 w-full max-w-md shadow-lg">
+                    <h4 class="text-lg font-semibold text-gray-900 mb-2">Confirm ${rec.action}</h4>
+                    <p class="text-sm text-gray-600 mb-4">This will queue the action for Ops. Proceed?</p>
+                    <div class="flex justify-end space-x-2">
+                        <button id="modal-cancel" class="btn btn-secondary">Cancel</button>
+                        <button id="modal-confirm" class="btn btn-primary">Confirm</button>
+                    </div>
+                </div>`;
+            document.body.appendChild(overlay);
+            document.getElementById('modal-cancel').onclick = () => overlay.remove();
+            document.getElementById('modal-confirm').onclick = () => {
+                console.log('Action executed:', rec.action, 'for', selectedSKU);
+                overlay.remove();
+                alert('Action queued successfully.');
+            };
+        }
+
         function updateRoleContent() {
             // Update description
             document.getElementById('role-description').textContent = roleDescriptions[currentRole];
@@ -1044,21 +1193,15 @@
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
                     <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-lg">
                         <h3 class="text-lg font-semibold text-gray-900 mb-4">Historical Performance</h3>
-                        <div class="h-64 bg-gradient-to-r from-blue-50 to-green-50 rounded-lg flex items-center justify-center">
-                            <div class="text-center">
-                                <i data-lucide="trending-up" class="w-12 h-12 text-blue-600 mx-auto mb-2"></i>
-                                <p class="text-gray-600">Historical actuals vs baseline vs model</p>
-                            </div>
+                        <div class="h-64 bg-white rounded-lg">
+                            <div id="sku-historical-chart" class="w-full h-full"></div>
                         </div>
                     </div>
 
                     <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-lg">
                         <h3 class="text-lg font-semibold text-gray-900 mb-4">Forward Projection</h3>
-                        <div class="h-64 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg flex items-center justify-center">
-                            <div class="text-center">
-                                <i data-lucide="target" class="w-12 h-12 text-purple-600 mx-auto mb-2"></i>
-                                <p class="text-gray-600">3-month forecast with confidence bands</p>
-                            </div>
+                        <div class="h-64 bg-white rounded-lg">
+                            <div id="sku-projection-chart" class="w-full h-full"></div>
                         </div>
                     </div>
                 </div>
@@ -1102,15 +1245,8 @@
 
                     <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-lg">
                         <h3 class="text-lg font-semibold text-gray-900 mb-4">Recommended Action</h3>
-                        <div class="p-4 bg-blue-50 rounded-lg">
-                            <div class="flex items-center mb-2">
-                                <i data-lucide="package" class="w-5 h-5 text-blue-600 mr-2"></i>
-                                <span class="font-semibold text-blue-900">Reorder</span>
-                            </div>
-                            <p class="text-sm text-blue-800">Forecast up 22%. Supply down. Reorder now.</p>
-                            <button class="mt-3 btn btn-primary">
-                                Execute Action
-                            </button>
+                        <div class="p-4 bg-blue-50 rounded-lg" id="sku-action-card">
+                            <!-- Populated by renderSKUAction() -->
                         </div>
                     </div>
                 </div>
@@ -1118,6 +1254,7 @@
             
             // Re-initialize icons
             lucide.createIcons();
+            setTimeout(() => { renderSKUHistoricalChart(); renderSKUProjectionChart(); renderSKUAction(); }, 50);
         }
 
         function updateBreadcrumbs() {
