@@ -800,34 +800,54 @@
             if (rail) rail.style.backgroundColor = palette.rail;
             el.style.backgroundColor = palette.tint;
             el.innerHTML = `
-                <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
-                    <div class="md:flex-1">
-                        <div class="flex items-start justify-between mb-3">
-                            <div>
-                                <div class="text-xs uppercase tracking-wide text-gray-500 mb-1">Recommended Action</div>
-                                <div class="text-xl font-semibold text-gray-900">${rec.headline}</div>
-                            </div>
-                            ${rec.priorityHTML}
-                        </div>
-                        <div class="mb-3 flex flex-wrap gap-x-4 gap-y-2">
-                            ${rec.metricChipsHTML}
-                        </div>
-                        <ul class="text-sm text-gray-800 list-disc pl-5 space-y-1 mb-3">
-                            ${rec.reasons.map(r => `<li>${r}</li>`).join('')}
-                        </ul>
-                        <div class="flex items-center gap-3">${rec.suggestionHTML} ${rec.calcHTML}</div>
+                <div class="flex items-start justify-between mb-3">
+                    <div>
+                        <div class="text-xs uppercase tracking-wide text-gray-500 mb-1">Recommended Action</div>
+                        <div class="text-xl font-semibold text-gray-900">${rec.headline}</div>
                     </div>
-                    <div class="w-full md:w-80">
-                        <div class="bg-white rounded-lg border border-gray-200 p-3 shadow-sm">
-                            <div class="text-xs text-gray-500 mb-1">3‑month forecast</div>
-                            <div id="sku-action-spark" class="w-full" style="height:84px"></div>
-                        </div>
-                    </div>
+                    ${rec.priorityHTML}
                 </div>
+                <div class="mb-3 flex flex-wrap gap-x-4 gap-y-2">
+                    ${rec.metricChipsHTML}
+                </div>
+                <ul class="text-sm text-gray-800 list-disc pl-5 space-y-1 mb-3">
+                    ${rec.reasons.map(r => `<li>${r}</li>`).join('')}
+                </ul>
+                <div class="flex items-center gap-3">${rec.suggestionHTML} ${rec.calcHTML}</div>
             `;
             lucide.createIcons();
             const btn = document.getElementById('execute-action-btn');
             if (btn) btn.onclick = () => openActionModal(rec);
+            renderStockRiskCard();
+        }
+
+        function renderStockRiskCard() {
+            const el = document.getElementById('sku-stock-card');
+            if (!el) return;
+            // Use the same synthetic numbers used by recommendation
+            const weeklyForecast = 120;
+            const stockOnHand = 380;
+            const targetWOS = 6;
+            const wos = stockOnHand / weeklyForecast;
+            const risk = wos < 3 ? 'High' : wos < 5 ? 'Medium' : 'Low';
+            const pct = Math.min(100, Math.round((stockOnHand / (targetWOS*weeklyForecast)) * 100));
+            el.innerHTML = `
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Stock & Risk</h3>
+                <div class="space-y-3 text-sm">
+                    <div class="flex justify-between"><span class="text-gray-500">Stock on hand</span><span class="font-medium">${stockOnHand} units</span></div>
+                    <div class="flex justify-between"><span class="text-gray-500">Weeks of supply</span><span class="font-medium">${wos.toFixed(1)}</span></div>
+                    <div class="flex justify-between"><span class="text-gray-500">Target WOS</span><span class="font-medium">${targetWOS}</span></div>
+                    <div class="flex justify-between"><span class="text-gray-500">Risk level</span><span class="font-medium ${wos<3?'text-red-600':wos<5?'text-yellow-700':'text-green-700'}">${risk}</span></div>
+                </div>
+                <div class="mt-4">
+                    <div class="flex justify-between text-xs text-gray-500 mb-1">
+                        <span>Stock vs target</span><span>${pct}%</span>
+                    </div>
+                    <div class="h-2 w-full bg-gray-100 rounded">
+                        <div class="h-2 bg-blue-600 rounded" style="width:${pct}%"></div>
+                    </div>
+                </div>
+            `;
         }
 
         function getSKUActionRecommendation() {
@@ -886,29 +906,7 @@
             return { action, reasons, suggestionHTML, priorityHTML, metricChipsHTML, headline, calcHTML };
         }
 
-        function renderActionSparkChart() {
-            const mount = document.getElementById('sku-action-spark');
-            if (!mount) return;
-            if (window.ReactDOM && ReactDOM.unmountComponentAtNode) { try { ReactDOM.unmountComponentAtNode(mount); } catch(_){} }
-            const { ResponsiveContainer, AreaChart, Area } = Recharts;
-            const last = chartData[chartData.length-1]?.model || 4.7;
-            const months = ['M+1','M+2','M+3'];
-            const proj = months.map((m, i) => {
-                const mean = last + 0.2*(i+1);
-                const band = 0.25 + i*0.05;
-                return { month: m, lower: Math.max(0, mean - band), mean, upper: mean + band };
-            });
-            const Chart = () => (
-                React.createElement(ResponsiveContainer, { width: '100%', height: '100%' },
-                    React.createElement(AreaChart, { data: proj },
-                        React.createElement(Area, { type: 'monotone', dataKey: 'upper', stroke: 'transparent', fill: '#93C5FD', fillOpacity: 0.25 }),
-                        React.createElement(Area, { type: 'monotone', dataKey: 'lower', stroke: 'transparent', fill: '#FFFFFF', fillOpacity: 1 }),
-                        React.createElement(Area, { type: 'monotone', dataKey: 'mean', stroke: '#2563EB', fill: 'none', strokeWidth: 2 })
-                    )
-                )
-            );
-            ReactDOM.render(React.createElement(Chart), mount);
-        }
+        // No spark in Option A layout
 
         function openActionModal(rec) {
             // Simple confirm modal
@@ -1264,12 +1262,19 @@
                     <p class="text-gray-500">Individual SKU forecasting and backtesting</p>
                 </div>
 
-                <!-- Prominent Action Card -->
-                <div class="mb-6">
-                    <div class="bg-white rounded-xl border border-gray-200 shadow-lg overflow-hidden" id="sku-action-wrap">
-                        <div id="sku-action-rail" class="h-full w-1.5 bg-blue-600 float-left"></div>
-                        <div class="p-6 md:p-7" id="sku-action-card">
-                            <!-- Populated by renderSKUAction() -->
+                <!-- Top row: Action (8) + Stock & Risk (4) -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-8">
+                    <div class="lg:col-span-8">
+                        <div class="bg-white rounded-xl border border-gray-200 shadow-lg overflow-hidden" id="sku-action-wrap">
+                            <div id="sku-action-rail" class="h-full w-1.5 bg-blue-600 float-left"></div>
+                            <div class="p-6 md:p-7" id="sku-action-card">
+                                <!-- Populated by renderSKUAction() -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="lg:col-span-4">
+                        <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-lg" id="sku-stock-card">
+                            <!-- Populated by renderStockRiskCard() -->
                         </div>
                     </div>
                 </div>
