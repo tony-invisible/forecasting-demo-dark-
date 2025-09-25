@@ -264,6 +264,9 @@
                     </div>
                 </div>
 
+                <!-- Subcategory filter (visible when a category is selected) -->
+                <div id="subcategory-filter" class="mb-4"></div>
+
                 <div class="card p-6">
                     <div class="flex items-center justify-between">
                         <div>
@@ -485,6 +488,7 @@
         let selectedSKU = null;
         let selectedSKUName = null;
         let categoryChartScope = 'category'; // 'category' | 'portfolio'
+        let selectedSubcategory = null; // subcategory within a category
 
         // Deep-linking helpers
         function readParams() {
@@ -492,7 +496,8 @@
             const view = p.get('view') || 'portfolio';
             const cat = p.get('cat');
             const sku = p.get('sku');
-            return { view, cat, sku };
+            const sub = p.get('sub');
+            return { view, cat, sku, sub };
         }
 
         function updateURL(view, cat, sku, replace=false) {
@@ -505,6 +510,7 @@
                 p.set('view', view);
                 if (cat) p.set('cat', cat);
                 if (sku) p.set('sku', sku);
+                if (selectedSubcategory) p.set('sub', selectedSubcategory);
                 url = `${location.pathname}?${p.toString()}`;
             }
             const state = { view, cat, sku };
@@ -573,10 +579,11 @@
             });
             }
             // Initial route from URL
-            const { view, cat, sku } = readParams();
+            const { view, cat, sku, sub } = readParams();
             currentView = view;
             selectedCategory = cat;
             selectedSKU = sku;
+            selectedSubcategory = sub || null;
             if (view === 'category') {
                 showCategoryView();
             } else if (view === 'sku') {
@@ -596,10 +603,11 @@
 
             // Back/forward handling
             window.onpopstate = () => {
-                const { view: v2, cat: c2, sku: s2 } = readParams();
+                const { view: v2, cat: c2, sku: s2, sub: sb } = readParams();
                 currentView = v2;
                 selectedCategory = c2;
                 selectedSKU = s2;
+                selectedSubcategory = sb || null;
                 if (v2 === 'category') showCategoryView();
                 else if (v2 === 'sku') showSKUView();
                 else if (v2 === 'sku-detail') showSKUDetail();
@@ -646,6 +654,27 @@
             ]
         };
 
+        // Subcategory taxonomy per category (demo)
+        const subcategories = {
+            electronics: ['phones','laptops','audio','wearables'],
+            clothing: ['tops','bottoms','outerwear','footwear'],
+            toys: ['building','figures','games','outdoor']
+        };
+
+        function getCategoryDataFor(cat, sub) {
+            const base = categorySeries[cat] || categorySeries.electronics;
+            if (!sub) return base;
+            const list = subcategories[cat] || [];
+            const idx = Math.max(0, list.indexOf(sub));
+            const factor = 0.7 + idx * 0.1; // subtle scaling per subcategory
+            return base.map(p => ({
+                month: p.month,
+                actual: +(p.actual * factor).toFixed(2),
+                baseline: +(p.baseline * factor).toFixed(2),
+                model: +(p.model * (factor + 0.02 * (idx - 1))).toFixed(2)
+            }));
+        }
+
         function renderPortfolioChart() {
             const mount = document.getElementById('portfolio-chart');
             if (!mount) return;
@@ -686,9 +715,9 @@
             mount.innerHTML = '';
             const subtitleEl = document.getElementById('category-chart-subtitle');
             const activeCat = selectedCategory || 'electronics';
-            const data = categoryChartScope === 'portfolio' ? (Array.isArray(chartData) ? chartData.slice() : []) : (categorySeries[activeCat] || categorySeries.electronics);
+            const data = categoryChartScope === 'portfolio' ? (Array.isArray(chartData) ? chartData.slice() : []) : getCategoryDataFor(activeCat, selectedSubcategory);
             if (subtitleEl) {
-                const label = categoryChartScope === 'portfolio' ? 'Portfolio (all categories)' : `Category: ${activeCat}`;
+                const label = categoryChartScope === 'portfolio' ? 'Portfolio (all categories)' : `Category: ${activeCat}${selectedSubcategory ? ' / ' + selectedSubcategory : ''}`;
                 subtitleEl.textContent = label;
             }
             const { ResponsiveContainer, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Line } = Recharts;
@@ -730,6 +759,7 @@
         // Helper when clicking a category tile to keep scope UI intact
         function chooseCategory(cat) {
             selectedCategory = cat;
+            selectedSubcategory = null;
             currentView = 'category';
             updateBreadcrumbs();
             showCategoryView();
@@ -1185,6 +1215,24 @@
                 btnCat.onclick = () => { if (categoryChartScope !== 'category') { categoryChartScope = 'category'; updateCategoryScopeButtons(); renderCategoryChart(); } };
                 btnPort.onclick = () => { if (categoryChartScope !== 'portfolio') { categoryChartScope = 'portfolio'; updateCategoryScopeButtons(); renderCategoryChart(); } };
             }
+            // Render subcategory chips when a category is chosen
+            const subWrap = document.getElementById('subcategory-filter');
+            if (subWrap && selectedCategory) {
+                const subs = subcategories[selectedCategory] || [];
+                const allActive = !selectedSubcategory ? 'bg-white shadow-sm border' : 'text-gray-600';
+                const chips = [`<button id="sub-all" class="px-3 py-1 text-sm rounded-md mr-2 ${allActive}">All</button>`]
+                    .concat(subs.map(s => {
+                        const active = selectedSubcategory === s ? 'bg-white shadow-sm border' : 'text-gray-600';
+                        return `<button data-sub="${s}" class="px-3 py-1 text-sm rounded-md mr-2 ${active}">${s}</button>`;
+                    })).join('');
+                subWrap.innerHTML = `<div class="inline-flex bg-gray-100 rounded-md p-1">${chips}</div>`;
+                const allBtn = document.getElementById('sub-all');
+                if (allBtn) allBtn.onclick = () => { selectedSubcategory = null; updateURL('category', selectedCategory, null); renderCategoryChart(); showCategoryView(); };
+                (subcategories[selectedCategory] || []).forEach(s => {
+                    const el = subWrap.querySelector(`[data-sub="${s}"]`);
+                    if (el) el.onclick = () => { selectedSubcategory = s; updateURL('category', selectedCategory, null); renderCategoryChart(); showCategoryView(); };
+                });
+            }
             updateCategoryScopeButtons();
             setTimeout(renderCategoryChart, 50);
         }
@@ -1200,13 +1248,13 @@
 
         function showSKUView() {
             const mainContent = document.querySelector('main');
-            const skuRows = buildSKURows(selectedCategory || 'electronics');
+            const skuRows = buildSKURows(selectedCategory || 'electronics', selectedSubcategory);
             mainContent.innerHTML = `
                 <div class="mb-8">
                     <h1 class="text-3xl font-semibold text-gray-900 mb-2">SKUs - ${selectedCategory}</h1>
                     <p class="text-gray-500">Individual SKU performance and actions</p>
                 </div>
-
+                <div id="subcategory-filter-sku" class="mb-4"></div>
                 <div class="bg-white rounded-xl border border-gray-200 shadow-lg overflow-hidden">
                     <div class="overflow-x-auto">
                         <table class="w-full">
@@ -1230,6 +1278,25 @@
             
             // Re-initialize icons
             lucide.createIcons();
+
+            // Render subcategory chips for SKU list
+            const subWrap2 = document.getElementById('subcategory-filter-sku');
+            if (subWrap2) {
+                const subs = subcategories[selectedCategory] || [];
+                const allActive = !selectedSubcategory ? 'bg-white shadow-sm border' : 'text-gray-600';
+                const chips = [`<button id="sub2-all" class="px-3 py-1 text-sm rounded-md mr-2 ${allActive}">All</button>`]
+                    .concat(subs.map(s => {
+                        const active = selectedSubcategory === s ? 'bg-white shadow-sm border' : 'text-gray-600';
+                        return `<button data-sub2="${s}" class="px-3 py-1 text-sm rounded-md mr-2 ${active}">${s}</button>`;
+                    })).join('');
+                subWrap2.innerHTML = `<div class="inline-flex bg-gray-100 rounded-md p-1">${chips}</div>`;
+                const allBtn2 = document.getElementById('sub2-all');
+                if (allBtn2) allBtn2.onclick = () => { selectedSubcategory = null; updateURL('sku', selectedCategory, null); showSKUView(); };
+                subs.forEach(s => {
+                    const el = subWrap2.querySelector(`[data-sub2=\"${s}\"]`);
+                    if (el) el.onclick = () => { selectedSubcategory = s; updateURL('sku', selectedCategory, null); showSKUView(); };
+                });
+            }
         }
 
         function selectSKU(skuId, encodedName) {
@@ -1247,8 +1314,8 @@
         }
 
         // ---------- SKU data helpers ----------
-        function buildSKURows(categoryId) {
-            const data = generateSKUs(categoryId);
+        function buildSKURows(categoryId, subcat) {
+            const data = generateSKUs(categoryId, subcat);
             return data.map((row, idx) => `
                 <tr class="hover:bg-gray-50 cursor-pointer" onclick="selectSKU('${row.id}','${encodeURIComponent(row.name)}')">
                                     <td class="px-6 py-4 whitespace-nowrap">
@@ -1275,7 +1342,7 @@
             `).join('');
         }
 
-        function generateSKUs(categoryId) {
+        function generateSKUs(categoryId, subcat) {
             const catalogs = {
                 electronics: ['iPhone 15 Pro','Galaxy S24','MacBook Air','iPad Pro','Sony WH-1000XM5','Pixel 8','Apple Watch','Surface Laptop','GoPro Hero','Kindle Oasis','Dell XPS 13','Nintendo Switch'],
                 clothing: ['Nike Air Max','Adidas Ultraboost','Levi\'s 501 Jeans','North Face Jacket','Uniqlo Hoodie','Patagonia Tee','Lululemon Shorts','Zara Dress','Columbia Fleece','H&M Chinos','Birkenstock Sandals','New Balance 990'],
@@ -1284,7 +1351,13 @@
             const baseCat = categoryId === 'clothing' ? 'Clothing' : categoryId === 'toys' ? 'Toys & Games' : 'Electronics';
             const dots = ['bg-gray-400','bg-gray-500','bg-gray-600'];
             const actions = ['Reorder','Investigate','Markdown','Hold'];
-            const names = catalogs[categoryId] || catalogs.electronics;
+            let names = catalogs[categoryId] || catalogs.electronics;
+            if (subcat && (subcategories[categoryId] || []).length) {
+                const subList = subcategories[categoryId];
+                const idx = Math.max(0, subList.indexOf(subcat));
+                names = names.filter((_, i) => i % subList.length === idx);
+                if (names.length < 6) names = (catalogs[categoryId] || []).slice(0, 6);
+            }
             return names.slice(0, 12).map((name, i) => {
                 const id = `${categoryId}_${i}`;
                 const units = 20 + (i * 7 % 180);
