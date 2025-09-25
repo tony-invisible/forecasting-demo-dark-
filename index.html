@@ -981,11 +981,15 @@
         }
 
         function updateRoleContent() {
-            // Update description
-            document.getElementById('role-description').textContent = roleDescriptions[currentRole];
+            // Update description (element may not exist)
+            const descEl = document.getElementById('role-description');
+            if (descEl) {
+                descEl.textContent = roleDescriptions[currentRole];
+            }
             
-            // Update role-specific KPIs
+            // Update role-specific KPIs (container exists only on portfolio view)
             const kpiContainer = document.getElementById('role-specific-kpis');
+            if (!kpiContainer) return;
             const kpis = roleKPIs[currentRole];
             
             kpiContainer.innerHTML = kpis.map(kpi => `
@@ -1443,6 +1447,7 @@
             selectedSKU = null;
             showPortfolioView();
             updateURL('portfolio', null, null);
+            setTimeout(renderPortfolioChart, 50);
         }
 
         function goToCategories() {
