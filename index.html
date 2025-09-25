@@ -634,7 +634,10 @@
         function renderPortfolioChart() {
             const mount = document.getElementById('portfolio-chart');
             if (!mount) return;
-            // Clear any previous render
+            // Clear any previous render and unmount React component
+            if (window.ReactDOM && ReactDOM.unmountComponentAtNode) {
+                try { ReactDOM.unmountComponentAtNode(mount); } catch (_) {}
+            }
             mount.innerHTML = '';
             const { ResponsiveContainer, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Line } = Recharts;
 
@@ -1157,6 +1160,7 @@
             selectedSKU = null;
             showPortfolioView();
             updateURL('portfolio', null, null, true);
+            setTimeout(renderPortfolioChart, 50);
         }
 
         function goToPortfolio() {
@@ -1360,6 +1364,8 @@
             updateBreadcrumbs();
             updateRoleContent();
             lucide.createIcons();
+            // Ensure portfolio chart renders after DOM injection when navigating home
+            setTimeout(renderPortfolioChart, 50);
         }
     </script>
 </body>
