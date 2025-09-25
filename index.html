@@ -927,6 +927,7 @@
 
         function showSKUView() {
             const mainContent = document.querySelector('main');
+            const skuRows = buildSKURows(selectedCategory || 'electronics');
             mainContent.innerHTML = `
                 <div class="mb-8">
                     <h1 class="text-3xl font-semibold text-gray-900 mb-2">SKUs - ${selectedCategory}</h1>
@@ -947,72 +948,7 @@
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
-                                <tr class="hover:bg-gray-50 cursor-pointer" onclick="selectSKU('sku_001')">
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="flex items-center">
-                                            <div class="w-2 h-2 bg-gray-400 rounded-full mr-3"></div>
-                                            <div>
-                                                <div class="text-sm font-medium text-gray-900">iPhone 15 Pro</div>
-                                                <div class="text-sm text-gray-500">Electronics</div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">$45,200</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">156</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">3.2%</span>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">High (89%)</span>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <button class="btn btn-primary text-xs px-3 py-1">Reorder</button>
-                                    </td>
-                                </tr>
-                                <tr class="hover:bg-gray-50 cursor-pointer" onclick="selectSKU('sku_002')">
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="flex items-center">
-                                            <div class="w-2 h-2 bg-gray-500 rounded-full mr-3"></div>
-                                            <div>
-                                                <div class="text-sm font-medium text-gray-900">Nike Air Max</div>
-                                                <div class="text-sm text-gray-500">Clothing</div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">$12,800</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">64</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">15.7%</span>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">Low (42%)</span>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <button class="btn btn-secondary text-xs px-3 py-1">Investigate</button>
-                                    </td>
-                                </tr>
-                                <tr class="hover:bg-gray-50 cursor-pointer" onclick="selectSKU('sku_003')">
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="flex items-center">
-                                            <div class="w-2 h-2 bg-gray-600 rounded-full mr-3"></div>
-                                            <div>
-                                                <div class="text-sm font-medium text-gray-900">LEGO Set</div>
-                                                <div class="text-sm text-gray-500">Toys & Games</div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">$8,400</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">28</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">22.1%</span>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">High (91%)</span>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <button class="btn btn-primary text-xs px-3 py-1">Markdown</button>
-                                    </td>
-                                </tr>
+                                ${skuRows}
                             </tbody>
                         </table>
                     </div>
@@ -1029,6 +965,72 @@
             updateBreadcrumbs();
             showSKUDetail();
             updateURL('sku-detail', selectedCategory, selectedSKU);
+        }
+
+        // ---------- SKU data helpers ----------
+        function buildSKURows(categoryId) {
+            const data = generateSKUs(categoryId);
+            return data.map((row, idx) => `
+                <tr class="hover:bg-gray-50 cursor-pointer" onclick="selectSKU('${row.id}')">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                            <div class="w-2 h-2 ${row.dotClass} rounded-full mr-3"></div>
+                            <div>
+                                <div class="text-sm font-medium text-gray-900">${row.name}</div>
+                                <div class="text-sm text-gray-500">${row.categoryLabel}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${row.revenue}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${row.units}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">${row.missRate}%</span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">${row.confidenceLabel} (${row.confidence}%)</span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <button class="${row.actionClass} text-xs px-3 py-1">${row.action}</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function generateSKUs(categoryId) {
+            const catalogs = {
+                electronics: ['iPhone 15 Pro','Galaxy S24','MacBook Air','iPad Pro','Sony WH-1000XM5','Pixel 8','Apple Watch','Surface Laptop','GoPro Hero','Kindle Oasis','Dell XPS 13','Nintendo Switch'],
+                clothing: ['Nike Air Max','Adidas Ultraboost','Levi\'s 501 Jeans','North Face Jacket','Uniqlo Hoodie','Patagonia Tee','Lululemon Shorts','Zara Dress','Columbia Fleece','H&M Chinos','Birkenstock Sandals','New Balance 990'],
+                toys: ['LEGO Set','Hot Wheels Pack','Barbie Dreamhouse','Nerf Blaster','Puzzle 1000pc','Uno Cards','Monopoly Classic','Play-Doh Kit','RC Car','Jenga','Rubik\'s Cube','Action Figure']
+            };
+            const baseCat = categoryId === 'clothing' ? 'Clothing' : categoryId === 'toys' ? 'Toys & Games' : 'Electronics';
+            const dots = ['bg-gray-400','bg-gray-500','bg-gray-600'];
+            const actions = ['Reorder','Investigate','Markdown','Hold'];
+            const names = catalogs[categoryId] || catalogs.electronics;
+            return names.slice(0, 12).map((name, i) => {
+                const id = `${categoryId}_${i}`;
+                const units = 20 + (i * 7 % 180);
+                const revenueVal = 2000 + (i * 137 % 7000);
+                const revenue = `$${(revenueVal).toLocaleString()}`;
+                const missRate = (2 + (i * 11 % 24) + (categoryId === 'clothing' ? 5 : 0)).toFixed(1);
+                const conf = 45 + (i * 7 % 50);
+                const confidence = Math.min(conf, 95);
+                const confidenceLabel = confidence > 75 ? 'High' : confidence > 55 ? 'Medium' : 'Low';
+                const action = actions[(i + (categoryId === 'toys' ? 1 : 0)) % actions.length];
+                const actionClass = action === 'Reorder' || action === 'Markdown' ? 'btn btn-primary' : 'btn btn-secondary';
+                return {
+                    id,
+                    name,
+                    categoryLabel: baseCat,
+                    units,
+                    revenue,
+                    missRate,
+                    confidence,
+                    confidenceLabel,
+                    action,
+                    actionClass,
+                    dotClass: dots[i % dots.length]
+                };
+            });
         }
 
         function showSKUDetail() {
