@@ -107,7 +107,7 @@
             .kpi-card { border-radius: var(--radius-lg, 12px); }
         }
     </style>
-    <link rel="stylesheet" href="./tokens.css?v=enterprise-2" />
+    <link rel="stylesheet" href="./tokens.css?v=remove-overview-3" />
 </head>
 <body>
     <div id="app" class="flex h-screen bg-gray-50">
@@ -192,13 +192,7 @@
 
             <!-- Main Content -->
             <main class="flex-1 overflow-auto p-6">
-            <!-- Hero Section -->
-            <div class="mb-8">
-                <h1 class="text-3xl font-semibold text-gray-900 mb-2">Portfolio Overview</h1>
-                <p class="text-gray-500" id="role-description">
-                    Revenue risk and inventory insights for operational decisions
-                </p>
-            </div>
+            <!-- Hero Section intentionally left empty -->
 
             <!-- Hero KPIs -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -536,6 +530,19 @@
 
         // Event listeners
         document.addEventListener('DOMContentLoaded', function() {
+            // Hard kill-switch: remove any lingering "Portfolio Overview" hero block if present (handles cached HTML)
+            try {
+                const heroTitleNodes = Array.from(document.querySelectorAll('h1'));
+                heroTitleNodes.forEach(node => {
+                    if (node && typeof node.textContent === 'string' && node.textContent.trim() === 'Portfolio Overview') {
+                        const heroBlock = node.closest('.mb-8');
+                        if (heroBlock && heroBlock.parentElement) heroBlock.parentElement.removeChild(heroBlock);
+                        else if (node.parentElement) node.parentElement.removeChild(node);
+                    }
+                });
+                const roleDesc = document.getElementById('role-description');
+                if (roleDesc && roleDesc.parentElement) roleDesc.parentElement.removeChild(roleDesc);
+            } catch (_) {}
             // Guarded role switcher (buttons may be removed)
             const roleButtons = document.querySelectorAll('.role-btn');
             if (roleButtons && roleButtons.length) {
@@ -1456,12 +1463,7 @@
             const mainContent = document.querySelector('main');
             mainContent.innerHTML = `
                 <!-- Hero Section -->
-                <div class="mb-8">
-                    <h1 class="text-3xl font-semibold text-gray-900 mb-2">Portfolio Overview</h1>
-                    <p class="text-gray-500" id="role-description">
-                        Revenue risk and inventory insights for operational decisions
-                    </p>
-                </div>
+                
 
                 <!-- Hero KPIs -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
