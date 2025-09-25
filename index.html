@@ -175,14 +175,14 @@
                     <!-- Page Title and Breadcrumbs -->
                     <div class="flex flex-col space-y-2">
                         <div>
-                            <h1 class="text-2xl font-semibold text-gray-900">Forecasting 2.0</h1>
-                            <p class="text-sm text-gray-600">Predict future demand with confidence to empower accurate and agile demand planning.</p>
+                            <h1 class="text-3xl md:text-4xl font-semibold text-gray-900">Forecasting 2.0</h1>
+                            <p class="text-base md:text-lg text-gray-500">Predict future demand with confidence to empower accurate and agile demand planning.</p>
                         </div>
                         <!-- Breadcrumbs (moved under tagline) -->
-                        <nav class="flex items-center space-x-2 text-sm text-gray-600" id="breadcrumbs">
-                            <span class="cursor-pointer hover:text-blue-600" onclick="goToPortfolio()">Portfolio</span>
+                        <nav aria-label="Breadcrumb" class="flex items-center space-x-2 text-sm text-gray-600" id="breadcrumbs">
+                            <span class="cursor-pointer text-blue-600 hover:underline" onclick="goToPortfolio()">Portfolio</span>
                             <span>/</span>
-                            <span class="text-gray-900">Overview</span>
+                            <span class="cursor-pointer text-blue-600 hover:underline" onclick="goToPortfolio()">Overview</span>
                         </nav>
                     </div>
 
@@ -1393,35 +1393,36 @@
 
         function updateBreadcrumbs() {
             const breadcrumbElement = document.getElementById('breadcrumbs');
+            if (!breadcrumbElement) return;
             if (currentView === 'portfolio') {
                 breadcrumbElement.innerHTML = `
-                    <span class="cursor-pointer hover:text-blue-600" onclick="goToPortfolio()">Portfolio</span>
+                    <span class="cursor-pointer text-blue-600 hover:underline" onclick="goToPortfolio()">Portfolio</span>
                     <span>/</span>
-                    <span class="text-gray-900">Overview</span>
+                    <span class="cursor-pointer text-blue-600 hover:underline" onclick="goToPortfolio()">Overview</span>
                 `;
             } else if (currentView === 'category') {
                 breadcrumbElement.innerHTML = `
-                    <span class="cursor-pointer hover:text-blue-600" onclick="goToPortfolio()">Portfolio</span>
+                    <span class="cursor-pointer text-blue-600 hover:underline" onclick="goToPortfolio()">Portfolio</span>
                     <span>/</span>
-                    <span class="text-gray-900">Categories</span>
+                    <span class="cursor-pointer text-blue-600 hover:underline" onclick="goToCategories()">Categories</span>
                 `;
             } else if (currentView === 'sku') {
                 breadcrumbElement.innerHTML = `
-                    <span class="cursor-pointer hover:text-blue-600" onclick="goToPortfolio()">Portfolio</span>
+                    <span class="cursor-pointer text-blue-600 hover:underline" onclick="goToPortfolio()">Portfolio</span>
                     <span>/</span>
-                    <span class="cursor-pointer hover:text-blue-600" onclick="goToCategories()">Categories</span>
+                    <span class="cursor-pointer text-blue-600 hover:underline" onclick="goToCategories()">Categories</span>
                     <span>/</span>
-                    <span class="text-gray-900">SKUs</span>
+                    <span class="cursor-pointer text-blue-600 hover:underline" onclick="goToSKUs()">SKUs</span>
                 `;
             } else if (currentView === 'sku-detail') {
                 breadcrumbElement.innerHTML = `
-                    <span class="cursor-pointer hover:text-blue-600" onclick="goToPortfolio()">Portfolio</span>
+                    <span class="cursor-pointer text-blue-600 hover:underline" onclick="goToPortfolio()">Portfolio</span>
                     <span>/</span>
-                    <span class="cursor-pointer hover:text-blue-600" onclick="goToCategories()">Categories</span>
+                    <span class="cursor-pointer text-blue-600 hover:underline" onclick="goToCategories()">Categories</span>
                     <span>/</span>
-                    <span class="cursor-pointer hover:text-blue-600" onclick="goToSKUs()">SKUs</span>
+                    <span class="cursor-pointer text-blue-600 hover:underline" onclick="goToSKUs()">SKUs</span>
                     <span>/</span>
-                    <span class="text-gray-900">SKU Detail</span>
+                    <span class="cursor-pointer text-blue-600 hover:underline" onclick="goToSKUs()">SKU Detail</span>
                 `;
             }
         }
