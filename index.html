@@ -496,11 +496,17 @@
         }
 
         function updateURL(view, cat, sku, replace=false) {
-            const p = new URLSearchParams(window.location.search);
-            p.set('view', view);
-            if (cat) { p.set('cat', cat); } else { p.delete('cat'); }
-            if (sku) { p.set('sku', sku); } else { p.delete('sku'); }
-            const url = `${location.pathname}?${p.toString()}`;
+            // Start with a clean slate; do not preserve unrelated params like cache-busters
+            const p = new URLSearchParams();
+            // If we're on home (portfolio with no filters), keep the URL clean (no query params)
+            const isCleanHome = view === 'portfolio' && !cat && !sku;
+            let url = location.pathname;
+            if (!isCleanHome) {
+                p.set('view', view);
+                if (cat) p.set('cat', cat);
+                if (sku) p.set('sku', sku);
+                url = `${location.pathname}?${p.toString()}`;
+            }
             const state = { view, cat, sku };
             if (replace) history.replaceState(state, '', url); else history.pushState(state, '', url);
         }
@@ -579,6 +585,10 @@
                 showSKUDetail();
             } else {
                 showPortfolioView();
+                // Clean URL if we landed with extra params from cache-busting
+                if (location.search) {
+                    history.replaceState({ view: 'portfolio' }, '', location.pathname);
+                }
             }
 
             // Mount portfolio chart if container exists
@@ -1437,7 +1447,8 @@
             selectedCategory = null;
             selectedSKU = null;
             showPortfolioView();
-            updateURL('portfolio', null, null, true);
+            // Clean URL to base path on homepage
+            history.replaceState({ view: 'portfolio' }, '', location.pathname);
             setTimeout(renderPortfolioChart, 50);
         }
 
