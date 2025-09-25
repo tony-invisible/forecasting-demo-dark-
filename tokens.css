@@ -2,6 +2,8 @@
   /* Enterprise brand + surface tokens */
   --brand-600: #0F62FE; /* IBM-ish primary */
   --brand-700: #0B4ACB;
+  --accent-amber-600: #D97706; /* stronger orange */
+  --accent-amber-700: #B45309;
   --surface: #FFFFFF;
   --surface-muted: #F2F4F8; /* visibly different from existing */
   --border: #A8B3C2; /* stronger border token */

@@ -796,13 +796,13 @@
             const rec = getSKUActionRecommendation();
             // Rail color and subtle tint based on action type
             const rail = document.getElementById('sku-action-rail');
-            const palette = rec.action === 'Markdown' ? { rail: '#DC2626', tint: 'rgba(220,38,38,0.06)' } : rec.action === 'Investigate' ? { rail: '#D97706', tint: 'rgba(217,119,6,0.06)' } : { rail: '#2563EB', tint: 'rgba(37,99,235,0.06)' };
+            const palette = rec.action === 'Markdown' ? { rail: '#DC2626', tint: 'rgba(220,38,38,0.06)' } : rec.action === 'Investigate' ? { rail: 'var(--accent-amber-600)', tint: 'rgba(217,119,6,0.08)' } : { rail: '#2563EB', tint: 'rgba(37,99,235,0.06)' };
             if (rail) rail.style.backgroundColor = palette.rail;
             el.style.backgroundColor = palette.tint;
             el.innerHTML = `
                 <div class="flex items-start justify-between mb-3">
                     <div>
-                        <div class="text-xs uppercase tracking-wide text-gray-500 mb-1">Recommended Action</div>
+                        <div class="text-xs uppercase tracking-wide mb-1" style="color: var(--accent-amber-700)">Recommended Action</div>
                         <div class="text-xl font-semibold text-gray-900">${rec.headline}</div>
                     </div>
                     ${rec.priorityHTML}
@@ -837,7 +837,7 @@
                     <div class="flex justify-between"><span class="text-gray-500">Stock on hand</span><span class="font-medium">${stockOnHand} units</span></div>
                     <div class="flex justify-between"><span class="text-gray-500">Weeks of supply</span><span class="font-medium">${wos.toFixed(1)}</span></div>
                     <div class="flex justify-between"><span class="text-gray-500">Target WOS</span><span class="font-medium">${targetWOS}</span></div>
-                    <div class="flex justify-between"><span class="text-gray-500">Risk level</span><span class="font-medium ${wos<3?'text-red-600':wos<5?'text-yellow-700':'text-green-700'}">${risk}</span></div>
+                    <div class="flex justify-between"><span class="text-gray-500">Risk level</span><span class="font-medium ${wos<3?'text-red-600':wos<5?'text-[var(--accent-amber-700)]':'text-green-700'}">${risk}</span></div>
                 </div>
                 <div class="mt-4">
                     <div class="flex justify-between text-xs text-gray-500 mb-1">
@@ -1160,8 +1160,8 @@
                                 ${skuRows}
                             </tbody>
                         </table>
-                    </div>
-                </div>
+                                            </div>
+                                        </div>
             `;
             
             // Re-initialize icons
@@ -1187,27 +1187,27 @@
             const data = generateSKUs(categoryId);
             return data.map((row, idx) => `
                 <tr class="hover:bg-gray-50 cursor-pointer" onclick="selectSKU('${row.id}','${encodeURIComponent(row.name)}')">
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="flex items-center">
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
                             <div class="w-2 h-2 ${row.dotClass} rounded-full mr-3"></div>
-                            <div>
+                                            <div>
                                 <div class="text-sm font-medium text-gray-900">${row.name}</div>
                                 <div class="text-sm text-gray-500">${row.categoryLabel}</div>
-                            </div>
-                        </div>
-                    </td>
+                                            </div>
+                                        </div>
+                                    </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${row.revenue}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${row.units}</td>
-                    <td class="px-6 py-4 whitespace-nowrap">
+                                    <td class="px-6 py-4 whitespace-nowrap">
                         <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">${row.missRate}%</span>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
                         <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">${row.confidenceLabel} (${row.confidence}%)</span>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
                         <button class="${row.actionClass} text-xs px-3 py-1">${row.action}</button>
-                    </td>
-                </tr>
+                                    </td>
+                                </tr>
             `).join('');
         }
 
@@ -1273,7 +1273,7 @@
                         </div>
                     </div>
                     <div class="lg:col-span-4">
-                        <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-lg" id="sku-stock-card">
+                        <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-lg overflow-hidden" id="sku-stock-card">
                             <!-- Populated by renderStockRiskCard() -->
                         </div>
                     </div>
