@@ -492,6 +492,7 @@
         let currentView = 'portfolio'; // portfolio, category, sku
         let selectedCategory = null;
         let selectedSKU = null;
+        let selectedSKUName = null;
         let categoryChartScope = 'category'; // 'category' | 'portfolio'
 
         // Deep-linking helpers
@@ -1108,8 +1109,14 @@
             lucide.createIcons();
         }
 
-        function selectSKU(skuId) {
+        function selectSKU(skuId, encodedName) {
             selectedSKU = skuId;
+            if (encodedName) {
+                try { selectedSKUName = decodeURIComponent(encodedName); } catch(_) { selectedSKUName = encodedName; }
+            } else {
+                // Fallback: lookup by id
+                selectedSKUName = findSKUName(selectedCategory || 'electronics', skuId);
+            }
             currentView = 'sku-detail';
             updateBreadcrumbs();
             showSKUDetail();
@@ -1120,7 +1127,7 @@
         function buildSKURows(categoryId) {
             const data = generateSKUs(categoryId);
             return data.map((row, idx) => `
-                <tr class="hover:bg-gray-50 cursor-pointer" onclick="selectSKU('${row.id}')">
+                <tr class="hover:bg-gray-50 cursor-pointer" onclick="selectSKU('${row.id}','${encodeURIComponent(row.name)}')">
                     <td class="px-6 py-4 whitespace-nowrap">
                         <div class="flex items-center">
                             <div class="w-2 h-2 ${row.dotClass} rounded-full mr-3"></div>
@@ -1182,11 +1189,17 @@
             });
         }
 
+        function findSKUName(categoryId, skuId) {
+            const list = generateSKUs(categoryId);
+            const found = list.find(x => x.id === skuId);
+            return found ? found.name : skuId;
+        }
+
         function showSKUDetail() {
             const mainContent = document.querySelector('main');
             mainContent.innerHTML = `
                 <div class="mb-8">
-                    <h1 class="text-3xl font-semibold text-gray-900 mb-2">SKU Detail - ${selectedSKU}</h1>
+                    <h1 class="text-3xl font-semibold text-gray-900 mb-2">SKU Detail - ${selectedSKUName || selectedSKU}</h1>
                     <p class="text-gray-500">Individual SKU forecasting and backtesting</p>
                 </div>
 
