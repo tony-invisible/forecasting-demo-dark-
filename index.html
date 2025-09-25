@@ -48,6 +48,7 @@
             border-color: #1E4DD8;
             box-shadow: 0 0 0 1px rgba(30, 77, 216, 0.1);
         }
+        .no-left-rail { border-left: 0 !important; }
         
         .role-btn {
             transition: all 0.15s ease;
@@ -1029,7 +1030,7 @@
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                    <div class="kpi-card card-hover card p-6 shadow-sm cursor-pointer" onclick="chooseCategory('electronics')">
+                    <div class="kpi-card no-left-rail card-hover card p-6 shadow-sm cursor-pointer" onclick="chooseCategory('electronics')">
                         <div class="flex items-center justify-between mb-4">
                             <h3 class="text-lg font-semibold text-gray-900">Electronics</h3>
                             <div class="status-dot status-high"></div>
@@ -1056,7 +1057,7 @@
                         </div>
                     </div>
 
-                    <div class="kpi-card card-hover card p-6 shadow-sm cursor-pointer" onclick="chooseCategory('clothing')">
+                    <div class="kpi-card no-left-rail card-hover card p-6 shadow-sm cursor-pointer" onclick="chooseCategory('clothing')">
                         <div class="flex items-center justify-between mb-4">
                             <h3 class="text-lg font-semibold text-gray-900">Clothing</h3>
                             <div class="status-dot status-medium"></div>
@@ -1083,7 +1084,7 @@
                         </div>
                     </div>
 
-                    <div class="kpi-card card-hover card p-6 shadow-sm cursor-pointer" onclick="chooseCategory('toys')">
+                    <div class="kpi-card no-left-rail card-hover card p-6 shadow-sm cursor-pointer" onclick="chooseCategory('toys')">
                         <div class="flex items-center justify-between mb-4">
                             <h3 class="text-lg font-semibold text-gray-900">Toys & Games</h3>
                             <div class="status-dot status-low"></div>
