@@ -16,16 +16,7 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Roboto+Mono:wght@400;500&display=swap');
         
-        :root {
-            --primary: #1E4DD8;
-            --secondary: #059669;
-            --alert: #DC2626;
-            --warning: #F59E0B;
-            --canvas: #fafafa;
-            --text: #111111;
-            --text-secondary: #444444;
-            --border: #D0D5DD;
-        }
+        /* Tokens moved to tokens.css */
         
         body {
             font-family: 'Inter', sans-serif;
@@ -87,32 +78,7 @@
         }
     </style>
     <style>
-        /* Enterprise tokens built on Radix Colors */
-        :root {
-            /* Brand (Indigo) */
-            --brand-50: #eef2ff;
-            --brand-100: #e0e7ff;
-            --brand-600: #1e40d8;
-            --brand-700: #1836b6;
-
-            /* Semantic tokens */
-            --success-600: #059669; /* green-600 */
-            --warning-600: #d97706; /* amber-600 */
-            --danger-600: #dc2626;  /* red-600 */
-
-            /* Surface & border */
-            --surface: #ffffff;
-            --surface-muted: #f9fafb;
-            --border: #e5e7eb;
-            --text-primary: #111827;
-            --text-secondary: #4b5563;
-
-            /* Radii & elevation */
-            --radius-sm: 6px;
-            --radius-md: 10px;
-            --radius-lg: 14px;
-            --shadow-card: 0 1px 3px rgba(16,24,40,0.08), 0 1px 2px rgba(16,24,40,0.04);
-        }
+        /* Enterprise tokens are defined in tokens.css */
 
         /* Focus policy */
         :focus-visible {
@@ -528,6 +494,25 @@
         let selectedCategory = null;
         let selectedSKU = null;
 
+        // Deep-linking helpers
+        function readParams() {
+            const p = new URLSearchParams(window.location.search);
+            const view = p.get('view') || 'portfolio';
+            const cat = p.get('cat');
+            const sku = p.get('sku');
+            return { view, cat, sku };
+        }
+
+        function updateURL(view, cat, sku, replace=false) {
+            const p = new URLSearchParams(window.location.search);
+            p.set('view', view);
+            if (cat) { p.set('cat', cat); } else { p.delete('cat'); }
+            if (sku) { p.set('sku', sku); } else { p.delete('sku'); }
+            const url = `${location.pathname}?${p.toString()}`;
+            const state = { view, cat, sku };
+            if (replace) history.replaceState(state, '', url); else history.pushState(state, '', url);
+        }
+
         // Role descriptions
         const roleDescriptions = {
             ops: 'Revenue risk and inventory insights for operational decisions',
@@ -576,6 +561,32 @@
                     toggleV1View();
                 });
             }
+            // Initial route from URL
+            const { view, cat, sku } = readParams();
+            currentView = view;
+            selectedCategory = cat;
+            selectedSKU = sku;
+            if (view === 'category') {
+                showCategoryView();
+            } else if (view === 'sku') {
+                showSKUView();
+            } else if (view === 'sku-detail') {
+                showSKUDetail();
+            } else {
+                showPortfolioView();
+            }
+
+            // Back/forward handling
+            window.onpopstate = () => {
+                const { view: v2, cat: c2, sku: s2 } = readParams();
+                currentView = v2;
+                selectedCategory = c2;
+                selectedSKU = s2;
+                if (v2 === 'category') showCategoryView();
+                else if (v2 === 'sku') showSKUView();
+                else if (v2 === 'sku-detail') showSKUDetail();
+                else showPortfolioView();
+            };
         });
 
         function updateRoleContent() {
@@ -651,6 +662,7 @@
             currentView = 'category';
             updateBreadcrumbs();
             showCategoryView();
+            updateURL('category', selectedCategory, selectedSKU);
         }
 
         function showCategoryView() {
@@ -756,6 +768,7 @@
             currentView = 'sku';
             updateBreadcrumbs();
             showSKUView();
+            updateURL('sku', selectedCategory, selectedSKU);
         }
 
         function showSKUView() {
@@ -861,6 +874,7 @@
             currentView = 'sku-detail';
             updateBreadcrumbs();
             showSKUDetail();
+            updateURL('sku-detail', selectedCategory, selectedSKU);
         }
 
         function showSKUDetail() {
@@ -998,6 +1012,7 @@
             selectedCategory = null;
             selectedSKU = null;
             showPortfolioView();
+            updateURL('portfolio', null, null);
         }
 
         function goToCategories() {
@@ -1005,12 +1020,14 @@
             selectedSKU = null;
             updateBreadcrumbs();
             showCategoryView();
+            updateURL('category', selectedCategory, null);
         }
 
         function goToSKUs() {
             currentView = 'sku';
             updateBreadcrumbs();
             showSKUView();
+            updateURL('sku', selectedCategory, null);
         }
 
         function showPortfolioView() {
