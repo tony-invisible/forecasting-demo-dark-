@@ -15,7 +15,6 @@
 .kpi-card {
   background: var(--surface-muted) !important;
   border-color: var(--border) !important;
-  border-left: 6px solid var(--brand-600) !important;
 }
 
 /* Buttons use enterprise brand */
