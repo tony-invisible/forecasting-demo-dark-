@@ -1,0 +1,30 @@
+:root {
+  /* Enterprise brand + surface tokens */
+  --brand-600: #0F62FE; /* IBM-ish primary */
+  --brand-700: #0B4ACB;
+  --surface: #FFFFFF;
+  --surface-muted: #F2F4F8; /* visibly different from existing */
+  --border: #A8B3C2; /* stronger border token */
+  --text-primary: #111827;
+  --text-secondary: #475569;
+}
+
+/* Make KPI cards visibly different sitewide */
+.kpi-card {
+  background: var(--surface-muted) !important;
+  border-color: var(--border) !important;
+  border-left: 6px solid var(--brand-600) !important;
+}
+
+/* Buttons use enterprise brand */
+.btn-primary {
+  background: var(--brand-600) !important;
+}
+.btn-primary:hover {
+  background: var(--brand-700) !important;
+}
+
+/* General card border strength */
+.card {
+  border-color: var(--border) !important;
+}
