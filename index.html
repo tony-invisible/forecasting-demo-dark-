@@ -1394,6 +1394,7 @@
 
         function showSKUDetail() {
             const mainContent = document.querySelector('main');
+            const confPct = getSKUConfidence();
             mainContent.innerHTML = `
                 <div class="mb-8">
                     <h1 class="text-3xl font-semibold text-gray-900 mb-2">SKU Detail - ${selectedSKUName || selectedSKU}</h1>
@@ -1419,19 +1420,27 @@
 
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
                     <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-lg">
-                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Historical Performance</h3>
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-semibold text-gray-900">Historical Performance</h3>
+                            <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-md bg-gray-100 text-gray-700">Confidence ${confPct}%</span>
+                        </div>
                         <div class="h-64 bg-white rounded-lg">
                             <div id="sku-historical-chart" class="w-full h-full"></div>
                         </div>
                     </div>
 
                     <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-lg">
-                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Forward Projection</h3>
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-semibold text-gray-900">Forward Projection</h3>
+                            <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-md bg-gray-100 text-gray-700">Confidence ${confPct}%</span>
+                        </div>
                         <div class="h-64 bg-white rounded-lg">
                             <div id="sku-projection-chart" class="w-full h-full"></div>
                         </div>
                     </div>
                 </div>
+
+                <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-lg mb-8" id="sku-margin-card"></div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-lg">
@@ -1476,7 +1485,49 @@
             
             // Re-initialize icons
             lucide.createIcons();
-            setTimeout(() => { renderSKUHistoricalChart(); renderSKUProjectionChart(); renderSKUAction(); }, 50);
+            setTimeout(() => { renderSKUHistoricalChart(); renderSKUProjectionChart(); renderSKUAction(); renderSKUMarginCard(); }, 50);
+        }
+
+        function getSKUConfidence() {
+            // Demo confidence; could vary by SKU later
+            return 87;
+        }
+
+        function getSKUMarginData() {
+            // Synthetic per‑retailer margin data and blended margin
+            // Values chosen to be realistic for demo
+            const perRetailer = [
+                { retailer: 'Walmart', price: 999, cost: 690 },
+                { retailer: 'Amazon', price: 999, cost: 640 },
+                { retailer: 'Target', price: 979, cost: 650 }
+            ].map(r => ({ ...r, marginPct: Math.round(((r.price - r.cost) / r.price) * 100) }));
+            const blended = Math.round(perRetailer.reduce((s, r) => s + r.marginPct, 0) / perRetailer.length);
+            return { blended, perRetailer };
+        }
+
+        function renderSKUMarginCard() {
+            const el = document.getElementById('sku-margin-card');
+            if (!el) return;
+            const { blended, perRetailer } = getSKUMarginData();
+            const rows = perRetailer.map(r => `
+                <div class="flex justify-between text-sm">
+                    <span class="text-gray-600">${r.retailer}</span>
+                    <span class="text-gray-900 font-medium">${r.marginPct}%</span>
+                </div>
+            `).join('');
+            el.innerHTML = `
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Margin & Profitability</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="md:col-span-1">
+                        <div class="text-sm text-gray-500 mb-1">Blended Margin</div>
+                        <div class="text-2xl font-semibold text-gray-900">${blended}%</div>
+                    </div>
+                    <div class="md:col-span-2">
+                        <div class="text-sm text-gray-500 mb-2">Per‑retailer margin</div>
+                        <div class="space-y-2">${rows}</div>
+                    </div>
+                </div>
+            `;
         }
 
         function updateBreadcrumbs() {
