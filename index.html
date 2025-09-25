@@ -828,10 +828,24 @@
                     ${rec.reasons.map(r => `<li>${r}</li>`).join('')}
                 </ul>
                 <div class="flex items-center gap-3">${rec.suggestionHTML} ${rec.calcHTML}</div>
+                <div id="sku-calc" class="hidden mt-3 p-3 bg-white border border-gray-200 rounded-md text-sm text-gray-700">
+                    ${rec.calcDetailsHTML || ''}
+                </div>
             `;
             lucide.createIcons();
             const btn = document.getElementById('execute-action-btn');
             if (btn) btn.onclick = () => openActionModal(rec);
+            const calcBtn = document.getElementById('btn-calc');
+            const calcBox = document.getElementById('sku-calc');
+            if (calcBtn && calcBox) {
+                calcBtn.onclick = () => {
+                    if (calcBox.classList.contains('hidden')) {
+                        calcBox.classList.remove('hidden');
+                    } else {
+                        calcBox.classList.add('hidden');
+                    }
+                };
+            }
             renderStockRiskCard();
         }
 
@@ -882,6 +896,7 @@
             let metricChipsHTML = '';
             let headline = '';
             let calcHTML = '';
+            let calcDetailsHTML = '';
 
             if (lift >= 10 && confidence >= 70 && wos < 4) {
                 action = 'Reorder';
@@ -891,7 +906,15 @@
                 reasons.push(`Weeks of supply ${wos.toFixed(1)} < target ${targetWOS}`);
                 headline = `Reorder ${qty} units`;
                 suggestionHTML = `<button id="execute-action-btn" class="btn btn-primary">Execute Reorder (${qty} units)</button>`;
-                calcHTML = `<button class="btn btn-secondary" onclick="alert('Target WOS ${targetWOS} * weekly ${weeklyForecast} − stock ${stockOnHand} = ${Math.max(0, Math.ceil(targetWOS * weeklyForecast - stockOnHand))}')">View calculation</button>`;
+                calcHTML = `<button class="btn btn-secondary" id="btn-calc">View calculation</button>`;
+                calcDetailsHTML = `
+                    <div class="font-semibold text-gray-900 mb-2">Reorder quantity calculation</div>
+                    <div class="grid grid-cols-2 gap-2 mb-2">
+                        <div class="text-gray-500">Target WOS</div><div>${targetWOS} weeks</div>
+                        <div class="text-gray-500">Weekly forecast</div><div>${weeklyForecast} units/week</div>
+                        <div class="text-gray-500">Stock on hand</div><div>${stockOnHand} units</div>
+                    </div>
+                    <div class="font-mono text-sm text-gray-800">qty = max(0, ceil(${targetWOS} × ${weeklyForecast} − ${stockOnHand})) = ${qty} units</div>`;
                 if (wos < 3) priorityHTML = `<span class="inline-flex items-center text-xs font-medium px-2 py-1 rounded-md bg-red-50 text-red-700 border border-red-200">High priority</span>`;
             } else if ((lift <= -10 || wos > 10) && confidence >= 60 && improvement >= 5) {
                 action = 'Markdown';
@@ -900,7 +923,15 @@
                 reasons.push(`Model beats baseline by ${improvement.toFixed(1)}pp`);
                 headline = `Markdown ${discount}%`;
                 suggestionHTML = `<button id="execute-action-btn" class="btn btn-primary">Execute Markdown (${discount}% off)</button>`;
-                calcHTML = `<button class="btn btn-secondary" onclick="alert('WOS-based discount heuristic: max 30%, typically (WOS-8)*3%')">View calculation</button>`;
+                calcHTML = `<button class="btn btn-secondary" id="btn-calc">View calculation</button>`;
+                calcDetailsHTML = `
+                    <div class="font-semibold text-gray-900 mb-2">Markdown calculation</div>
+                    <div class="grid grid-cols-2 gap-2 mb-2">
+                        <div class="text-gray-500">Weeks of supply</div><div>${wos.toFixed(1)} weeks</div>
+                        <div class="text-gray-500">Threshold</div><div>8 weeks</div>
+                        <div class="text-gray-500">Heuristic</div><div>discount = min(30%, (WOS − 8) × 3%)</div>
+                    </div>
+                    <div class="font-mono text-sm text-gray-800">discount = min(30%, (${wos.toFixed(1)} − 8) × 3%)</div>`;
             } else if (confidence < 55 || modelMAPE >= 15) {
                 action = 'Investigate';
                 reasons.push(`Low predictability (confidence ${confidence}%, MAPE ${modelMAPE}%)`);
@@ -917,7 +948,7 @@
                 <span class="inline-flex items-center text-xs font-medium px-2 py-1 rounded-md bg-gray-100 text-gray-700">Confidence ${confidence}%</span>
                 <span class="inline-flex items-center text-xs font-medium px-2 py-1 rounded-md bg-gray-100 text-gray-700">WOS ${wos.toFixed(1)}</span>`;
 
-            return { action, reasons, suggestionHTML, priorityHTML, metricChipsHTML, headline, calcHTML };
+            return { action, reasons, suggestionHTML, priorityHTML, metricChipsHTML, headline, calcHTML, calcDetailsHTML };
         }
 
         // No spark in Option A layout
