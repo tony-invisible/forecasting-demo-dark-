@@ -821,6 +821,9 @@
                         <div class="mt-4 p-3 bg-warning rounded-lg">
                             <p class="text-sm text-warning">Supply down. Reorder now.</p>
                         </div>
+                        <div class="mt-4 flex justify-end">
+                            <button class="btn btn-secondary text-xs px-2 py-1" onclick="event.stopPropagation(); selectCategory('electronics')">View SKUs</button>
+                        </div>
                     </div>
 
                     <div class="kpi-card card-hover p-6 shadow-sm cursor-pointer" onclick="chooseCategory('clothing')">
@@ -844,6 +847,9 @@
                         </div>
                         <div class="mt-4 p-3 bg-negative rounded-lg">
                             <p class="text-sm text-negative">Sparse history. Investigate.</p>
+                        </div>
+                        <div class="mt-4 flex justify-end">
+                            <button class="btn btn-secondary text-xs px-2 py-1" onclick="event.stopPropagation(); selectCategory('clothing')">View SKUs</button>
                         </div>
                     </div>
 
@@ -869,6 +875,9 @@
                         <div class="mt-4 p-3 bg-negative rounded-lg">
                             <p class="text-sm text-negative">Weeks of supply >8. Markdown recommended.</p>
                         </div>
+                        <div class="mt-4 flex justify-end">
+                            <button class="btn btn-secondary text-xs px-2 py-1" onclick="event.stopPropagation(); selectCategory('toys')">View SKUs</button>
+                        </div>
                     </div>
                 </div>
 
@@ -893,8 +902,8 @@
             const btnCat = document.getElementById('btn-scope-category');
             const btnPort = document.getElementById('btn-scope-portfolio');
             if (btnCat && btnPort) {
-                btnCat.onclick = () => { categoryChartScope = 'category'; updateCategoryScopeButtons(); renderCategoryChart(); };
-                btnPort.onclick = () => { categoryChartScope = 'portfolio'; updateCategoryScopeButtons(); renderCategoryChart(); };
+                btnCat.onclick = () => { if (categoryChartScope !== 'category') { categoryChartScope = 'category'; updateCategoryScopeButtons(); renderCategoryChart(); } };
+                btnPort.onclick = () => { if (categoryChartScope !== 'portfolio') { categoryChartScope = 'portfolio'; updateCategoryScopeButtons(); renderCategoryChart(); } };
             }
             updateCategoryScopeButtons();
             setTimeout(renderCategoryChart, 50);
