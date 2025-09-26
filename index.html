@@ -1393,7 +1393,7 @@
             return data.map((row, idx) => `
                 <tr class="hover:bg-gray-50 cursor-pointer" onclick="selectSKU('${row.id}','${encodeURIComponent(row.name)}')">
                                     <td class="px-4 py-4 whitespace-nowrap" onclick="event.stopPropagation()">
-                                        <input type="checkbox" ${tableCompareSelection.includes('${row.id}')?'checked':''} onclick="event.stopPropagation(); toggleTableSelect('${row.id}')" />
+                                        <input type="checkbox" class="sku-select" onclick="event.stopPropagation()" />
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="flex items-center">
