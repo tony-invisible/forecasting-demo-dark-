@@ -491,6 +491,7 @@
         let selectedSubcategory = null; // subcategory within a category
         let selectedComparisons = []; // up to 2 competitor overlays
         let tableCompareSelection = []; // multi-select from SKUs list
+        let selectedRetailer = 'all'; // 'all' | 'walmart' | 'amazon' | 'target'
 
         // Deep-linking helpers
         function readParams() {
@@ -824,6 +825,7 @@
             if (window.ReactDOM && ReactDOM.unmountComponentAtNode) { try { ReactDOM.unmountComponentAtNode(mount); } catch(_){} }
             mount.innerHTML = '';
             const base = buildSKUBaseSeries();
+            const data = selectedRetailer === 'all' ? base : scaleSeries(base, getRetailerFactor(selectedRetailer));
             const list = generateSKUs(selectedCategory || 'electronics');
             const overlays = (selectedComparisons || []).map((id, idx) => {
                 const colorPalette = ['#9333EA','#059669'];
@@ -838,7 +840,7 @@
             ];
             const Chart = () => (
                 React.createElement(ResponsiveContainer, { width: '100%', height: '100%' },
-                    React.createElement(LineChart, { data: base, margin: { top: 20, right: 24, left: 8, bottom: 8 } },
+                    React.createElement(LineChart, { data: data, margin: { top: 20, right: 24, left: 8, bottom: 8 } },
                         React.createElement(CartesianGrid, { strokeDasharray: '3 3', stroke: '#E5E7EB' }),
                         React.createElement(XAxis, { dataKey: 'month', tick: { fill: '#64748B' }, axisLine: { stroke: '#CBD5E1' } }),
                         React.createElement(YAxis, { tick: { fill: '#64748B' }, width: 60, tickFormatter: currency, axisLine: { stroke: '#CBD5E1' } }),
@@ -879,9 +881,11 @@
                 const band = 0.25 + i*0.05;
                 return { month: m, lower: Math.max(0, mean - band), mean, upper: mean + band };
             });
+            const factor = getRetailerFactor(selectedRetailer);
+            const scaled = selectedRetailer==='all' ? proj : proj.map(p => ({ month:p.month, lower: +(p.lower*factor).toFixed(2), mean: +(p.mean*factor).toFixed(2), upper: +(p.upper*factor).toFixed(2) }));
             const Chart = () => (
                 React.createElement(ResponsiveContainer, { width: '100%', height: '100%' },
-                    React.createElement(AreaChart, { data: proj, margin: { top: 8, right: 24, left: 8, bottom: 8 } },
+                    React.createElement(AreaChart, { data: scaled, margin: { top: 8, right: 24, left: 8, bottom: 8 } },
                         React.createElement(CartesianGrid, { strokeDasharray: '3 3', stroke: '#F1F5F9' }),
                         React.createElement(XAxis, { dataKey: 'month', tick: { fill: '#64748B' } }),
                         React.createElement(YAxis, { tick: { fill: '#64748B' }, width: 60, tickFormatter: currency }),
@@ -1497,6 +1501,16 @@
                     <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-lg" id="sku-diagnostics-card"></div>
                 </div>
 
+                <div class="flex items-center justify-between mb-2">
+                    <div class="inline-flex bg-gray-100 rounded-md p-1">
+                        <button id="btn-ret-all" class="px-3 py-1 text-sm rounded-md bg-white shadow-sm">All</button>
+                        <button id="btn-ret-walmart" class="px-3 py-1 text-sm rounded-md text-gray-600">Walmart</button>
+                        <button id="btn-ret-amazon" class="px-3 py-1 text-sm rounded-md text-gray-600">Amazon</button>
+                        <button id="btn-ret-target" class="px-3 py-1 text-sm rounded-md text-gray-600">Target</button>
+                    </div>
+                    <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-md whitespace-nowrap ${confClass}">Confidence ${confPct}%</span>
+                </div>
+
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
                     <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-lg">
                         <div class="flex items-center justify-between mb-2">
@@ -1514,7 +1528,7 @@
                                 <span class="absolute text-xs text-gray-500" style="left:32%">Promo</span>
                                 <span class="absolute text-xs text-gray-500" style="left:75%">Holiday</span>
                             </div>
-                            <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-md whitespace-nowrap ${confClass}">Confidence ${confPct}%</span>
+                            <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-md whitespace-nowrap ${confClass}"></span>
                         </div>
                         <div class="h-60 bg-white rounded-lg">
                             <div id="sku-historical-chart" class="w-full h-full"></div>
@@ -1532,12 +1546,26 @@
                     </div>
                 </div>
 
+                <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-lg mb-8" id="sku-retailer-optim"></div>
+
                 <!-- Diagnostics moved into 3-card row above; removing duplicates here -->
             `;
             
             // Re-initialize icons
             lucide.createIcons();
-            setTimeout(() => { renderSKUHistoricalChart(); renderSKUProjectionChart(); renderSKUAction(); renderSKUMarginCard(); renderSKUPriceCostCard(); renderSKUDiagnostics(); populateCompareDropdown(); renderCompareChips(); }, 50);
+            setTimeout(() => { renderSKUHistoricalChart(); renderSKUProjectionChart(); renderSKUAction(); renderSKUMarginCard(); renderSKUPriceCostCard(); renderSKUDiagnostics(); populateCompareDropdown(); renderCompareChips(); updateRetailerScopeButtons(); renderRetailerOptimizationCard(); }, 50);
+
+            // Retailer scope buttons
+            const scopeButtons = [
+                { id: 'btn-ret-all', val: 'all' },
+                { id: 'btn-ret-walmart', val: 'walmart' },
+                { id: 'btn-ret-amazon', val: 'amazon' },
+                { id: 'btn-ret-target', val: 'target' }
+            ];
+            scopeButtons.forEach(b => {
+                const el = document.getElementById(b.id);
+                if (el) el.onclick = () => { selectedRetailer = b.val; updateRetailerScopeButtons(); renderSKUHistoricalChart(); renderSKUProjectionChart(); renderRetailerOptimizationCard(); };
+            });
         }
 
         function getSKUConfidence() {
@@ -1545,6 +1573,57 @@
             return 87;
         }
         
+        function updateRetailerScopeButtons() {
+            const map = {
+                all: document.getElementById('btn-ret-all'),
+                walmart: document.getElementById('btn-ret-walmart'),
+                amazon: document.getElementById('btn-ret-amazon'),
+                target: document.getElementById('btn-ret-target')
+            };
+            Object.keys(map).forEach(k => {
+                const el = map[k]; if (!el) return;
+                if (k === selectedRetailer) { el.classList.add('bg-white','shadow-sm'); el.classList.remove('text-gray-600'); }
+                else { el.classList.remove('bg-white','shadow-sm'); el.classList.add('text-gray-600'); }
+            });
+        }
+
+        function getRetailerFactor(r) {
+            if (r === 'walmart') return 1.05;
+            if (r === 'amazon') return 1.00;
+            if (r === 'target') return 0.97;
+            return 1.00;
+        }
+
+        function scaleSeries(series, factor) {
+            return series.map(p => ({ month:p.month, actual:+(p.actual*factor).toFixed(2), baseline:+(p.baseline*factor).toFixed(2), model:+(p.model*factor).toFixed(2) }));
+        }
+
+        function renderRetailerOptimizationCard() {
+            const el = document.getElementById('sku-retailer-optim');
+            if (!el) return;
+            const mix = [
+                { name: 'Walmart', pct: 42 },
+                { name: 'Amazon', pct: 38 },
+                { name: 'Target', pct: 20 }
+            ];
+            const best = mix.reduce((a,b)=> (a.pct>b.pct?a:b));
+            el.innerHTML = `
+                <h3 class="text-lg font-semibold text-gray-900 mb-3">Retailer Optimization</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <div class="text-sm text-gray-500 mb-1">Suggested focus</div>
+                        <div class="text-xl font-semibold text-gray-900">${best.name}</div>
+                        <div class="text-xs text-gray-500">Highest share in next 3 months</div>
+                    </div>
+                    <div class="md:col-span-2">
+                        <div class="text-sm text-gray-500 mb-2">Retailer share</div>
+                        <div class="grid grid-cols-3 text-sm">
+                            ${mix.map(m=>`<div class=\"flex justify-between pr-4\"><span>${m.name}</span><span class=\"font-medium\">${m.pct}%</span></div>`).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
         function renderSKUPriceCostCard() {
             const el = document.getElementById('sku-pricecost-card');
             if (!el) return;
