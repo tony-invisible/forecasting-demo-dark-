@@ -838,7 +838,7 @@
             ];
             const Chart = () => (
                 React.createElement(ResponsiveContainer, { width: '100%', height: '100%' },
-                    React.createElement(LineChart, { data: base, margin: { top: 8, right: 16, left: 8, bottom: 6 } },
+                    React.createElement(LineChart, { data: base, margin: { top: 12, right: 16, left: 8, bottom: 6 } },
                         React.createElement(CartesianGrid, { strokeDasharray: '3 3', stroke: '#E5E7EB' }),
                         React.createElement(XAxis, { dataKey: 'month', tick: { fill: '#64748B' }, axisLine: { stroke: '#CBD5E1' } }),
                         React.createElement(YAxis, { tick: { fill: '#64748B' }, width: 60, tickFormatter: currency, axisLine: { stroke: '#CBD5E1' } }),
@@ -1510,13 +1510,13 @@
                         </div>
                         <div id="comp-chips" class="flex flex-wrap gap-2 mb-0"></div>
                         <div class="flex items-center justify-between mb-0">
-                            <div class="relative w-full h-1.5">
+                            <div class="relative w-full h-2">
                                 <span class="absolute text-xs text-gray-500" style="left:32%">Promo</span>
                                 <span class="absolute text-xs text-gray-500" style="left:75%">Holiday</span>
                             </div>
                             <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-md whitespace-nowrap ${confClass}">Confidence ${confPct}%</span>
                         </div>
-                        <div class="h-54 bg-white rounded-lg">
+                        <div class="h-56 bg-white rounded-lg">
                             <div id="sku-historical-chart" class="w-full h-full"></div>
                         </div>
                     </div>
