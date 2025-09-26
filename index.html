@@ -838,7 +838,7 @@
             ];
             const Chart = () => (
                 React.createElement(ResponsiveContainer, { width: '100%', height: '100%' },
-                    React.createElement(LineChart, { data: base, margin: { top: 32, right: 24, left: 8, bottom: 8 } },
+                    React.createElement(LineChart, { data: base, margin: { top: 20, right: 24, left: 8, bottom: 8 } },
                         React.createElement(CartesianGrid, { strokeDasharray: '3 3', stroke: '#E5E7EB' }),
                         React.createElement(XAxis, { dataKey: 'month', tick: { fill: '#64748B' }, axisLine: { stroke: '#CBD5E1' } }),
                         React.createElement(YAxis, { tick: { fill: '#64748B' }, width: 60, tickFormatter: currency, axisLine: { stroke: '#CBD5E1' } }),
@@ -1508,15 +1508,15 @@
                                 <button id="comp-add" class="btn btn-secondary text-xs px-2 py-1">Add</button>
                             </div>
                         </div>
-                        <div id="comp-chips" class="flex flex-wrap gap-2 mb-2"></div>
-                        <div class="flex items-center justify-between mb-0">
-                            <div class="relative w-full h-4">
+                        <div id="comp-chips" class="flex flex-wrap gap-2 mb-1"></div>
+                        <div class="flex items-center justify-between mb-0.5">
+                            <div class="relative w-full h-3">
                                 <span class="absolute text-xs text-gray-500" style="left:32%">Promo</span>
                                 <span class="absolute text-xs text-gray-500" style="left:75%">Holiday</span>
                             </div>
                             <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-md whitespace-nowrap ${confClass}">Confidence ${confPct}%</span>
                         </div>
-                        <div class="h-64 bg-white rounded-lg">
+                        <div class="h-60 bg-white rounded-lg">
                             <div id="sku-historical-chart" class="w-full h-full"></div>
                         </div>
                     </div>
