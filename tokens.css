@@ -57,3 +57,22 @@
 [data-theme='dark'] .text-gray-900 { color: var(--text-primary) !important; }
 [data-theme='dark'] .text-gray-600,
 [data-theme='dark'] .text-gray-500 { color: var(--text-secondary) !important; }
+
+/* Left nav active pill ("Forecasting") in dark mode */
+[data-theme='dark'] .bg-blue-50 { background-color: rgba(37, 99, 235, 0.26) !important; }
+[data-theme='dark'] .text-blue-600 { color: #60A5FA !important; }
+
+/* Chip groups (scope/subcategory filters) */
+[data-theme='dark'] .bg-gray-100 { background-color: rgba(148, 163, 184, 0.12) !important; }
+[data-theme='dark'] .text-gray-700 { color: var(--text-primary) !important; }
+[data-theme='dark'] .border { border-color: var(--border) !important; }
+
+/* Data table row hover/highlight */
+[data-theme='dark'] .hover\:bg-gray-50:hover { background-color: var(--surface-muted) !important; }
+[data-theme='dark'] .divide-gray-200 > :not([hidden]) ~ :not([hidden]) { border-color: var(--border) !important; }
+
+/* Badges/pills */
+[data-theme='dark'] .badge, [data-theme='dark'] .badge-muted { background-color: rgba(148,163,184,0.12) !important; color: var(--text-secondary) !important; }
+
+/* Cards inside dark sections */
+[data-theme='dark'] .card > .bg-white { background-color: var(--surface) !important; }
