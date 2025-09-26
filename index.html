@@ -489,7 +489,6 @@
         let selectedSKUName = null;
         let categoryChartScope = 'category'; // 'category' | 'portfolio'
         let selectedSubcategory = null; // subcategory within a category
-        let tableCompareSelection = []; // multi-select from SKUs table
         let selectedComparisons = []; // up to 2 competitor overlays
         let tableCompareSelection = []; // multi-select from SKUs list
 
@@ -779,52 +778,6 @@
                     renderSKUHistoricalChart();
                 });
             });
-        }
-
-        function toggleTableSelect(id) {
-            if (tableCompareSelection.includes(id)) {
-                tableCompareSelection = tableCompareSelection.filter(x => x !== id);
-            } else {
-                if (tableCompareSelection.length >= 4) return;
-                tableCompareSelection.push(id);
-            }
-            const btn = document.getElementById('btn-table-compare');
-            if (btn) btn.disabled = !(tableCompareSelection.length >= 2);
-        }
-
-        function renderTableCompareChart() {
-            const card = document.getElementById('sku-compare-card');
-            const mount = document.getElementById('sku-compare-chart');
-            if (!card || !mount) return;
-            if (tableCompareSelection.length < 2) { card.classList.add('hidden'); return; }
-            card.classList.remove('hidden');
-            if (window.ReactDOM && ReactDOM.unmountComponentAtNode) { try { ReactDOM.unmountComponentAtNode(mount); } catch(_){} }
-            mount.innerHTML = '';
-            const { ResponsiveContainer, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Line } = Recharts;
-            const data = buildSKUBaseSeries();
-            function currency(v){ return `$${v.toFixed(2)}M`; }
-            const colors = ['#7C3AED','#059669','#EF4444','#2563EB'];
-            const Chart = () => (
-                React.createElement(ResponsiveContainer, { width: '100%', height: '100%' },
-                    React.createElement(LineChart, { data, margin: { top: 8, right: 24, left: 8, bottom: 8 } },
-                        React.createElement(CartesianGrid, { strokeDasharray: '3 3', stroke: '#E5E7EB' }),
-                        React.createElement(XAxis, { dataKey: 'month', tick: { fill: '#64748B' }, axisLine: { stroke: '#CBD5E1' } }),
-                        React.createElement(YAxis, { tick: { fill: '#64748B' }, width: 60, tickFormatter: currency, axisLine: { stroke: '#CBD5E1' } }),
-                        React.createElement(Tooltip, { formatter: (v) => currency(v) }),
-                        React.createElement(Legend, { verticalAlign: 'bottom', height: 24 }),
-                        ...tableCompareSelection.map((id, idx) => React.createElement(Line, {
-                            key: `cmp-${id}`,
-                            type: 'monotone',
-                            dataKey: 'model',
-                            name: id,
-                            stroke: colors[idx % colors.length],
-                            dot: false,
-                            strokeWidth: 2
-                        }))
-                    )
-                )
-            );
-            ReactDOM.render(React.createElement(Chart), mount);
         }
 
         function updateCategoryScopeButtons() {
@@ -1364,16 +1317,11 @@
                     <p class="text-gray-500">Individual SKU performance and actions</p>
                 </div>
                 <div id="subcategory-filter-sku" class="mb-4"></div>
-                <div class="flex items-center justify-between mb-2">
-                    <div class="text-sm text-gray-500">Select 2–4 SKUs to compare</div>
-                    <button id="btn-table-compare" class="btn btn-secondary text-xs px-3 py-1" disabled>Compare</button>
-                </div>
                 <div class="bg-white rounded-xl border border-gray-200 shadow-lg overflow-hidden">
                     <div class="overflow-x-auto">
                         <table class="w-full">
                             <thead class="bg-gray-50">
                                 <tr>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-8"></th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">SKU</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Revenue</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Units</th>
@@ -1388,12 +1336,6 @@
                         </table>
                                             </div>
                                         </div>
-                <div id="sku-compare-card" class="mt-6 hidden bg-white rounded-xl border border-gray-200 p-6 shadow-lg">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-3">Selected Comparison</h3>
-                    <div class="h-60 bg-white rounded-lg">
-                        <div id="sku-compare-chart" class="w-full h-full"></div>
-                    </div>
-                </div>
             `;
             
             // Re-initialize icons
@@ -1417,10 +1359,6 @@
                     if (el) el.onclick = () => { selectedSubcategory = s; updateURL('sku', selectedCategory, null); showSKUView(); };
                 });
             }
-
-            // Wire compare button
-            const btnCompare = document.getElementById('btn-table-compare');
-            if (btnCompare) btnCompare.onclick = () => { renderTableCompareChart(); };
         }
 
         function selectSKU(skuId, encodedName) {
@@ -1443,9 +1381,6 @@
             const avgRevenue = data.reduce((s, r) => s + Number(r.revenue.replace(/[$,]/g,'')), 0) / Math.max(1,data.length);
             return data.map((row, idx) => `
                 <tr class="hover:bg-gray-50 cursor-pointer" onclick="selectSKU('${row.id}','${encodeURIComponent(row.name)}')">
-                                    <td class="px-4 py-4 whitespace-nowrap" onclick="event.stopPropagation()">
-                                        <input type="checkbox" ${tableCompareSelection.includes('${row.id}')?'checked':''} onclick="event.stopPropagation(); toggleTableSelect('${row.id}')" />
-                                    </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="flex items-center">
                             <div class="w-2 h-2 ${row.dotClass} rounded-full mr-3"></div>
