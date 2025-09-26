@@ -501,7 +501,8 @@
             const cat = sanitize(p.get('cat'));
             const sku = sanitize(p.get('sku'));
             const sub = sanitize(p.get('sub'));
-            return { view, cat, sku, sub };
+            const ret = sanitize(p.get('ret'));
+            return { view, cat, sku, sub, ret };
         }
 
         function updateURL(view, cat, sku, replace=false) {
@@ -515,6 +516,7 @@
                 if (cat) p.set('cat', cat);
                 if (sku) p.set('sku', sku);
                 if (selectedSubcategory) p.set('sub', selectedSubcategory);
+                if (selectedRetailer && selectedRetailer !== 'all') p.set('ret', selectedRetailer);
                 url = `${location.pathname}?${p.toString()}`;
             }
             const state = { view, cat, sku };
@@ -1501,14 +1503,13 @@
                     <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-lg" id="sku-diagnostics-card"></div>
                 </div>
 
-                <div class="flex items-center justify-between mb-2">
+                <div class="flex items-center mb-2">
                     <div class="inline-flex bg-gray-100 rounded-md p-1">
                         <button id="btn-ret-all" class="px-3 py-1 text-sm rounded-md bg-white shadow-sm">All</button>
                         <button id="btn-ret-walmart" class="px-3 py-1 text-sm rounded-md text-gray-600">Walmart</button>
                         <button id="btn-ret-amazon" class="px-3 py-1 text-sm rounded-md text-gray-600">Amazon</button>
                         <button id="btn-ret-target" class="px-3 py-1 text-sm rounded-md text-gray-600">Target</button>
                     </div>
-                    <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-md whitespace-nowrap ${confClass}">Confidence ${confPct}%</span>
                 </div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
@@ -1528,7 +1529,7 @@
                                 <span class="absolute text-xs text-gray-500" style="left:32%">Promo</span>
                                 <span class="absolute text-xs text-gray-500" style="left:75%">Holiday</span>
                             </div>
-                            <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-md whitespace-nowrap ${confClass}"></span>
+                            <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-md whitespace-nowrap ${confClass}">Confidence ${confPct}%</span>
                         </div>
                         <div class="h-60 bg-white rounded-lg">
                             <div id="sku-historical-chart" class="w-full h-full"></div>
