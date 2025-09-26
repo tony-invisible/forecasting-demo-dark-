@@ -108,6 +108,12 @@
         }
     </style>
     <link rel="stylesheet" href="./tokens.css?v=remove-overview-3" />
+    <script>
+(function () {
+  var theme = new URLSearchParams(location.search).get('theme');
+  if (theme === 'dark') document.documentElement.setAttribute('data-theme','dark');
+})();
+</script>
 </head>
 <body>
     <div id="app" class="flex h-screen bg-gray-50">
