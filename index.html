@@ -838,7 +838,7 @@
             ];
             const Chart = () => (
                 React.createElement(ResponsiveContainer, { width: '100%', height: '100%' },
-                    React.createElement(LineChart, { data: base, margin: { top: 36, right: 24, left: 8, bottom: 8 } },
+                    React.createElement(LineChart, { data: base, margin: { top: 48, right: 24, left: 8, bottom: 8 } },
                         React.createElement(CartesianGrid, { strokeDasharray: '3 3', stroke: '#E5E7EB' }),
                         React.createElement(XAxis, { dataKey: 'month', tick: { fill: '#64748B' }, axisLine: { stroke: '#CBD5E1' } }),
                         React.createElement(YAxis, { tick: { fill: '#64748B' }, width: 60, tickFormatter: currency, axisLine: { stroke: '#CBD5E1' } }),
@@ -857,7 +857,7 @@
                             strokeWidth: 2,
                             data: buildSKUBaseSeries() // reuse shape for demo overlay
                         })),
-                        ...events.map(e => React.createElement(ReferenceLine, { key: e.month, x: e.month, stroke: '#94A3B8', strokeDasharray: '4 4', isFront: true, label: { value: e.label, position: 'top', dy: 6, fill: '#64748B', fontSize: 10 } }))
+                        ...events.map(e => React.createElement(ReferenceLine, { key: e.month, x: e.month, stroke: '#94A3B8', strokeDasharray: '4 4', isFront: true, label: { value: e.label, position: 'top', dy: 12, fill: '#64748B', fontSize: 10 } }))
                     )
                 )
             );
@@ -1467,6 +1467,7 @@
         function showSKUDetail() {
             const mainContent = document.querySelector('main');
             const confPct = getSKUConfidence();
+            const confClass = confPct >= 75 ? 'bg-green-50 text-green-700 border border-green-200' : (confPct >= 55 ? 'bg-amber-50 text-amber-700 border border-amber-200' : 'bg-red-50 text-red-700 border border-red-200');
             mainContent.innerHTML = `
                 <div class="mb-8">
                     <h1 class="text-3xl font-semibold text-gray-900 mb-2">SKU Detail - ${selectedSKUName || selectedSKU}</h1>
@@ -1508,7 +1509,7 @@
                             </div>
                         </div>
                         <div id="comp-chips" class="flex flex-wrap gap-2 mb-2"></div>
-                        <div class="flex items-center justify-end mb-2"><span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-md bg-gray-100 text-gray-700">Confidence ${confPct}%</span></div>
+                        <div class="flex items-center justify-end mb-2"><span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-md ${confClass}">Confidence ${confPct}%</span></div>
                         <div class="h-64 bg-white rounded-lg">
                             <div id="sku-historical-chart" class="w-full h-full"></div>
                         </div>
@@ -1517,7 +1518,7 @@
                     <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-lg">
                         <div class="flex items-center justify-between mb-4">
                             <h3 class="text-lg font-semibold text-gray-900">Forward Projection</h3>
-                            <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-md bg-gray-100 text-gray-700">Confidence ${confPct}%</span>
+                            <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-md ${confClass}">Confidence ${confPct}%</span>
                         </div>
                         <div class="h-64 bg-white rounded-lg">
                             <div id="sku-projection-chart" class="w-full h-full"></div>
