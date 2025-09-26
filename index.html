@@ -180,7 +180,7 @@
                         </div>
                         <!-- Breadcrumbs (moved under tagline) -->
                         <nav aria-label="Breadcrumb" class="flex items-center space-x-2 text-sm text-gray-600" id="breadcrumbs">
-                            <span>Overview</span>
+                            <span class="cursor-pointer text-blue-600 hover:underline" onclick="goToPortfolio()">Overview</span>
                         </nav>
                     </div>
 
@@ -1725,17 +1725,17 @@
             if (!breadcrumbElement) return;
             if (currentView === 'portfolio') {
                 breadcrumbElement.innerHTML = `
-                    <span>Overview</span>
+                    <span class="cursor-pointer text-blue-600 hover:underline" onclick="goToPortfolio()">Overview</span>
                 `;
             } else if (currentView === 'category') {
                 breadcrumbElement.innerHTML = `
-                    <span class="cursor-pointer text-blue-600 hover:underline" onclick="goToPortfolio()">Portfolio</span>
+                    <span class="cursor-pointer text-blue-600 hover:underline" onclick="goToPortfolio()">Overview</span>
                     <span>/</span>
                     <span class="cursor-pointer text-blue-600 hover:underline" onclick="goToCategories()">Categories</span>
                 `;
             } else if (currentView === 'sku') {
                 breadcrumbElement.innerHTML = `
-                    <span class="cursor-pointer text-blue-600 hover:underline" onclick="goToPortfolio()">Portfolio</span>
+                    <span class="cursor-pointer text-blue-600 hover:underline" onclick="goToPortfolio()">Overview</span>
                     <span>/</span>
                     <span class="cursor-pointer text-blue-600 hover:underline" onclick="goToCategories()">Categories</span>
                     <span>/</span>
@@ -1743,7 +1743,7 @@
                 `;
             } else if (currentView === 'sku-detail') {
                 breadcrumbElement.innerHTML = `
-                    <span class="cursor-pointer text-blue-600 hover:underline" onclick="goToPortfolio()">Portfolio</span>
+                    <span class="cursor-pointer text-blue-600 hover:underline" onclick="goToPortfolio()">Overview</span>
                     <span>/</span>
                     <span class="cursor-pointer text-blue-600 hover:underline" onclick="goToCategories()">Categories</span>
                     <span>/</span>
