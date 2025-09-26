@@ -857,7 +857,7 @@
                             strokeWidth: 2,
                             data: buildSKUBaseSeries() // reuse shape for demo overlay
                         })),
-                        ...events.map(e => React.createElement(ReferenceLine, { key: e.month, x: e.month, stroke: '#94A3B8', strokeDasharray: '4 4', label: { value: e.label, position: 'top', dy: 6, fill: '#64748B', fontSize: 10 } }))
+                        ...events.map(e => React.createElement(ReferenceLine, { key: e.month, x: e.month, stroke: '#94A3B8', strokeDasharray: '4 4', isFront: true, label: { value: e.label, position: 'top', dy: 6, fill: '#64748B', fontSize: 10 } }))
                     )
                 )
             );
