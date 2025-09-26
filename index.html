@@ -838,7 +838,7 @@
             ];
             const Chart = () => (
                 React.createElement(ResponsiveContainer, { width: '100%', height: '100%' },
-                    React.createElement(LineChart, { data: base, margin: { top: 28, right: 24, left: 8, bottom: 8 } },
+                    React.createElement(LineChart, { data: base, margin: { top: 36, right: 24, left: 8, bottom: 8 } },
                         React.createElement(CartesianGrid, { strokeDasharray: '3 3', stroke: '#E5E7EB' }),
                         React.createElement(XAxis, { dataKey: 'month', tick: { fill: '#64748B' }, axisLine: { stroke: '#CBD5E1' } }),
                         React.createElement(YAxis, { tick: { fill: '#64748B' }, width: 60, tickFormatter: currency, axisLine: { stroke: '#CBD5E1' } }),
@@ -857,7 +857,7 @@
                             strokeWidth: 2,
                             data: buildSKUBaseSeries() // reuse shape for demo overlay
                         })),
-                        ...events.map(e => React.createElement(ReferenceLine, { key: e.month, x: e.month, stroke: '#94A3B8', strokeDasharray: '4 4', label: { value: e.label, position: 'top', fill: '#64748B', fontSize: 10 } }))
+                        ...events.map(e => React.createElement(ReferenceLine, { key: e.month, x: e.month, stroke: '#94A3B8', strokeDasharray: '4 4', label: { value: e.label, position: 'top', dy: 6, fill: '#64748B', fontSize: 10 } }))
                     )
                 )
             );
