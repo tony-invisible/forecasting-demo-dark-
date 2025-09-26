@@ -143,7 +143,7 @@
                     <i data-lucide="network" class="w-4 h-4"></i>
                     <span>Data Ontology</span>
                 </a>
-                <a href="#" class="flex items-center space-x-3 px-3 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-md">
+                <a href="#" onclick="goToHomepage(); return false;" class="flex items-center space-x-3 px-3 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-md">
                     <i data-lucide="trending-up" class="w-4 h-4"></i>
                     <span>Forecasting</span>
                 </a>
@@ -180,9 +180,7 @@
                         </div>
                         <!-- Breadcrumbs (moved under tagline) -->
                         <nav aria-label="Breadcrumb" class="flex items-center space-x-2 text-sm text-gray-600" id="breadcrumbs">
-                            <span class="cursor-pointer text-blue-600 hover:underline" onclick="goToPortfolio()">Portfolio</span>
-                            <span>/</span>
-                            <span class="cursor-pointer text-blue-600 hover:underline" onclick="goToPortfolio()">Overview</span>
+                            <span>Overview</span>
                         </nav>
                     </div>
 
@@ -1727,9 +1725,7 @@
             if (!breadcrumbElement) return;
             if (currentView === 'portfolio') {
                 breadcrumbElement.innerHTML = `
-                    <span class="cursor-pointer text-blue-600 hover:underline" onclick="goToPortfolio()">Portfolio</span>
-                    <span>/</span>
-                    <span class="cursor-pointer text-blue-600 hover:underline" onclick="goToPortfolio()">Overview</span>
+                    <span>Overview</span>
                 `;
             } else if (currentView === 'category') {
                 breadcrumbElement.innerHTML = `
