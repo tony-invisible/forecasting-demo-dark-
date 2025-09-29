@@ -145,6 +145,23 @@
         [data-theme='dark'] .text-red-700 { color: #EF4444 !important; }
         [data-theme='dark'] .border-red-200 { border-color: rgba(239, 68, 68, 0.3) !important; }
         
+        /* Fix Recharts tooltips in dark mode */
+        [data-theme='dark'] .recharts-tooltip-wrapper .recharts-default-tooltip {
+            background-color: var(--surface) !important;
+            border: 1px solid var(--border) !important;
+            border-radius: 8px !important;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3) !important;
+        }
+        [data-theme='dark'] .recharts-tooltip-wrapper .recharts-default-tooltip .recharts-tooltip-label {
+            color: var(--text-primary) !important;
+        }
+        [data-theme='dark'] .recharts-tooltip-wrapper .recharts-default-tooltip .recharts-tooltip-item {
+            color: var(--text-primary) !important;
+        }
+        [data-theme='dark'] .recharts-tooltip-wrapper .recharts-default-tooltip .recharts-tooltip-item-list {
+            color: var(--text-primary) !important;
+        }
+        
         body {
             font-family: 'Inter', sans-serif;
             background: #f2f4f7; /* more enterprise, higher contrast */
