@@ -247,33 +247,7 @@ export default function HomePage() {
             </div>
           </div>
         </div>
-
-        {/* CTA Tiles */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-          <button className="bg-white rounded-lg border border-border p-6 shadow-sm hover:shadow-md transition-shadow text-left">
-            <div className="flex items-center space-x-3 mb-2">
-              <BarChart3 className="w-5 h-5 text-primary" />
-              <h4 className="font-semibold text-text">View Categories</h4>
-            </div>
-            <p className="text-sm text-text-secondary">Drill down into category performance</p>
-          </button>
-          
-          <button className="bg-white rounded-lg border border-border p-6 shadow-sm hover:shadow-md transition-shadow text-left">
-            <div className="flex items-center space-x-3 mb-2">
-              <AlertTriangle className="w-5 h-5 text-warning" />
-              <h4 className="font-semibold text-text">View Misses</h4>
-            </div>
-            <p className="text-sm text-text-secondary">Analyze forecast errors</p>
-          </button>
-          
-          <button className="bg-white rounded-lg border border-border p-6 shadow-sm hover:shadow-md transition-shadow text-left">
-            <div className="flex items-center space-x-3 mb-2">
-              <Package className="w-5 h-5 text-secondary" />
-              <h4 className="font-semibold text-text">View Actions</h4>
-            </div>
-            <p className="text-sm text-text-secondary">Take recommended actions</p>
-          </button>
-        </div>
+        
       </main>
     </div>
   );
