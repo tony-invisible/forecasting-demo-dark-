@@ -1071,9 +1071,9 @@
             if (stockWrap) {
                 stockWrap.style.backgroundColor = palette.tint;
                 stockWrap.style.borderTop = '';
-                stockWrap.style.border = `2px solid ${palette.border}`;
+                stockWrap.style.border = `1px solid var(--border)`; // match lower cards
                 stockWrap.style.borderRadius = '0.75rem';
-                stockWrap.style.boxShadow = `0 0 0 1px ${palette.border}`;
+                stockWrap.style.boxShadow = '';
             }
             el.innerHTML = `
                 <div class="flex items-start justify-between mb-3">
