@@ -175,6 +175,9 @@
         [data-theme='dark'] svg rect[fill="#FFFFFF"] {
             fill: var(--surface) !important;
         }
+        /* Recommended Action label color */
+        .ra-label { color: var(--accent-amber-700); }
+        [data-theme='dark'] .ra-label { color: var(--accent-amber-700) !important; }
         
         body {
             font-family: 'Inter', sans-serif;
@@ -1082,7 +1085,7 @@
             el.innerHTML = `
                 <div class="flex items-start justify-between mb-3">
                     <div>
-                        <div class="text-xs uppercase tracking-wide mb-1" style="color: var(--accent-amber-700)">RECOMMENDED ACTION</div>
+                        <div class="ra-label text-xs uppercase tracking-wide mb-1">RECOMMENDED ACTION</div>
                         <div class="text-xl font-semibold text-gray-900">${rec.headline}</div>
                     </div>
                     ${rec.priorityHTML}
