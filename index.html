@@ -162,6 +162,14 @@
             color: var(--text-primary) !important;
         }
         
+        /* Fix chart backgrounds in dark mode - remove white backgrounds */
+        [data-theme='dark'] .bg-white.rounded-lg:has(#sku-projection-chart),
+        [data-theme='dark'] .bg-white.rounded-lg:has(#sku-historical-chart),
+        [data-theme='dark'] .bg-white.rounded-lg:has(#portfolio-chart),
+        [data-theme='dark'] .bg-white.rounded-lg:has(#category-chart) {
+            background-color: transparent !important;
+        }
+        
         body {
             font-family: 'Inter', sans-serif;
             background: #f2f4f7; /* more enterprise, higher contrast */
