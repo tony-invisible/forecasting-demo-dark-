@@ -446,37 +446,56 @@
                 </div>
             </div>
 
-            <!-- Callouts Panel -->
-            <div class="card p-6">
-                <h3 class="text-lg font-semibold text-gray-900 mb-4">Top Insights</h3>
-                            <div class="space-y-3">
-                    <div class="flex items-start space-x-3">
-                        <div class="w-2 h-2 bg-green-600 rounded-full mt-2"></div>
-                        <div>
-                            <p class="text-sm font-medium text-gray-900">Electronics category up 22%</p>
-                            <p class="text-xs text-gray-500">Supply down. Reorder now.</p>
+            <!-- Insights + Nav Row -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+                <!-- Top Insights (left) -->
+                <div class="card p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Top Insights</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-start space-x-3">
+                            <div class="w-2 h-2 bg-green-600 rounded-full mt-2"></div>
+                            <div>
+                                <p class="text-sm font-medium text-gray-900">Electronics category up 22%</p>
+                                <p class="text-xs text-gray-500">Supply down. Reorder now.</p>
+                            </div>
                         </div>
-                    </div>
-                    <div class="flex items-start space-x-3">
-                        <div class="w-2 h-2 bg-yellow-500 rounded-full mt-2"></div>
-                        <div>
-                            <p class="text-sm font-medium text-gray-900">Clothing confidence low</p>
-                            <p class="text-xs text-gray-500">Sparse history. Investigate.</p>
+                        <div class="flex items-start space-x-3">
+                            <div class="w-2 h-2 bg-yellow-500 rounded-full mt-2"></div>
+                            <div>
+                                <p class="text-sm font-medium text-gray-900">Clothing confidence low</p>
+                                <p class="text-xs text-gray-500">Sparse history. Investigate.</p>
+                            </div>
                         </div>
-                    </div>
-                    <div class="flex items-start space-x-3">
-                        <div class="w-2 h-2 bg-red-600 rounded-full mt-2"></div>
-                        <div>
-                            <p class="text-sm font-medium text-gray-900">Toys & Games forecast down 15%</p>
-                            <p class="text-xs text-gray-500">Weeks of supply >8. Markdown recommended.</p>
+                        <div class="flex items-start space-x-3">
+                            <div class="w-2 h-2 bg-red-600 rounded-full mt-2"></div>
+                            <div>
+                                <p class="text-sm font-medium text-gray-900">Toys & Games forecast down 15%</p>
+                                <p class="text-xs text-gray-500">Weeks of supply >8. Markdown recommended.</p>
+                            </div>
                         </div>
                     </div>
                 </div>
+                <!-- View Categories (middle) -->
+                <button class="card p-6 hover:shadow-md transition-shadow text-left" onclick="showCategories()">
+                    <div class="flex items-center space-x-3 mb-2">
+                        <i data-lucide="bar-chart-3" class="w-5 h-5 text-blue-600"></i>
+                        <h4 class="font-semibold text-gray-900">View Categories</h4>
+                    </div>
+                    <p class="text-sm text-gray-500">Drill down into category performance</p>
+                </button>
+                <!-- View Misses (right) -->
+                <button class="card p-6 hover:shadow-md transition-shadow text-left">
+                    <div class="flex items-center space-x-3 mb-2">
+                        <i data-lucide="alert-triangle" class="w-5 h-5 text-yellow-500"></i>
+                        <h4 class="font-semibold text-gray-900">View Misses</h4>
+                    </div>
+                    <p class="text-sm text-gray-500">Analyze forecast errors</p>
+                </button>
             </div>
 
             <!-- CTA Tiles -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-                <button class="bg-white rounded-lg border border-gray-200 p-6 shadow-sm hover:shadow-md transition-shadow text-left">
+                <button class="card p-6 hover:shadow-md transition-shadow text-left" onclick="showCategories()">
                     <div class="flex items-center space-x-3 mb-2">
                         <i data-lucide="bar-chart-3" class="w-5 h-5 text-blue-600"></i>
                         <h4 class="font-semibold text-gray-900">View Categories</h4>
@@ -484,7 +503,7 @@
                     <p class="text-sm text-gray-500">Drill down into category performance</p>
                 </button>
                 
-                <button class="bg-white rounded-lg border border-gray-200 p-6 shadow-sm hover:shadow-md transition-shadow text-left">
+                <button class="card p-6 hover:shadow-md transition-shadow text-left">
                     <div class="flex items-center space-x-3 mb-2">
                         <i data-lucide="alert-triangle" class="w-5 h-5 text-yellow-500"></i>
                         <h4 class="font-semibold text-gray-900">View Misses</h4>
@@ -492,7 +511,7 @@
                     <p class="text-sm text-gray-500">Analyze forecast errors</p>
                 </button>
                 
-                <button class="bg-white rounded-lg border border-gray-200 p-6 shadow-sm hover:shadow-md transition-shadow text-left">
+                <button class="card p-6 hover:shadow-md transition-shadow text-left">
                     <div class="flex items-center space-x-3 mb-2">
                         <i data-lucide="package" class="w-5 h-5 text-green-600"></i>
                         <h4 class="font-semibold text-gray-900">View Actions</h4>
@@ -2039,32 +2058,50 @@
                     </div>
                 </div>
 
-                <!-- Callouts Panel -->
-                <div class="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Top Insights</h3>
-                    <div class="space-y-3">
-                        <div class="flex items-start space-x-3">
-                            <div class="w-2 h-2 bg-green-600 rounded-full mt-2"></div>
-                            <div>
-                                <p class="text-sm font-medium text-gray-900">Electronics category up 22%</p>
-                                <p class="text-xs text-gray-500">Supply down. Reorder now.</p>
+                <!-- Insights + Nav Row -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+                    <div class="card p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Top Insights</h3>
+                        <div class="space-y-3">
+                            <div class="flex items-start space-x-3">
+                                <div class="w-2 h-2 bg-green-600 rounded-full mt-2"></div>
+                                <div>
+                                    <p class="text-sm font-medium text-gray-900">Electronics category up 22%</p>
+                                    <p class="text-xs text-gray-500">Supply down. Reorder now.</p>
+                                </div>
                             </div>
-                        </div>
-                        <div class="flex items-start space-x-3">
-                            <div class="w-2 h-2 bg-yellow-500 rounded-full mt-2"></div>
-                            <div>
-                                <p class="text-sm font-medium text-gray-900">Clothing confidence low</p>
-                                <p class="text-xs text-gray-500">Sparse history. Investigate.</p>
+                            <div class="flex items-start space-x-3">
+                                <div class="w-2 h-2 bg-yellow-500 rounded-full mt-2"></div>
+                                <div>
+                                    <p class="text-sm font-medium text-gray-900">Clothing confidence low</p>
+                                    <p class="text-xs text-gray-500">Sparse history. Investigate.</p>
+                                </div>
                             </div>
-                        </div>
-                        <div class="flex items-start space-x-3">
-                            <div class="w-2 h-2 bg-red-600 rounded-full mt-2"></div>
-                            <div>
-                                <p class="text-sm font-medium text-gray-900">Toys & Games forecast down 15%</p>
-                                <p class="text-xs text-gray-500">Weeks of supply >8. Markdown recommended.</p>
+                            <div class="flex items-start space-x-3">
+                                <div class="w-2 h-2 bg-red-600 rounded-full mt-2"></div>
+                                <div>
+                                    <p class="text-sm font-medium text-gray-900">Toys & Games forecast down 15%</p>
+                                    <p class="text-xs text-gray-500">Weeks of supply >8. Markdown recommended.</p>
+                                </div>
                             </div>
                         </div>
                     </div>
+                    <!-- View Categories (middle) -->
+                    <button class="card p-6 hover:shadow-md transition-shadow text-left" onclick="showCategories()">
+                        <div class="flex items-center space-x-3 mb-2">
+                            <i data-lucide="bar-chart-3" class="w-5 h-5 text-blue-600"></i>
+                            <h4 class="font-semibold text-gray-900">View Categories</h4>
+                        </div>
+                        <p class="text-sm text-gray-500">Drill down into category performance</p>
+                    </button>
+                    <!-- View Misses (right) -->
+                    <button class="card p-6 hover:shadow-md transition-shadow text-left">
+                        <div class="flex items-center space-x-3 mb-2">
+                            <i data-lucide="alert-triangle" class="w-5 h-5 text-yellow-500"></i>
+                            <h4 class="font-semibold text-gray-900">View Misses</h4>
+                        </div>
+                        <p class="text-sm text-gray-500">Analyze forecast errors</p>
+                    </button>
                 </div>
 
                 <!-- CTA Tiles -->
