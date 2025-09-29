@@ -1069,10 +1069,7 @@
             el.style.backgroundColor = palette.tint;
             const actionWrap = document.getElementById('sku-action-wrap');
             if (actionWrap) {
-                actionWrap.style.borderTop = '';
-                actionWrap.style.border = `2px solid ${palette.border}`; // stronger colored border for emphasis
-                actionWrap.style.borderRadius = '0.75rem';
-                actionWrap.style.boxShadow = `0 0 0 1px ${palette.border}`; // subtle outline to separate from canvas
+                actionWrap.classList.add('card_highlight');
             }
             // Stock & Risk: apply a related tint and subtle colored border to indicate relationship
             const stockWrap = document.getElementById('sku-stock-card');
