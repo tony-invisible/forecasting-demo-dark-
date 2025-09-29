@@ -349,7 +349,7 @@
 
             <!-- Hero KPIs -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div class="card p-6 shadow-sm border-2" style="border-color:#1E4DD8; background: rgba(30,77,216,0.06); border-radius: 12px;" onclick="drillDown('portfolio')">
+                <div class="kpi-card card-hover card p-6 cursor-pointer" onclick="drillDown('portfolio')">
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-sm font-medium text-gray-500 mb-1">Total Revenue</p>
@@ -362,7 +362,7 @@
                     </div>
                 </div>
 
-                <div class="card p-6 shadow-sm border-2" style="border-color:#1E4DD8; background: rgba(30,77,216,0.06); border-radius: 12px;" onclick="showCategories()">
+                <div class="kpi-card card-hover card p-6 cursor-pointer" onclick="showCategories()">
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-sm font-medium text-gray-500 mb-1">Forecast Revenue</p>
@@ -375,7 +375,7 @@
                     </div>
                 </div>
 
-                <div class="card p-6 shadow-sm border-2" style="border-color:#1E4DD8; background: rgba(30,77,216,0.06); border-radius: 12px;" onclick="showCategories()">
+                <div class="kpi-card card-hover card p-6 cursor-pointer" onclick="showCategories()">
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-sm font-medium text-gray-500 mb-1">Miss Rate</p>
@@ -1082,7 +1082,7 @@
             el.innerHTML = `
                 <div class="flex items-start justify-between mb-3">
                     <div>
-                        <div class="text-xs uppercase tracking-wide mb-1" style="color: var(--accent-amber-600)">RECOMMENDED ACTION</div>
+                        <div class="text-xs uppercase tracking-wide mb-1" style="color: var(--accent-amber-700)">RECOMMENDED ACTION</div>
                         <div class="text-xl font-semibold text-gray-900">${rec.headline}</div>
                     </div>
                     ${rec.priorityHTML}
