@@ -178,6 +178,14 @@
         /* Recommended Action label color */
         .ra-label { color: var(--accent-amber-700); }
         [data-theme='dark'] .ra-label { color: var(--accent-amber-700) !important; }
+
+        /* Nuclear override: ensure highlight and KPI borders/background win in dark mode */
+        [data-theme='dark'] .kpi-card,
+        [data-theme='dark'] .card_highlight {
+            background-color: #111a2a !important;
+            border: 2px solid rgba(96,165,250,0.60) !important;
+            box-shadow: 0 0 0 1px rgba(96,165,250,0.45) !important;
+        }
         
         body {
             font-family: 'Inter', sans-serif;
