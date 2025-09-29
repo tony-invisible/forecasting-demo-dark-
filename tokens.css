@@ -13,15 +13,17 @@
 }
 
 /* Make KPI cards visibly different sitewide */
-[data-theme='dark'] .kpi-card { background: #0B1220 !important; border: 2px solid rgba(96,165,250,0.60) !important; box-shadow: 0 0 0 1px rgba(96,165,250,0.45) !important; }
+/* KPI cards follow default card styling in dark mode */
 
 /* Highlighted card style (used for Recommended Action) */
 .card_highlight {
-  border: 2px solid rgba(96,165,250,0.60);
-  border-radius: 12px;
+  border: 2px solid rgba(96,165,250,0.60) !important;
+  border-radius: 12px !important;
 }
 [data-theme='dark'] .card_highlight {
-  background-color: #111a2a; /* slightly lighter than #0F172A/#0B1220 */
+  background-color: #111a2a !important; /* slightly lighter than #0F172A/#0B1220 */
+  border: 2px solid rgba(96,165,250,0.60) !important;
+  box-shadow: 0 0 0 1px rgba(96,165,250,0.45) !important;
 }
 [data-theme='light'] .card_highlight {
   background-color: #F8FAFF;
