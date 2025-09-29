@@ -832,21 +832,22 @@
                 try { ReactDOM.unmountComponentAtNode(mount); } catch (_) {}
             }
             mount.innerHTML = '';
-            const { ResponsiveContainer, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Line } = Recharts;
+            const { ResponsiveContainer, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Line, ReferenceLine } = Recharts;
 
             function currency(v){ return `$${v.toFixed(2)}M`; }
 
             const Chart = () => (
                 React.createElement(ResponsiveContainer, { width: '100%', height: '100%' },
-                    React.createElement(LineChart, { data: chartData, margin: { top: 8, right: 24, left: 0, bottom: 8 } },
-                        React.createElement(CartesianGrid, { strokeDasharray: '3 3', stroke: '#E5E7EB' }),
-                        React.createElement(XAxis, { dataKey: 'month', tick: { fill: '#64748B' }, axisLine: { stroke: '#CBD5E1' } }),
-                        React.createElement(YAxis, { tick: { fill: '#64748B' }, axisLine: { stroke: '#CBD5E1' }, tickFormatter: currency }),
-                        React.createElement(Tooltip, { formatter: (v, n) => [currency(v), n === 'actual' ? 'Actuals' : n === 'baseline' ? 'Baseline' : 'Model Forecast'] }),
-                        React.createElement(Legend, { verticalAlign: 'bottom', height: 24 }),
-                        React.createElement(Line, { type: 'monotone', dataKey: 'actual', name: 'Actuals', stroke: '#2563EB', dot: false, strokeWidth: 2 }),
-                        React.createElement(Line, { type: 'monotone', dataKey: 'baseline', name: 'Baseline', stroke: '#64748B', dot: false, strokeWidth: 2 }),
-                        React.createElement(Line, { type: 'monotone', dataKey: 'model', name: 'Model Forecast', stroke: '#EF4444', dot: false, strokeWidth: 2 })
+                    React.createElement(LineChart, { data: chartData, margin: { top: 8, right: 24, left: 8, bottom: 8 } },
+                        React.createElement(CartesianGrid, { strokeDasharray: '3 3', stroke: '#243244' }),
+                        React.createElement(XAxis, { dataKey: 'month', tick: { fill: '#94A3B8' }, axisLine: { stroke: '#243244' } }),
+                        React.createElement(YAxis, { tick: { fill: '#94A3B8' }, axisLine: { stroke: '#243244' }, tickFormatter: currency, domain: ['dataMin-0.2', 'dataMax+0.2'] }),
+                        React.createElement(Tooltip, { contentStyle: { background:'#0B1220', border:'1px solid #243244', color:'#E5E7EB', borderRadius:8 }, labelStyle:{ color:'#E5E7EB' }, formatter: (v, n) => [currency(v), n === 'actual' ? 'Actuals' : n === 'baseline' ? 'Baseline' : 'Model Forecast'] }),
+                        React.createElement(Legend, { verticalAlign: 'top', align: 'right', iconType: 'circle' }),
+                        React.createElement(ReferenceLine, { x: '2024-10', stroke: '#64748B', strokeDasharray: '2 2' }),
+                        React.createElement(Line, { type: 'monotone', dataKey: 'actual', name: 'Actuals', stroke: '#2563EB', dot: false, activeDot: { r: 5 }, strokeWidth: 2 }),
+                        React.createElement(Line, { type: 'monotone', dataKey: 'baseline', name: 'Baseline', stroke: '#94A3B8', dot: false, strokeDasharray: '4 3', strokeWidth: 2 }),
+                        React.createElement(Line, { type: 'monotone', dataKey: 'model', name: 'Model Forecast', stroke: '#EF4444', dot: false, activeDot: { r: 5 }, strokeWidth: 2 })
                     )
                 )
             );
@@ -869,19 +870,20 @@
                 const label = categoryChartScope === 'portfolio' ? 'Portfolio (all categories)' : `Category: ${activeCat}${selectedSubcategory ? ' / ' + selectedSubcategory : ''}`;
                 subtitleEl.textContent = label;
             }
-            const { ResponsiveContainer, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Line } = Recharts;
+            const { ResponsiveContainer, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Line, ReferenceLine } = Recharts;
             function currency(v){ return `$${v.toFixed(2)}M`; }
             const Chart = () => (
                 React.createElement(ResponsiveContainer, { width: '100%', height: '100%' },
                     React.createElement(LineChart, { data, margin: { top: 8, right: 24, left: 8, bottom: 24 } },
-                        React.createElement(CartesianGrid, { strokeDasharray: '3 3', stroke: '#E5E7EB' }),
-                        React.createElement(XAxis, { dataKey: 'month', tick: { fill: '#64748B' }, tickMargin: 8, interval: 'preserveEnd', axisLine: { stroke: '#CBD5E1' } }),
-                        React.createElement(YAxis, { tick: { fill: '#64748B' }, width: 60, axisLine: { stroke: '#CBD5E1' }, domain: [0, 'auto'], tickFormatter: currency }),
-                        React.createElement(Tooltip, { formatter: (v, n) => [currency(v), n === 'actual' ? 'Actuals' : n === 'baseline' ? 'Baseline' : 'Model Forecast'] }),
-                        React.createElement(Legend, { verticalAlign: 'bottom', height: 24 }),
-                        React.createElement(Line, { type: 'monotone', dataKey: 'actual', name: 'Actuals', stroke: '#2563EB', dot: false, strokeWidth: 2 }),
-                        React.createElement(Line, { type: 'monotone', dataKey: 'baseline', name: 'Baseline', stroke: '#64748B', dot: false, strokeWidth: 2 }),
-                        React.createElement(Line, { type: 'monotone', dataKey: 'model', name: 'Model Forecast', stroke: '#EF4444', dot: false, strokeWidth: 2 })
+                        React.createElement(CartesianGrid, { strokeDasharray: '3 3', stroke: '#243244' }),
+                        React.createElement(XAxis, { dataKey: 'month', tick: { fill: '#94A3B8' }, tickMargin: 8, interval: 'preserveEnd', axisLine: { stroke: '#243244' } }),
+                        React.createElement(YAxis, { tick: { fill: '#94A3B8' }, width: 60, axisLine: { stroke: '#243244' }, domain: ['dataMin-0.2', 'auto'], tickFormatter: currency }),
+                        React.createElement(Tooltip, { contentStyle: { background:'#0B1220', border:'1px solid #243244', color:'#E5E7EB', borderRadius:8 }, labelStyle:{ color:'#E5E7EB' }, formatter: (v, n) => [currency(v), n === 'actual' ? 'Actuals' : n === 'baseline' ? 'Baseline' : 'Model Forecast'] }),
+                        React.createElement(Legend, { verticalAlign: 'top', align: 'right', iconType: 'circle' }),
+                        React.createElement(ReferenceLine, { x: '2024-10', stroke: '#64748B', strokeDasharray: '2 2' }),
+                        React.createElement(Line, { type: 'monotone', dataKey: 'actual', name: 'Actuals', stroke: '#2563EB', dot: false, activeDot: { r: 5 }, strokeWidth: 2 }),
+                        React.createElement(Line, { type: 'monotone', dataKey: 'baseline', name: 'Baseline', stroke: '#94A3B8', dot: false, strokeDasharray: '4 3', strokeWidth: 2 }),
+                        React.createElement(Line, { type: 'monotone', dataKey: 'model', name: 'Model Forecast', stroke: '#EF4444', dot: false, activeDot: { r: 5 }, strokeWidth: 2 })
                     )
                 )
             );
