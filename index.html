@@ -162,16 +162,23 @@
             color: var(--text-primary) !important;
         }
         
-        /* NUCLEAR: Fix ALL chart backgrounds in dark mode */
-        [data-theme='dark'] .h-64.bg-white.rounded-lg,
-        [data-theme='dark'] .h-60.bg-white.rounded-lg,
-        [data-theme='dark'] .h-80.bg-white.rounded-lg {
+        /* ULTRA NUCLEAR: Override EVERYTHING white in dark mode */
+        [data-theme='dark'] .bg-white,
+        [data-theme='dark'] div[style*="background"],
+        [data-theme='dark'] svg,
+        [data-theme='dark'] .recharts-wrapper,
+        [data-theme='dark'] .recharts-surface,
+        [data-theme='dark'] .recharts-cartesian-grid,
+        [data-theme='dark'] .recharts-responsive-container {
             background-color: var(--surface) !important;
+            background: var(--surface) !important;
         }
         
-        /* Also target any div containing chart IDs */
-        [data-theme='dark'] div[id*="chart"] {
-            background-color: var(--surface) !important;
+        /* Force all SVG backgrounds to be dark */
+        [data-theme='dark'] svg rect[fill="white"],
+        [data-theme='dark'] svg rect[fill="#ffffff"],
+        [data-theme='dark'] svg rect[fill="#FFFFFF"] {
+            fill: var(--surface) !important;
         }
         
         body {
