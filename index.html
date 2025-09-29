@@ -1079,11 +1079,15 @@
                 : { rail: '#2563EB', tint: isDark ? 'rgba(96,165,250,0.18)' : 'rgba(37,99,235,0.06)', border: isDark ? 'rgba(96,165,250,0.60)' : 'rgba(37,99,235,0.16)' };
             if (rail) rail.style.backgroundColor = palette.rail;
             // Card styles per your direction
-            // Action card: keep full border on all sides (use default card border), keep tint
-            el.style.backgroundColor = palette.tint;
+            // Use requested dark fill when in dark theme so color changes are visible
+            const targetFill = isDark ? '#28324E' : palette.tint;
+            el.style.backgroundColor = targetFill;
             const actionWrap = document.getElementById('sku-action-wrap');
             if (actionWrap) {
                 actionWrap.classList.add('card_highlight');
+                actionWrap.style.backgroundColor = targetFill;
+                actionWrap.style.border = '2px solid rgba(96,165,250,0.60)';
+                actionWrap.style.boxShadow = '0 0 0 1px rgba(96,165,250,0.45)';
             }
             // Stock & Risk: apply a related tint and subtle colored border to indicate relationship
             const stockWrap = document.getElementById('sku-stock-card');
