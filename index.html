@@ -8,7 +8,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Forecasting 2.0 Demo - FIXED VERSION</title>
+    <title>Forecasting 2.0 Demo</title>
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/prop-types@15.8.1/prop-types.min.js"></script>
@@ -1033,7 +1033,7 @@
             const scaled = selectedRetailer==='all' ? proj : proj.map(p => ({ month:p.month, lower: +(p.lower*factor).toFixed(2), mean: +(p.mean*factor).toFixed(2), upper: +(p.upper*factor).toFixed(2) }));
             const Chart = () => (
                 React.createElement(ResponsiveContainer, { width: '100%', height: '100%' },
-                    React.createElement(AreaChart, { data: scaled, margin: { top: 8, right: 24, left: 8, bottom: 8 } },
+                    React.createElement(AreaChart, { data: scaled, margin: { top: 8, right: 24, left: 8, bottom: 8 }, style: { backgroundColor: 'transparent' } },
                         React.createElement(CartesianGrid, { strokeDasharray: '3 3', stroke: '#F1F5F9' }),
                         React.createElement(XAxis, { dataKey: 'month', tick: { fill: '#64748B' } }),
                         React.createElement(YAxis, { tick: { fill: '#64748B' }, width: 60, tickFormatter: currency }),
