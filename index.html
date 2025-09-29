@@ -140,6 +140,12 @@
         [data-theme='dark'] div.text-gray-800,
         [data-theme='dark'] div.text-gray-900 { color: #FF0000 !important; }
         
+        /* ULTRA-SPECIFIC: Target the exact span elements in dynamically generated cards */
+        [data-theme='dark'] .space-y-3 span.text-sm.text-gray-500,
+        [data-theme='dark'] .space-y-3 .text-sm.text-gray-500,
+        [data-theme='dark'] span.text-sm.text-gray-500,
+        [data-theme='dark'] .text-sm.text-gray-500 { color: #FF0000 !important; }
+        
         body {
             font-family: 'Inter', sans-serif;
             background: #f2f4f7; /* more enterprise, higher contrast */
