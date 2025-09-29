@@ -476,21 +476,29 @@
                     </div>
                 </div>
                 <!-- View Categories (middle) -->
-                <button class="card p-6 hover:shadow-md transition-shadow text-left" onclick="showCategories()">
+                <div class="card p-6">
                     <div class="flex items-center space-x-3 mb-2">
                         <i data-lucide="bar-chart-3" class="w-5 h-5 text-blue-600"></i>
                         <h4 class="font-semibold text-gray-900">View Categories</h4>
                     </div>
-                    <p class="text-sm text-gray-500">Drill down into category performance</p>
-                </button>
+                    <ul class="text-sm text-blue-600 space-y-2">
+                        <li><a href="#" onclick="chooseCategory('electronics'); return false;" class="hover:underline">Electronics</a></li>
+                        <li><a href="#" onclick="chooseCategory('clothing'); return false;" class="hover:underline">Clothing</a></li>
+                        <li><a href="#" onclick="chooseCategory('toys'); return false;" class="hover:underline">Toys & Games</a></li>
+                    </ul>
+                </div>
                 <!-- View Misses (right) -->
-                <button class="card p-6 hover:shadow-md transition-shadow text-left">
+                <div class="card p-6">
                     <div class="flex items-center space-x-3 mb-2">
                         <i data-lucide="alert-triangle" class="w-5 h-5 text-yellow-500"></i>
                         <h4 class="font-semibold text-gray-900">View Misses</h4>
                     </div>
-                    <p class="text-sm text-gray-500">Analyze forecast errors</p>
-                </button>
+                    <ul class="text-sm space-y-2">
+                        <li><a href="#" class="text-blue-600 hover:underline" onclick="showCategories(); setTimeout(()=>selectCategory('electronics'),0); return false;">High miss: Electronics − Baseline MAPE 24%</a></li>
+                        <li><a href="#" class="text-blue-600 hover:underline" onclick="showCategories(); setTimeout(()=>selectCategory('clothing'),0); return false;">Low confidence: Clothing − Investigate sparse history</a></li>
+                        <li><a href="#" class="text-blue-600 hover:underline" onclick="showCategories(); setTimeout(()=>selectCategory('toys'),0); return false;">Overstock: Toys & Games − WOS > 8, apply markdown</a></li>
+                    </ul>
+                </div>
             </div>
 
             <!-- CTA Tiles -->
@@ -2087,21 +2095,29 @@
                         </div>
                     </div>
                     <!-- View Categories (middle) -->
-                    <button class="card p-6 hover:shadow-md transition-shadow text-left" onclick="showCategories()">
+                    <div class="card p-6">
                         <div class="flex items-center space-x-3 mb-2">
                             <i data-lucide="bar-chart-3" class="w-5 h-5 text-blue-600"></i>
                             <h4 class="font-semibold text-gray-900">View Categories</h4>
                         </div>
-                        <p class="text-sm text-gray-500">Drill down into category performance</p>
-                    </button>
+                        <ul class="text-sm text-blue-600 space-y-2">
+                            <li><a href="#" onclick="chooseCategory('electronics'); return false;" class="hover:underline">Electronics</a></li>
+                            <li><a href="#" onclick="chooseCategory('clothing'); return false;" class="hover:underline">Clothing</a></li>
+                            <li><a href="#" onclick="chooseCategory('toys'); return false;" class="hover:underline">Toys & Games</a></li>
+                        </ul>
+                    </div>
                     <!-- View Misses (right) -->
-                    <button class="card p-6 hover:shadow-md transition-shadow text-left">
+                    <div class="card p-6">
                         <div class="flex items-center space-x-3 mb-2">
                             <i data-lucide="alert-triangle" class="w-5 h-5 text-yellow-500"></i>
                             <h4 class="font-semibold text-gray-900">View Misses</h4>
                         </div>
-                        <p class="text-sm text-gray-500">Analyze forecast errors</p>
-                    </button>
+                        <ul class="text-sm space-y-2">
+                            <li><a href="#" class="text-blue-600 hover:underline" onclick="showCategories(); setTimeout(()=>selectCategory('electronics'),0); return false;">High miss: Electronics − Baseline MAPE 24%</a></li>
+                            <li><a href="#" class="text-blue-600 hover:underline" onclick="showCategories(); setTimeout(()=>selectCategory('clothing'),0); return false;">Low confidence: Clothing − Investigate sparse history</a></li>
+                            <li><a href="#" class="text-blue-600 hover:underline" onclick="showCategories(); setTimeout(()=>selectCategory('toys'),0); return false;">Overstock: Toys & Games − WOS > 8, apply markdown</a></li>
+                        </ul>
+                    </div>
                 </div>
 
                 <!-- CTA Tiles -->
