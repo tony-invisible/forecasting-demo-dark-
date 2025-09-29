@@ -162,12 +162,16 @@
             color: var(--text-primary) !important;
         }
         
-        /* Fix chart backgrounds in dark mode - remove white backgrounds */
-        [data-theme='dark'] .bg-white.rounded-lg:has(#sku-projection-chart),
-        [data-theme='dark'] .bg-white.rounded-lg:has(#sku-historical-chart),
-        [data-theme='dark'] .bg-white.rounded-lg:has(#portfolio-chart),
-        [data-theme='dark'] .bg-white.rounded-lg:has(#category-chart) {
-            background-color: transparent !important;
+        /* NUCLEAR: Fix ALL chart backgrounds in dark mode */
+        [data-theme='dark'] .h-64.bg-white.rounded-lg,
+        [data-theme='dark'] .h-60.bg-white.rounded-lg,
+        [data-theme='dark'] .h-80.bg-white.rounded-lg {
+            background-color: var(--surface) !important;
+        }
+        
+        /* Also target any div containing chart IDs */
+        [data-theme='dark'] div[id*="chart"] {
+            background-color: var(--surface) !important;
         }
         
         body {
