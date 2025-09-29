@@ -124,6 +124,27 @@
         [data-theme='dark'] .text-green-600 { color: #10B981 !important; }
         [data-theme='dark'] .text-red-600 { color: #EF4444 !important; }
         
+        /* Fix dropdown and form elements in dark mode */
+        [data-theme='dark'] .input,
+        [data-theme='dark'] select.input { 
+            background-color: var(--surface) !important; 
+            border-color: var(--border) !important; 
+            color: var(--text-primary) !important; 
+        }
+        
+        /* Fix confidence badges - preserve colored backgrounds with proper contrast */
+        [data-theme='dark'] .bg-green-50 { background-color: rgba(16, 185, 129, 0.15) !important; }
+        [data-theme='dark'] .text-green-700 { color: #10B981 !important; }
+        [data-theme='dark'] .border-green-200 { border-color: rgba(16, 185, 129, 0.3) !important; }
+        
+        [data-theme='dark'] .bg-amber-50 { background-color: rgba(245, 158, 11, 0.15) !important; }
+        [data-theme='dark'] .text-amber-700 { color: #F59E0B !important; }
+        [data-theme='dark'] .border-amber-200 { border-color: rgba(245, 158, 11, 0.3) !important; }
+        
+        [data-theme='dark'] .bg-red-50 { background-color: rgba(239, 68, 68, 0.15) !important; }
+        [data-theme='dark'] .text-red-700 { color: #EF4444 !important; }
+        [data-theme='dark'] .border-red-200 { border-color: rgba(239, 68, 68, 0.3) !important; }
+        
         body {
             font-family: 'Inter', sans-serif;
             background: #f2f4f7; /* more enterprise, higher contrast */
