@@ -110,41 +110,18 @@
         /* Cards inside dark sections */
         [data-theme='dark'] .card > .bg-white { background-color: var(--surface) !important; }
         
-        /* TEMPORARY: Make all card text bright red to verify deployment */
-        [data-theme='dark'] .card .text-gray-500,
-        [data-theme='dark'] .card .text-gray-600,
-        [data-theme='dark'] .card .text-gray-700,
-        [data-theme='dark'] .card .text-gray-800,
-        [data-theme='dark'] .card .text-gray-900 { color: #FF0000 !important; }
+        /* NUCLEAR APPROACH: Override ALL possible text color combinations */
+        [data-theme='dark'] * { color: var(--text-primary) !important; }
+        [data-theme='dark'] .text-green-600,
+        [data-theme='dark'] .text-red-600,
+        [data-theme='dark'] .text-blue-600,
+        [data-theme='dark'] .text-yellow-500,
+        [data-theme='dark'] .text-amber-600 { color: inherit !important; }
         
-        [data-theme='dark'] .kpi-card .text-gray-500,
-        [data-theme='dark'] .kpi-card .text-gray-600,
-        [data-theme='dark'] .kpi-card .text-gray-700,
-        [data-theme='dark'] .kpi-card .text-gray-800,
-        [data-theme='dark'] .kpi-card .text-gray-900 { color: #FF0000 !important; }
-        
-        /* TEMPORARY: Make all text elements bright red */
-        [data-theme='dark'] p.text-gray-500,
-        [data-theme='dark'] p.text-gray-600,
-        [data-theme='dark'] p.text-gray-700,
-        [data-theme='dark'] p.text-gray-800,
-        [data-theme='dark'] p.text-gray-900,
-        [data-theme='dark'] span.text-gray-500,
-        [data-theme='dark'] span.text-gray-600,
-        [data-theme='dark'] span.text-gray-700,
-        [data-theme='dark'] span.text-gray-800,
-        [data-theme='dark'] span.text-gray-900,
-        [data-theme='dark'] div.text-gray-500,
-        [data-theme='dark'] div.text-gray-600,
-        [data-theme='dark'] div.text-gray-700,
-        [data-theme='dark'] div.text-gray-800,
-        [data-theme='dark'] div.text-gray-900 { color: #FF0000 !important; }
-        
-        /* ULTRA-SPECIFIC: Target the exact span elements in dynamically generated cards */
-        [data-theme='dark'] .space-y-3 span.text-sm.text-gray-500,
-        [data-theme='dark'] .space-y-3 .text-sm.text-gray-500,
-        [data-theme='dark'] span.text-sm.text-gray-500,
-        [data-theme='dark'] .text-sm.text-gray-500 { color: #FF0000 !important; }
+        /* Preserve specific colored elements */
+        [data-theme='dark'] .text-positive { color: #10B981 !important; }
+        [data-theme='dark'] .text-negative { color: #EF4444 !important; }
+        [data-theme='dark'] .text-blue-600 { color: #60A5FA !important; }
         
         body {
             font-family: 'Inter', sans-serif;
