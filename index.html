@@ -6,7 +6,7 @@
     <title>Forecasting 2.0 Demo</title>
     <script>
       // Bump this on each deploy to bust caches
-      window.APP_VERSION = '2025.09.30.38';
+      window.APP_VERSION = '2025.09.30.39';
       (function(){
         // Force-bust HTML once per deploy by appending ?v=APP_VERSION
         try {
@@ -2440,23 +2440,27 @@
                     tourHighlight._originalZIndex = originalZIndex;
                     
                     // Smart positioning to avoid cutoff
-                    const tooltipHeight = 250; // Estimated tooltip height
+                    const tooltipHeight = 280; // Estimated tooltip height (increased for safety)
                     const spaceBelow = window.innerHeight - rect.bottom;
                     const spaceAbove = rect.top;
                     
-                    // If element is in bottom half and not enough space below, put tooltip above
-                    if (spaceBelow < tooltipHeight + 50 && spaceAbove > tooltipHeight + 50) {
+                    // Check if element is very large (like the chart or table)
+                    const elementHeight = rect.height;
+                    const isLargeElement = elementHeight > 400;
+                    
+                    // For large elements or when not enough space above/below, center it
+                    if (isLargeElement || (spaceAbove < 320 && spaceBelow < 320)) {
+                        // Center vertically
+                        tourTooltip.style.top = '50%';
+                        tourTooltip.style.left = '50%';
+                        tourTooltip.style.bottom = 'auto';
+                        tourTooltip.style.transform = 'translate(-50%, -50%)';
+                    } else if (spaceBelow < tooltipHeight + 40 && spaceAbove > tooltipHeight + 40) {
                         // Position above
                         tourTooltip.style.bottom = `${window.innerHeight - rect.top + 24}px`;
                         tourTooltip.style.top = 'auto';
                         tourTooltip.style.left = `${rect.left + rect.width/2}px`;
                         tourTooltip.style.transform = 'translateX(-50%)';
-                    } else if (spaceAbove < 100 || spaceBelow < 100) {
-                        // Not enough space above or below, center vertically
-                        tourTooltip.style.top = '50%';
-                        tourTooltip.style.left = '50%';
-                        tourTooltip.style.bottom = 'auto';
-                        tourTooltip.style.transform = 'translate(-50%, -50%)';
                     } else {
                         // Position below (default)
                         tourTooltip.style.top = `${rect.bottom + 24}px`;
