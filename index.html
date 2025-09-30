@@ -2361,8 +2361,18 @@
         let tourHighlight = null;
         
         function startTour() {
+            // Always reset tour and navigate to homepage first
             tourStep = 0;
-            showTourStep();
+            cleanupTour();
+            
+            // Navigate to portfolio/homepage if not already there
+            if (currentView !== 'portfolio') {
+                showPortfolioView();
+                // Wait for DOM to update before starting tour
+                setTimeout(() => showTourStep(), 300);
+            } else {
+                showTourStep();
+            }
         }
 
         function showTourStep() {
