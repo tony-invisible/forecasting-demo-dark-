@@ -194,8 +194,8 @@
         /* KPI cards: requested fill color */
         [data-theme='dark'] .kpi-card { background-color: #28324E !important; }
         /* Subtle risk borders only */
-        [data-theme='dark'] .kpi-inventory-border { border-color: rgba(239,68,68,0.25) !important; }
-        [data-theme='dark'] .kpi-stockout-border { border-color: rgba(16,185,129,0.25) !important; }
+        [data-theme='dark'] .kpi-inventory-border { border-color: rgba(239,68,68,0.35) !important; border-width: 2px !important; }
+        [data-theme='dark'] .kpi-stockout-border { border-color: rgba(16,185,129,0.35) !important; border-width: 2px !important; }
         /* (reverted) risk coloring */
         
         body {
@@ -696,9 +696,9 @@
         };
 
         // Role-specific KPIs
-        const roleKPIs = {
+            const roleKPIs = {
             ops: [
-                { title: 'Inventory Risk', value: 'Medium', subtitle: '3 categories at risk', icon: 'package' },
+                { title: 'Inventory Risk', value: 'High', subtitle: '3 categories at risk', icon: 'package' },
                 { title: 'Stockout Risk', value: 'Low', subtitle: '2 SKUs flagged', icon: 'alert-triangle' }
             ],
             engineer: [
