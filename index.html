@@ -1801,20 +1801,32 @@
                 { name: 'Target', pct: 20 }
             ];
             const best = mix.reduce((a,b)=> (a.pct>b.pct?a:b));
+            const colors = {
+                Walmart: 'linear-gradient(90deg, rgba(96,165,250,0.9), rgba(59,130,246,0.7))',
+                Amazon: '#475569',
+                Target: '#334155'
+            };
+            const barHTML = `
+                <div class="text-sm text-gray-500 mb-2">Projected share</div>
+                <div class="flex h-2 w-full rounded overflow-hidden" style="background: rgba(148,163,184,0.15);">
+                    ${mix.map(m=>`<div title="${m.name} ${m.pct}%" style=\"width:${m.pct}%; background:${colors[m.name]||'#475569'}\"></div>`).join('')}
+                </div>
+                <div class="flex justify-between text-xs text-gray-500 mt-2">
+                    ${mix.map(m=>`<div class=\"flex items-center gap-2\"><span>${m.name}</span><span class=\"font-medium text-gray-300\">${m.pct}%</span></div>`).join('')}
+                </div>`;
+
             el.innerHTML = `
                 <h3 class="text-lg font-semibold text-gray-900 mb-3">Retailer Optimization</h3>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
                     <div>
                         <div class="text-sm text-gray-500 mb-1">Suggested focus</div>
-                        <div class="text-xl font-semibold text-gray-900">${best.name}</div>
-                        <div class="text-xs text-gray-500">Highest share in next 3 months</div>
-                    </div>
-                    <div class="md:col-span-2">
-                        <div class="text-sm text-gray-500 mb-2">Retailer share</div>
-                        <div class="grid grid-cols-3 text-sm">
-                            ${mix.map(m=>`<div class=\"flex justify-between pr-4\"><span>${m.name}</span><span class=\"font-medium\">${m.pct}%</span></div>`).join('')}
+                        <div class="flex items-center gap-2">
+                            <div class="text-2xl font-semibold text-gray-900">${best.name}</div>
+                            <span class="inline-flex items-center px-2 py-0.5 text-xs rounded-md" style="background: rgba(96,165,250,0.18); color:#60A5FA; border:1px solid rgba(96,165,250,0.35)">Focus</span>
                         </div>
+                        <div class="text-xs text-gray-500 mt-1">Highest projected share in next 3 months</div>
                     </div>
+                    <div class="md:col-span-2">${barHTML}</div>
                 </div>
             `;
         }
