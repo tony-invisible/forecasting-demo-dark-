@@ -6,7 +6,7 @@
     <title>Forecasting 2.0 Demo</title>
     <script>
       // Bump this on each deploy to bust caches
-      window.APP_VERSION = '2025.09.30.16';
+      window.APP_VERSION = '2025.09.30.17';
       (function(){
         // Force-bust HTML once per deploy by appending ?v=APP_VERSION
         try {
@@ -1073,15 +1073,14 @@
                         React.createElement(Line, { type: 'monotone', dataKey: 'actual', name: 'Actuals', stroke: '#2563EB', dot: false, strokeWidth: 2 }),
                         React.createElement(Line, { type: 'monotone', dataKey: 'baseline', name: 'Baseline', stroke: '#64748B', dot: false, strokeWidth: 2 }),
                         React.createElement(Line, { type: 'monotone', dataKey: 'model', name: 'Model', stroke: '#EF4444', dot: false, strokeWidth: 2 }),
-                        ...overlays.map((ov) => React.createElement(Line, {
+                        ...overlays.map((ov, idx) => React.createElement(Line, {
                             key: `comp-${ov.id}`,
                             type: 'monotone',
                             dataKey: 'model',
                             name: (list.find(x => x.id === ov.id)?.name || ov.id),
                             stroke: ov.color,
                             dot: false,
-                            strokeWidth: 2,
-                            data: buildSKUBaseSeries() // reuse shape for demo overlay
+                            strokeWidth: 2
                         })),
                         ...events.map(e => React.createElement(ReferenceLine, { key: e.month, x: e.month, stroke: '#CBD5E1', strokeDasharray: '3 3', isFront: true }))
                     )
