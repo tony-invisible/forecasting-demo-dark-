@@ -6,7 +6,7 @@
     <title>Forecasting 2.0 Demo</title>
     <script>
       // Bump this on each deploy to bust caches
-      window.APP_VERSION = '2025.09.30.15';
+      window.APP_VERSION = '2025.09.30.16';
       (function(){
         // Force-bust HTML once per deploy by appending ?v=APP_VERSION
         try {
@@ -1031,13 +1031,16 @@
 
         // ---------- SKU detail charts & action ----------
         function buildSKUBaseSeries() {
-            // Start from portfolio pattern but add SKU-specific noise
-            return chartData.map((p, i) => ({
-                month: p.month,
-                actual: Math.max(0, p.actual + (i%3-1)*0.05),
-                baseline: p.baseline + ((i%4-2)*0.03),
-                model: p.model + ((i%5-2)*0.04)
-            }));
+            // Generate SKU-specific data with realistic variation
+            return chartData.map((p, i) => {
+                const noise = Math.sin(i * 0.7) * 0.08; // Smooth variation
+                return {
+                    month: p.month,
+                    actual: Math.max(0.1, p.actual * 0.95 + noise), // Scale down slightly, add noise
+                    baseline: p.baseline * 0.93 + noise * 0.5,
+                    model: p.model * 0.94 + noise * 0.7
+                };
+            });
         }
 
         function renderSKUHistoricalChart() {
