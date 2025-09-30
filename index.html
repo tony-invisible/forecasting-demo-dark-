@@ -6,7 +6,7 @@
     <title>Forecasting 2.0 Demo</title>
     <script>
       // Bump this on each deploy to bust caches
-      window.APP_VERSION = '2025.09.30.14';
+      window.APP_VERSION = '2025.09.30.15';
       (function(){
         // Force-bust HTML once per deploy by appending ?v=APP_VERSION
         try {
@@ -839,9 +839,9 @@
             { month: '2024-07', actual: 4.6, baseline: 4.5, model: 4.6 },
             { month: '2024-08', actual: 4.9, baseline: 4.7, model: 4.8 },
             { month: '2024-09', actual: 4.7, baseline: 4.8, model: 4.7 },
-            { month: '2024-10', actual: 0.0, baseline: 5.2, model: 5.3 },
-            { month: '2024-11', actual: 0.0, baseline: 5.4, model: 5.6 },
-            { month: '2024-12', actual: 0.0, baseline: 5.6, model: 5.9 }
+            { month: '2024-10', actual: 5.1, baseline: 5.2, model: 5.3 },
+            { month: '2024-11', actual: 5.4, baseline: 5.4, model: 5.6 },
+            { month: '2024-12', actual: 5.7, baseline: 5.6, model: 5.9 }
         ];
 
         // Per-category fake series (same shape as portfolio but different values)
@@ -850,25 +850,25 @@
                 { month: '2024-07', actual: 0.8, baseline: 0.75, model: 0.78 },
                 { month: '2024-08', actual: 0.86, baseline: 0.79, model: 0.83 },
                 { month: '2024-09', actual: 0.84, baseline: 0.81, model: 0.82 },
-                { month: '2024-10', actual: 0.0, baseline: 0.88, model: 0.92 },
-                { month: '2024-11', actual: 0.0, baseline: 0.91, model: 0.95 },
-                { month: '2024-12', actual: 0.0, baseline: 0.93, model: 0.98 }
+                { month: '2024-10', actual: 0.89, baseline: 0.88, model: 0.92 },
+                { month: '2024-11', actual: 0.93, baseline: 0.91, model: 0.95 },
+                { month: '2024-12', actual: 0.96, baseline: 0.93, model: 0.98 }
             ],
             clothing: [
                 { month: '2024-07', actual: 0.32, baseline: 0.36, model: 0.33 },
                 { month: '2024-08', actual: 0.35, baseline: 0.37, model: 0.34 },
                 { month: '2024-09', actual: 0.34, baseline: 0.36, model: 0.33 },
-                { month: '2024-10', actual: 0.0, baseline: 0.35, model: 0.31 },
-                { month: '2024-11', actual: 0.0, baseline: 0.34, model: 0.30 },
-                { month: '2024-12', actual: 0.0, baseline: 0.33, model: 0.29 }
+                { month: '2024-10', actual: 0.33, baseline: 0.35, model: 0.31 },
+                { month: '2024-11', actual: 0.31, baseline: 0.34, model: 0.30 },
+                { month: '2024-12', actual: 0.30, baseline: 0.33, model: 0.29 }
             ],
             toys: [
                 { month: '2024-07', actual: 0.18, baseline: 0.20, model: 0.19 },
                 { month: '2024-08', actual: 0.19, baseline: 0.21, model: 0.20 },
                 { month: '2024-09', actual: 0.20, baseline: 0.22, model: 0.21 },
-                { month: '2024-10', actual: 0.0, baseline: 0.24, model: 0.26 },
-                { month: '2024-11', actual: 0.0, baseline: 0.26, model: 0.28 },
-                { month: '2024-12', actual: 0.0, baseline: 0.28, model: 0.30 }
+                { month: '2024-10', actual: 0.22, baseline: 0.24, model: 0.26 },
+                { month: '2024-11', actual: 0.25, baseline: 0.26, model: 0.28 },
+                { month: '2024-12', actual: 0.27, baseline: 0.28, model: 0.30 }
             ]
         };
 
