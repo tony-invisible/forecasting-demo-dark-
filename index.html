@@ -6,7 +6,7 @@
     <title>Forecasting 2.0 Demo</title>
     <script>
       // Bump this on each deploy to bust caches
-      window.APP_VERSION = '2025.09.30.34';
+      window.APP_VERSION = '2025.09.30.35';
       (function(){
         // Force-bust HTML once per deploy by appending ?v=APP_VERSION
         try {
@@ -2381,7 +2381,10 @@
                 { title: 'SKU Performance Table', message: 'This table shows individual SKU performance with key metrics: Revenue, Units, Miss Rate, Confidence, and recommended Actions. Each row represents a product you can analyze and optimize.', selector: 'table', page: 'sku', prompt: 'Click "View SKUs" on any category card to see the SKU list, then click Next.' },
                 
                 // SKU Detail page (1 step - user navigates by clicking a SKU)
-                { title: 'Compare with Competitors', message: 'Use the "Compare with..." dropdown to overlay competitor SKU performance on the Historical Performance chart. This helps you understand how your products stack up against alternatives and identify opportunities.', selector: 'select', page: 'sku-detail', prompt: 'Click any SKU row in the table to view its details, then click Next.' }
+                { title: 'Compare with Competitors', message: 'Use the "Compare with..." dropdown to overlay competitor SKU performance on the Historical Performance chart. This helps you understand how your products stack up against alternatives and identify opportunities.', selector: 'select', page: 'sku-detail', prompt: 'Click any SKU row in the table to view its details, then click Next.' },
+                
+                // Final completion step
+                { title: 'Tour Complete! 🎉', message: 'You\'ve explored the key features of Forecasting 2.0! You can now navigate freely, analyze SKU performance, compare competitors, and take action on recommendations. Click "Finish" to close this tour.', selector: null, page: 'sku-detail' }
             ];
             
             if (tourStep >= steps.length) { 
@@ -2438,9 +2441,9 @@
                 return;
             }
             
-            // Create darker backdrop
+            // Create much darker backdrop (95% opacity)
             tourBackdrop = document.createElement('div');
-            tourBackdrop.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.92);z-index:99998;transition:opacity 0.3s;';
+            tourBackdrop.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.95);z-index:99998;transition:opacity 0.3s;';
             document.body.appendChild(tourBackdrop);
             
             // Create tooltip
@@ -2475,9 +2478,16 @@
                     tourTooltip.style.transform = 'translateX(-50%)';
                     
                     // If tooltip goes off bottom, put it above
-                    if (rect.bottom + 24 + 200 > window.innerHeight) {
+                    if (rect.bottom + 24 + 250 > window.innerHeight) {
                         tourTooltip.style.top = 'auto';
                         tourTooltip.style.bottom = `${window.innerHeight - rect.top + 24}px`;
+                    }
+                    
+                    // If tooltip goes off top, center it vertically
+                    if (rect.top < 100) {
+                        tourTooltip.style.top = '50%';
+                        tourTooltip.style.bottom = 'auto';
+                        tourTooltip.style.transform = 'translate(-50%, -50%)';
                     }
                 }
             } else {
