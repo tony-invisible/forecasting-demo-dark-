@@ -6,7 +6,7 @@
     <title>Forecasting 2.0 Demo</title>
     <script>
       // Bump this on each deploy to bust caches
-      window.APP_VERSION = '2025.09.30.11';
+      window.APP_VERSION = '2025.09.30.12';
       (function(){
         // Force-bust HTML once per deploy by appending ?v=APP_VERSION
         try {
@@ -964,7 +964,12 @@
             if (!ddl || !selectedCategory) return;
             const list = generateSKUs(selectedCategory);
             ddl.innerHTML = '<option value="">Compare with…</option>' +
-                list.slice(0, 12).map(s => `<option value="${s.id}" ${s.id===selectedSKU?'disabled':''}>${s.name}</option>`).join('');
+                list.slice(0, 12).map(s => {
+                    const returns = s.returnRate.toFixed(1);
+                    const stars = '⭐'.repeat(Math.round(s.reviewScore));
+                    const warning = (s.returnRate > 15 || s.reviewScore < 3.5) ? ' ⚠️' : '';
+                    return `<option value="${s.id}" ${s.id===selectedSKU?'disabled':''}>${s.name} | ${returns}% returns | ${stars}${warning}</option>`;
+                }).join('');
             const addBtn = document.getElementById('comp-add');
             if (addBtn) addBtn.onclick = () => {
                 const val = ddl.value;
@@ -1757,12 +1762,24 @@
                 clothing: ['Holiday 2025','Back to School',null,'Holiday 2025',null,null,'Summer Sale','Holiday 2025',null,null,'Summer Sale','Back to School'],
                 toys: ['Holiday 2025','Summer Sale','Holiday 2025',null,'Back to School',null,'Holiday 2025','Summer Sale',null,null,null,'Holiday 2025']
             };
+            const returnsRate = {
+                electronics: [8.2, 14.5, 5.1, 6.8, 3.2, 18.7, 4.5, 9.3, 22.1, 7.6, 11.2, 5.9],
+                clothing: [24.5, 19.2, 12.8, 8.3, 15.7, 6.2, 21.3, 28.4, 11.5, 16.8, 9.1, 13.4],
+                toys: [6.7, 4.2, 11.8, 8.9, 3.5, 2.1, 7.4, 5.6, 16.3, 4.8, 3.2, 9.1]
+            };
+            const reviewScores = {
+                electronics: [4.7, 4.2, 4.8, 4.6, 4.9, 3.8, 4.5, 4.3, 3.2, 4.1, 4.4, 4.7],
+                clothing: [3.9, 4.5, 4.6, 4.7, 4.1, 4.8, 3.5, 3.1, 4.3, 4.0, 4.6, 4.4],
+                toys: [4.8, 4.6, 4.3, 4.7, 4.9, 4.5, 4.2, 4.6, 3.4, 4.8, 4.7, 4.4]
+            };
             const baseCat = categoryId === 'clothing' ? 'Clothing' : categoryId === 'toys' ? 'Toys & Games' : 'Electronics';
             const dots = ['bg-gray-400','bg-gray-500','bg-gray-600'];
             const actions = ['Reorder','Investigate','Markdown','Hold'];
             let names = catalogs[categoryId] || catalogs.electronics;
             let mfrs = manufacturers[categoryId] || manufacturers.electronics;
             let camps = campaigns[categoryId] || campaigns.electronics;
+            let returns = returnsRate[categoryId] || returnsRate.electronics;
+            let reviews = reviewScores[categoryId] || reviewScores.electronics;
             if (subcat && (subcategories[categoryId] || []).length) {
                 const subList = subcategories[categoryId];
                 const idx = Math.max(0, subList.indexOf(subcat));
@@ -1770,11 +1787,15 @@
                 names = names.filter((_, i) => i % subList.length === idx);
                 mfrs = mfrs.filter((_, i) => i % subList.length === idx);
                 camps = camps.filter((_, i) => i % subList.length === idx);
+                returns = returns.filter((_, i) => i % subList.length === idx);
+                reviews = reviews.filter((_, i) => i % subList.length === idx);
             }
             return names.slice(0, 12).map((name, i) => {
                 const id = `${categoryId}_${i}`;
                 const manufacturer = mfrs[i] || mfrs[0];
                 const campaign = camps[i] || null;
+                const returnRate = returns[i] || 5.0;
+                const reviewScore = reviews[i] || 4.0;
                 const units = 20 + (i * 7 % 180);
                 const revenueVal = 2000 + (i * 137 % 7000);
                 const revenue = `$${(revenueVal).toLocaleString()}`;
@@ -1797,7 +1818,9 @@
                     confidenceLabel,
                     action,
                     actionClass,
-                    dotClass: dots[i % dots.length]
+                    dotClass: dots[i % dots.length],
+                    returnRate,
+                    reviewScore
                 };
             });
         }
