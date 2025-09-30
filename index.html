@@ -6,7 +6,7 @@
     <title>Forecasting 2.0 Demo</title>
     <script>
       // Bump this on each deploy to bust caches
-      window.APP_VERSION = '2025.10.02.32';
+      window.APP_VERSION = '2025.10.02.33';
       (function(){
         // Force-bust HTML once per deploy by appending ?v=APP_VERSION
         try {
@@ -2186,39 +2186,35 @@
         function showActionModal(action, message, priority) {
             // Get automation rule for this action
             const automationRules = {
-                1: { condition: 'Weeks of Supply < 4.0', action: 'Auto-reorder' },
-                2: { condition: 'Competitor price gap > 5%', action: 'Flag for pricing review' },
-                3: { condition: 'Retailer demand shift > 10%', action: 'Adjust allocation' },
-                4: { condition: 'Return rate > 8%', action: 'Create quality review task' }
+                1: { condition: 'WOS < 4', action: 'Reorder' },
+                2: { condition: 'Price gap > 5%', action: 'Review pricing' },
+                3: { condition: 'Demand shift > 10%', action: 'Reallocate' },
+                4: { condition: 'Returns > 8%', action: 'Quality check' }
             };
-            const rule = automationRules[priority] || { condition: 'Condition met', action: 'Execute action' };
+            const rule = automationRules[priority] || { condition: 'Condition met', action: 'Execute' };
             
             // Create custom modal
             const modal = document.createElement('div');
             modal.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 100000; display: flex; align-items: center; justify-content: center;';
             
             modal.innerHTML = `
-                <div style="background: #1F2937; border-radius: 12px; padding: 24px; max-width: 520px; width: 90%; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.5);">
+                <div style="background: #1F2937; border-radius: 12px; padding: 24px; width: 90%; max-width: 500px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.5);">
                     <h3 style="font-size: 18px; font-weight: 600; color: #F9FAFB; margin-bottom: 12px;">Take Action: ${action}</h3>
                     <p style="font-size: 14px; color: #D1D5DB; line-height: 1.5; margin-bottom: 20px;">${message}</p>
                     
-                    <!-- Automation Toggle -->
-                    <div style="background: rgba(37,99,235,0.05); border: 1px solid rgba(37,99,235,0.2); border-radius: 8px; padding: 14px; margin-bottom: 20px;">
-                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                    <div style="background: rgba(37,99,235,0.05); border: 1px solid rgba(37,99,235,0.2); border-radius: 8px; padding: 16px; margin-bottom: 20px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
                             <div style="display: flex; align-items: center; gap: 8px;">
                                 <span style="font-size: 14px; font-weight: 600; color: #F9FAFB;">Automate This Action</span>
                                 <span style="display: inline-flex; align-items: center; padding: 2px 6px; font-size: 10px; font-weight: 600; border-radius: 4px; background: rgba(139,92,246,0.2); color: #A78BFA; border: 1px solid rgba(139,92,246,0.3);">BETA</span>
                             </div>
-                            <label style="position: relative; display: inline-block; width: 44px; height: 24px; cursor: pointer; overflow: hidden; border-radius: 24px; flex-shrink: 0;">
+                            <label style="position: relative; display: inline-block; width: 44px; height: 24px; cursor: pointer; flex-shrink: 0;">
                                 <input type="checkbox" id="automate-toggle" style="opacity: 0; width: 0; height: 0; position: absolute;">
                                 <span id="toggle-slider" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #374151; border-radius: 24px; transition: 0.3s; overflow: hidden;"></span>
                             </label>
                         </div>
-                        <div id="automation-preview" style="display: none;">
-                            <div style="font-size: 11px; color: #9CA3AF; line-height: 1.6; padding: 4px; overflow-x: auto; -webkit-overflow-scrolling: touch;">
-                                <div style="white-space: nowrap;"><span style="color: #60A5FA;">If</span> <span style="color: #D1D5DB;">${rule.condition}</span></div>
-                                <div style="white-space: nowrap;"><span style="color: #60A5FA;">Then</span> <span style="color: #D1D5DB;">${rule.action}</span></div>
-                            </div>
+                        <div id="automation-preview" style="display: none; font-size: 12px; color: #D1D5DB; line-height: 1.8;">
+                            <div><span style="color: #60A5FA;">If</span> ${rule.condition} → <span style="color: #60A5FA;">Then</span> ${rule.action}</div>
                         </div>
                     </div>
                     
@@ -2300,21 +2296,20 @@
             
             const automationMessage = isAutomated 
                 ? `<div style="background: rgba(139,92,246,0.1); border: 1px solid rgba(139,92,246,0.25); border-radius: 8px; padding: 12px; margin-top: 12px;">
-                       <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 6px;">
+                       <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 8px;">
                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"></path>
                            </svg>
                            <span style="font-size: 13px; font-weight: 600; color: #C4B5FD;">Automation Enabled</span>
                        </div>
-                       <div style="font-size: 11px; color: #D1D5DB; line-height: 1.6; padding: 4px; overflow-x: auto; -webkit-overflow-scrolling: touch;">
-                           <div style="white-space: nowrap;"><span style="color: #60A5FA;">If</span> <span style="color: #D1D5DB;">${rule.condition}</span></div>
-                           <div style="white-space: nowrap;"><span style="color: #60A5FA;">Then</span> <span style="color: #D1D5DB;">${rule.action}</span></div>
+                       <div style="font-size: 12px; color: #D1D5DB; line-height: 1.6;">
+                           <span style="color: #60A5FA;">If</span> ${rule.condition} → <span style="color: #60A5FA;">Then</span> ${rule.action}
                        </div>
                    </div>`
                 : '';
             
             modal.innerHTML = `
-                <div style="background: #1F2937; border-radius: 12px; padding: 24px; max-width: 520px; width: 90%; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.5);">
+                <div style="background: #1F2937; border-radius: 12px; padding: 24px; width: 90%; max-width: 500px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.5);">
                     <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
                         <div style="width: 36px; height: 36px; border-radius: 50%; background: rgba(34,197,94,0.2); display: flex; align-items: center; justify-content: center;">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
