@@ -6,7 +6,7 @@
     <title>Forecasting 2.0 Demo</title>
     <script>
       // Bump this on each deploy to bust caches
-      window.APP_VERSION = '2025.10.02.14';
+      window.APP_VERSION = '2025.10.02.15';
       (function(){
         // Force-bust HTML once per deploy by appending ?v=APP_VERSION
         try {
@@ -2130,12 +2130,16 @@
                 const timelineColor = a.isUrgent ? '#7C3AED' : '#6B7280';
                 const timelineBorder = a.isUrgent ? '1px solid rgba(139,92,246,0.2)' : '1px solid rgba(148,163,184,0.15)';
                 
+                const buttonStyle = a.isUrgent 
+                    ? 'background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%); color: white; font-weight: 600;' 
+                    : 'background: white; color: #475569; border: 1px solid rgba(148,163,184,0.3); font-weight: 500;';
+                
                 return `
                     <div class="action-plan-item py-5 px-4 rounded-lg ${!isLast ? 'mb-3' : ''}" 
-                         style="background: rgba(248,250,252,0.5); transition: all 0.2s ease; cursor: default;"
+                         style="background: rgba(248,250,252,0.5); transition: all 0.2s ease;"
                          onmouseover="this.style.background='rgba(139,92,246,0.03)'; this.style.boxShadow='0 0 0 1px rgba(139,92,246,0.12)'"
                          onmouseout="this.style.background='rgba(248,250,252,0.5)'; this.style.boxShadow='none'">
-                        <div class="flex items-start justify-between">
+                        <div class="flex items-start justify-between mb-3">
                             <div class="flex items-start gap-4 flex-1">
                                 <span class="flex items-center justify-center w-8 h-8 rounded-full text-sm font-bold flex-shrink-0" 
                                       style="background: ${badgeBg}; color: ${badgeColor}; box-shadow: 0 2px 8px rgba(139,92,246,0.${a.isUrgent ? '25' : '05'});">
@@ -2151,11 +2155,36 @@
                                 ${a.timeline}
                             </span>
                         </div>
+                        <div class="flex items-center justify-end gap-2 ml-12">
+                            <button class="action-plan-btn px-4 py-2 text-sm rounded-md transition-all" 
+                                    style="${buttonStyle}"
+                                    onmouseover="this.style.opacity='0.9'; this.style.transform='translateY(-1px)'"
+                                    onmouseout="this.style.opacity='1'; this.style.transform='translateY(0)'"
+                                    onclick="handleActionPlanClick(${a.priority}, '${a.action}')">
+                                Take Action
+                            </button>
+                        </div>
                     </div>
                 `;
             }).join('');
             
             el.innerHTML = actionsHTML;
+        }
+
+        function handleActionPlanClick(priority, action) {
+            // Simple confirmation modal for action plan items
+            const messages = {
+                1: 'This will queue a reorder of 340 units. The ops team will be notified within the next hour.',
+                2: 'This will flag the SKU for pricing review. The pricing team will analyze competitor positioning.',
+                3: 'This will adjust inventory allocation across retailers. Distribution planning will be updated.',
+                4: 'This will create a quality review task. The product team will analyze customer feedback.'
+            };
+            
+            const message = messages[priority] || 'This action will be queued for the appropriate team.';
+            
+            if (confirm(`Take Action: ${action}\n\n${message}\n\nProceed?`)) {
+                alert(`✓ Action queued successfully!\n\n"${action}" has been added to your workflow. You'll receive a confirmation email shortly.`);
+            }
         }
 
         function getSKUMarginData() {
