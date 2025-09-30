@@ -6,7 +6,7 @@
     <title>Forecasting 2.0 Demo</title>
     <script>
       // Bump this on each deploy to bust caches
-      window.APP_VERSION = '2025.10.02.42';
+      window.APP_VERSION = '2025.10.02.43';
       (function(){
         // Force-bust HTML once per deploy by appending ?v=APP_VERSION
         try {
@@ -202,8 +202,7 @@
             color: var(--text-primary) !important;
         }
         
-        /* Override white backgrounds in dark mode (but allow gradients) */
-        [data-theme='dark'] .bg-white:not(.card):not([style*="gradient"]),
+        /* Override white backgrounds in dark mode - only for recharts */
         [data-theme='dark'] .recharts-wrapper,
         [data-theme='dark'] .recharts-surface,
         [data-theme='dark'] .recharts-cartesian-grid,
@@ -233,8 +232,7 @@
             border: 2px solid rgba(96,165,250,0.60) !important;
             box-shadow: 0 0 0 1px rgba(96,165,250,0.45) !important;
         }
-        /* KPI cards: allow gradients to show through, only override solid backgrounds */
-        [data-theme='dark'] .kpi-card:not([style*="gradient"]) { background-color: #28324E !important; }
+        /* KPI cards: removed override to allow inline gradients */
         /* Subtle risk borders only */
         /* Reusable subtle border tints */
         [data-theme='dark'] .border-tint-red { border-color: #ef4444 !important; border-width: 2px !important; border-style: solid !important; }
