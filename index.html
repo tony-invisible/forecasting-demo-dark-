@@ -6,7 +6,7 @@
     <title>Forecasting 2.0 Demo</title>
     <script>
       // Bump this on each deploy to bust caches
-      window.APP_VERSION = '2025.10.02.16';
+      window.APP_VERSION = '2025.10.02.17';
       (function(){
         // Force-bust HTML once per deploy by appending ?v=APP_VERSION
         try {
@@ -2122,30 +2122,29 @@
                 const isLast = idx === actions.length - 1;
                 
                 return `
-                    <div class="action-plan-item py-5 px-4 rounded-lg ${!isLast ? 'mb-3' : ''}" 
+                    <div class="action-plan-item py-3 px-4 rounded-lg ${!isLast ? 'mb-2' : ''}" 
                          style="background: rgba(248,250,252,0.5); transition: all 0.2s ease;"
                          onmouseover="this.style.background='rgba(37,99,235,0.03)'; this.style.boxShadow='0 0 0 1px rgba(37,99,235,0.1)'"
                          onmouseout="this.style.background='rgba(248,250,252,0.5)'; this.style.boxShadow='none'">
-                        <div class="flex items-start justify-between mb-3">
-                            <div class="flex items-start gap-4 flex-1">
-                                <span class="flex items-center justify-center w-7 h-7 rounded-full text-sm font-semibold flex-shrink-0" 
-                                      style="background: rgba(148,163,184,0.12); color: #475569;">
+                        <div class="flex items-start justify-between">
+                            <div class="flex items-start gap-3 flex-1">
+                                <span class="flex items-center justify-center w-6 h-6 rounded-full text-xs font-semibold flex-shrink-0" 
+                                      style="background: rgba(148,163,184,0.12); color: #475569; margin-top: 1px;">
                                     ${a.priority}
                                 </span>
                                 <div class="flex-1 min-w-0">
-                                    <div class="flex items-center gap-2 mb-2">
-                                        <h4 class="text-base font-semibold text-gray-900">${a.action}</h4>
+                                    <div class="flex items-center gap-2 mb-1">
+                                        <h4 class="text-sm font-semibold text-gray-900">${a.action}</h4>
                                         <span class="inline-flex items-center px-2 py-0.5 text-xs rounded-md" 
                                               style="background: rgba(96,165,250,0.15); color:#60A5FA; border:1px solid rgba(96,165,250,0.25); font-weight: 500;">
                                             ${a.timeline}
                                         </span>
                                     </div>
-                                    <p class="text-sm text-gray-600 leading-relaxed">${a.rationale}</p>
+                                    <p class="text-xs text-gray-600 leading-snug">${a.rationale}</p>
                                 </div>
                             </div>
-                        </div>
-                        <div class="flex items-center justify-end gap-2 ml-11">
-                            <button class="btn btn-primary text-sm px-4 py-2" 
+                            <button class="btn btn-primary text-xs px-3 py-1.5 ml-4 flex-shrink-0" 
+                                    style="margin-top: 1px;"
                                     onclick="handleActionPlanClick(${a.priority}, '${a.action}')">
                                 Take Action
                             </button>
