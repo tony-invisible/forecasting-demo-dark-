@@ -6,7 +6,7 @@
     <title>Forecasting 2.0 Demo</title>
     <script>
       // Bump this on each deploy to bust caches
-      window.APP_VERSION = '2025.09.30.46';
+      window.APP_VERSION = '2025.09.30.47';
       (function(){
         // Force-bust HTML once per deploy by appending ?v=APP_VERSION
         try {
@@ -135,13 +135,9 @@
         [data-theme='dark'] .card > .bg-white { background-color: var(--surface) !important; }
         
         /* NUCLEAR APPROACH: Override ALL possible text color combinations */
-        [data-theme='dark'] *:not(#tour-next):not(#tour-skip) { color: var(--text-primary) !important; }
+        [data-theme='dark'] * { color: var(--text-primary) !important; }
         [data-theme='dark'] .text-yellow-500,
         [data-theme='dark'] .text-amber-600 { color: inherit !important; }
-        
-        /* Tour button colors - must override the nuclear selector */
-        #tour-next { color: #000000 !important; }
-        #tour-skip { color: #1f2937 !important; text-shadow: 0 0 8px rgba(255,255,255,0.8) !important; }
         
         /* Preserve specific colored elements */
         [data-theme='dark'] .text-positive { color: #10B981 !important; }
@@ -151,6 +147,10 @@
         /* Preserve Above/Below Average badge colors */
         [data-theme='dark'] .text-green-600 { color: #10B981 !important; }
         [data-theme='dark'] .text-red-600 { color: #EF4444 !important; }
+        
+        /* CRITICAL: Tour button text colors - must come AFTER nuclear selector to override */
+        [data-theme='dark'] #tour-next { color: #000000 !important; }
+        [data-theme='dark'] #tour-skip { color: #1f2937 !important; text-shadow: 0 0 8px rgba(255,255,255,0.8) !important; }
         
         /* Fix dropdown and form elements in dark mode */
         [data-theme='dark'] .input,
