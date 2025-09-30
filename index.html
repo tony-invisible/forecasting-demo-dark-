@@ -6,7 +6,7 @@
     <title>Forecasting 2.0 Demo</title>
     <script>
       // Bump this on each deploy to bust caches
-      window.APP_VERSION = '2025.09.30.19';
+      window.APP_VERSION = '2025.09.30.20';
       (function(){
         // Force-bust HTML once per deploy by appending ?v=APP_VERSION
         try {
@@ -2352,9 +2352,11 @@
             // Ensure portfolio chart renders after DOM injection when navigating home
             setTimeout(renderPortfolioChart, 50);
             
-            // Wire up tour button
-            const tourBtn = document.getElementById('start-tour-btn');
-            if (tourBtn) tourBtn.onclick = startTour;
+            // Wire up tour button (after DOM settles)
+            setTimeout(() => {
+                const tourBtn = document.getElementById('start-tour-btn');
+                if (tourBtn) tourBtn.onclick = startTour;
+            }, 100);
         }
 
         // Contextual product tour (like Appcues/Userpilot)
@@ -2367,10 +2369,10 @@
         function showTourStep() {
             const steps = [
                 { title: 'Welcome to Forecasting 2.0', message: 'Track portfolio performance, drill into categories, and take action on SKU-level insights.', selector: null, position: 'center' },
-                { title: 'Portfolio KPIs', message: 'Monitor key metrics: Total Revenue, Forecast Revenue, and Miss Rate. Click any card to explore categories.', selector: '.kpi-card:first-child', position: 'bottom' },
-                { title: 'Revenue Forecast', message: 'Compare Model vs Baseline vs Actuals. The forecast shows projected performance through 2024-12.', selector: '#portfolio-chart', position: 'top' },
-                { title: 'Category Navigation', message: 'Drill into Electronics, Clothing, or Toys & Games to see SKU-level insights and take actions.', selector: '.card:nth-child(2)', position: 'left' },
-                { title: 'You\'re Ready!', message: 'Explore categories and SKUs to discover AI-powered recommendations. Click any category card to get started.', selector: null, position: 'center' }
+                { title: 'Portfolio KPIs', message: 'Monitor key metrics: Total Revenue, Forecast Revenue, and Miss Rate. Click any card to explore categories.', selector: '.kpi-card', position: 'bottom' },
+                { title: 'Revenue Forecast', message: 'Compare Model vs Baseline vs Actuals. The forecast shows projected performance through 2024-12.', selector: '.recharts-wrapper', position: 'top' },
+                { title: 'Category Insights', message: 'Scroll down to see category-level insights cards with actionable recommendations.', selector: '.grid.grid-cols-1.md\\:grid-cols-3.gap-6.mb-8:last-of-type .card', position: 'right' },
+                { title: 'You\'re Ready!', message: 'Explore categories and SKUs to discover AI-powered recommendations. Click "View Categories" to get started.', selector: null, position: 'center' }
             ];
             
             if (tourStep >= steps.length) { closeTour(); return; }
@@ -2415,7 +2417,16 @@
                         tooltip.style.top = `${rect.top + rect.height/2}px`;
                         tooltip.style.right = `${window.innerWidth - rect.left + 20}px`;
                         tooltip.style.transform = 'translateY(-50%)';
+                    } else if (step.position === 'right') {
+                        tooltip.style.top = `${rect.top + rect.height/2}px`;
+                        tooltip.style.left = `${rect.right + 20}px`;
+                        tooltip.style.transform = 'translateY(-50%)';
                     }
+                } else {
+                    // Fallback if element not found
+                    tooltip.style.top = '50%';
+                    tooltip.style.left = '50%';
+                    tooltip.style.transform = 'translate(-50%, -50%)';
                 }
             } else {
                 // Center position
