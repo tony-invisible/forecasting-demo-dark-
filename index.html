@@ -6,7 +6,7 @@
     <title>Forecasting 2.0 Demo</title>
     <script>
       // Bump this on each deploy to bust caches
-      window.APP_VERSION = '2025.09.30.39';
+      window.APP_VERSION = '2025.09.30.40';
       (function(){
         // Force-bust HTML once per deploy by appending ?v=APP_VERSION
         try {
@@ -2426,8 +2426,28 @@
                     // CRITICAL: Boost target element z-index so it appears ABOVE the dark backdrop
                     const originalPosition = target.style.position;
                     const originalZIndex = target.style.zIndex;
+                    const originalOverflow = target.style.overflow;
                     target.style.position = 'relative';
                     target.style.zIndex = '99999';
+                    target.style.overflow = 'visible'; // Ensure content isn't clipped
+                    
+                    // Also elevate parent containers if needed
+                    let parent = target.parentElement;
+                    const elevatedParents = [];
+                    while (parent && parent !== document.body) {
+                        if (window.getComputedStyle(parent).overflow !== 'visible') {
+                            elevatedParents.push({
+                                el: parent,
+                                origOverflow: parent.style.overflow,
+                                origPosition: parent.style.position,
+                                origZIndex: parent.style.zIndex
+                            });
+                            parent.style.overflow = 'visible';
+                            parent.style.position = 'relative';
+                            parent.style.zIndex = '99999';
+                        }
+                        parent = parent.parentElement;
+                    }
                     
                     // Create highlight border box
                     tourHighlight = document.createElement('div');
@@ -2438,6 +2458,8 @@
                     tourHighlight._target = target;
                     tourHighlight._originalPosition = originalPosition;
                     tourHighlight._originalZIndex = originalZIndex;
+                    tourHighlight._originalOverflow = originalOverflow;
+                    tourHighlight._elevatedParents = elevatedParents;
                     
                     // Smart positioning to avoid cutoff
                     const tooltipHeight = 280; // Estimated tooltip height (increased for safety)
@@ -2514,6 +2536,15 @@
                 if (tourHighlight._target) {
                     tourHighlight._target.style.position = tourHighlight._originalPosition || '';
                     tourHighlight._target.style.zIndex = tourHighlight._originalZIndex || '';
+                    tourHighlight._target.style.overflow = tourHighlight._originalOverflow || '';
+                }
+                // Restore parent element styles
+                if (tourHighlight._elevatedParents) {
+                    tourHighlight._elevatedParents.forEach(p => {
+                        p.el.style.overflow = p.origOverflow || '';
+                        p.el.style.position = p.origPosition || '';
+                        p.el.style.zIndex = p.origZIndex || '';
+                    });
                 }
                 document.body.removeChild(tourHighlight);
                 tourHighlight = null;
