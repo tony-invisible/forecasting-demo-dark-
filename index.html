@@ -6,7 +6,7 @@
     <title>Forecasting 2.0 Demo</title>
     <script>
       // Bump this on each deploy to bust caches
-      window.APP_VERSION = '2025.10.02.02';
+      window.APP_VERSION = '2025.10.02.10';
       (function(){
         // Force-bust HTML once per deploy by appending ?v=APP_VERSION
         try {
@@ -1876,6 +1876,17 @@
                     </div>
                 </div>
 
+                <!-- AI-Generated Action Plan -->
+                <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-lg mb-8">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-gray-900">AI-Generated Action Plan</h3>
+                        <span class="inline-flex items-center px-2 py-1 text-xs font-medium rounded-md" style="background: rgba(139,92,246,0.15); color:#8B5CF6; border:1px solid rgba(139,92,246,0.25);">
+                            <i data-lucide="sparkles" class="w-3 h-3 mr-1"></i> AI
+                        </span>
+                    </div>
+                    <div class="space-y-4" id="action-plan-content"></div>
+                </div>
+
                 <div class="flex items-center mb-2">
                     <div class="inline-flex bg-gray-100 rounded-md p-1">
                         <button id="btn-ret-all" class="px-3 py-1 text-sm rounded-md bg-white shadow-sm">All</button>
@@ -1933,7 +1944,7 @@
             
             // Re-initialize icons
             lucide.createIcons();
-            setTimeout(() => { renderSKUHistoricalChart(); renderSKUProjectionChart(); renderSKUAction(); renderSKUMarginCard(); renderSKUPriceCostCard(); renderSKUDiagnostics(); populateCompareDropdown(); renderCompareChips(); updateRetailerScopeButtons(); renderRetailerOptimizationCard(); }, 50);
+            setTimeout(() => { renderSKUHistoricalChart(); renderSKUProjectionChart(); renderSKUAction(); renderSKUMarginCard(); renderSKUPriceCostCard(); renderSKUDiagnostics(); renderActionPlan(); populateCompareDropdown(); renderCompareChips(); updateRetailerScopeButtons(); renderRetailerOptimizationCard(); }, 50);
 
             // Retailer scope buttons
             const scopeButtons = [
@@ -2072,6 +2083,69 @@
                     <div class="flex justify-between"><span class="text-sm text-gray-500">Improvement</span><span class="font-semibold text-green-600">+${improvement}%</span></div>
                 </div>
             `;
+        }
+
+        function renderActionPlan() {
+            const el = document.getElementById('action-plan-content');
+            if (!el) return;
+            
+            // AI-generated action plan with priority, action, rationale, and timeline
+            const actions = [
+                {
+                    priority: 1,
+                    action: 'Execute Reorder Now',
+                    rationale: 'Weeks of Supply at 3.2 (below target 4.0). Forecast shows +22% demand lift in next 3 months.',
+                    timeline: 'Within 48 hours',
+                    urgency: 'high'
+                },
+                {
+                    priority: 2,
+                    action: 'Monitor Competitor Pricing',
+                    rationale: 'Top competitor priced 8% lower. Consider markdown to maintain market share during holiday season.',
+                    timeline: 'Review by Nov 15',
+                    urgency: 'medium'
+                },
+                {
+                    priority: 3,
+                    action: 'Optimize Amazon Allocation',
+                    rationale: 'Amazon showing 38% projected share but currently underallocated. Increase inventory allocation by 12%.',
+                    timeline: 'Within 1 week',
+                    urgency: 'medium'
+                },
+                {
+                    priority: 4,
+                    action: 'Review Customer Feedback',
+                    rationale: 'Rating at 4.2/5 with recent uptick in return rate (9.5%). Address quality concerns proactively.',
+                    timeline: 'Within 2 weeks',
+                    urgency: 'low'
+                }
+            ];
+            
+            const urgencyColors = {
+                high: { bg: 'rgba(239,68,68,0.12)', border: '#EF4444', text: '#DC2626' },
+                medium: { bg: 'rgba(251,191,36,0.12)', border: '#FBBF24', text: '#D97706' },
+                low: { bg: 'rgba(16,185,129,0.12)', border: '#10B981', text: '#059669' }
+            };
+            
+            const actionsHTML = actions.map(a => {
+                const colors = urgencyColors[a.urgency];
+                return `
+                    <div class="border-l-4 pl-4 py-3" style="border-color: ${colors.border}; background: ${colors.bg}; border-radius: 0 8px 8px 0;">
+                        <div class="flex items-start justify-between mb-2">
+                            <div class="flex items-center gap-3">
+                                <span class="flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold text-white" style="background: ${colors.border};">${a.priority}</span>
+                                <h4 class="text-base font-semibold text-gray-900">${a.action}</h4>
+                            </div>
+                            <span class="text-xs font-medium px-2 py-1 rounded" style="color: ${colors.text}; background: ${colors.bg}; border: 1px solid ${colors.border};">
+                                ${a.timeline}
+                            </span>
+                        </div>
+                        <p class="text-sm text-gray-700 mb-2">${a.rationale}</p>
+                    </div>
+                `;
+            }).join('');
+            
+            el.innerHTML = actionsHTML;
         }
 
         function getSKUMarginData() {
