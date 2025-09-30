@@ -6,7 +6,7 @@
     <title>Forecasting 2.0 Demo</title>
     <script>
       // Bump this on each deploy to bust caches
-      window.APP_VERSION = '2025.10.01.99';
+      window.APP_VERSION = '2025.10.02.01';
       (function(){
         // Force-bust HTML once per deploy by appending ?v=APP_VERSION
         try {
@@ -394,7 +394,7 @@
         <div class="flex-1 flex flex-col overflow-hidden">
             <!-- Top Header -->
             <header class="text-gray-900 bg-white border-b border-gray-200 px-6 py-3">
-                <div class="flex items-center justify-between mb-4" style="align-items: center;">
+                <div class="flex justify-between mb-4" style="display: flex; align-items: center;">
                     <!-- Page Title -->
                     <div>
                         <h1 class="text-2xl md:text-3xl font-semibold text-gray-900">Forecasting</h1>
@@ -402,7 +402,7 @@
                     </div>
                     
                     <!-- Tour Button -->
-                    <button id="global-tour-btn" class="btn btn-secondary flex items-center gap-2 flex-shrink-0" style="align-self: center;" onclick="startTour()">
+                    <button id="global-tour-btn" class="btn btn-secondary flex items-center gap-2 flex-shrink-0" style="margin: 0; align-self: center;" onclick="startTour()">
                         Take a Tour ?
                     </button>
                 </div>
