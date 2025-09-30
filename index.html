@@ -6,7 +6,7 @@
     <title>Forecasting 2.0 Demo</title>
     <script>
       // Bump this on each deploy to bust caches
-      window.APP_VERSION = '2025.10.02.35';
+      window.APP_VERSION = '2025.10.02.36';
       (function(){
         // Force-bust HTML once per deploy by appending ?v=APP_VERSION
         try {
@@ -2199,7 +2199,7 @@
             
             modal.innerHTML = `
                 <div style="background: #1F2937; border-radius: 12px; padding: 24px; width: 100%; max-width: 500px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.5);">
-                    <h3 style="font-size: 18px; font-weight: 600; color: #F9FAFB; margin-bottom: 12px;">Take Action: ${action}</h3>
+                    <h3 style="font-size: 18px; font-weight: 600; color: #F9FAFB; margin-bottom: 12px;">Take Action: <span style="color: #3B82F6;">${action}</span></h3>
                     <p style="font-size: 14px; color: #D1D5DB; line-height: 1.5; margin-bottom: 20px;">${message}</p>
                     
                     <div style="background: rgba(37,99,235,0.05); border: 1px solid rgba(37,99,235,0.2); border-radius: 8px; padding: 16px; margin-bottom: 20px;">
