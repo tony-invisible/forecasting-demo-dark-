@@ -6,7 +6,7 @@
     <title>Forecasting 2.0 Demo</title>
     <script>
       // Bump this on each deploy to bust caches
-      window.APP_VERSION = '2025.10.02.22';
+      window.APP_VERSION = '2025.10.02.23';
       (function(){
         // Force-bust HTML once per deploy by appending ?v=APP_VERSION
         try {
@@ -2173,10 +2173,10 @@
         function showActionModal(action, message, priority) {
             // Get automation rule for this action
             const automationRules = {
-                1: { condition: 'Weeks of Supply < 4.0', action: 'Auto-reorder' },
-                2: { condition: 'Competitor price gap > 5%', action: 'Flag for pricing review' },
-                3: { condition: 'Retailer demand shift > 10%', action: 'Adjust allocation' },
-                4: { condition: 'Return rate > 8%', action: 'Create quality review task' }
+                1: { condition: 'WOS < 4.0', action: 'Auto-reorder' },
+                2: { condition: 'Price gap > 5%', action: 'Flag for pricing review' },
+                3: { condition: 'Demand shift > 10%', action: 'Adjust allocation' },
+                4: { condition: 'Return rate > 8%', action: 'Create quality task' }
             };
             const rule = automationRules[priority] || { condition: 'Condition met', action: 'Execute action' };
             
