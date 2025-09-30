@@ -6,7 +6,7 @@
     <title>Forecasting 2.0 Demo</title>
     <script>
       // Bump this on each deploy to bust caches
-      window.APP_VERSION = '2025.10.02.41';
+      window.APP_VERSION = '2025.10.02.42';
       (function(){
         // Force-bust HTML once per deploy by appending ?v=APP_VERSION
         try {
@@ -202,16 +202,13 @@
             color: var(--text-primary) !important;
         }
         
-        /* ULTRA NUCLEAR: Override EVERYTHING white in dark mode */
-        [data-theme='dark'] .bg-white,
-        [data-theme='dark'] div[style*="background"],
-        [data-theme='dark'] svg,
+        /* Override white backgrounds in dark mode (but allow gradients) */
+        [data-theme='dark'] .bg-white:not(.card):not([style*="gradient"]),
         [data-theme='dark'] .recharts-wrapper,
         [data-theme='dark'] .recharts-surface,
         [data-theme='dark'] .recharts-cartesian-grid,
         [data-theme='dark'] .recharts-responsive-container {
             background-color: var(--surface) !important;
-            background: var(--surface) !important;
         }
         
         /* Force all SVG backgrounds to be dark */
@@ -236,8 +233,8 @@
             border: 2px solid rgba(96,165,250,0.60) !important;
             box-shadow: 0 0 0 1px rgba(96,165,250,0.45) !important;
         }
-        /* KPI cards: requested fill color */
-        [data-theme='dark'] .kpi-card { background-color: #28324E !important; }
+        /* KPI cards: allow gradients to show through, only override solid backgrounds */
+        [data-theme='dark'] .kpi-card:not([style*="gradient"]) { background-color: #28324E !important; }
         /* Subtle risk borders only */
         /* Reusable subtle border tints */
         [data-theme='dark'] .border-tint-red { border-color: #ef4444 !important; border-width: 2px !important; border-style: solid !important; }
