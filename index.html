@@ -6,7 +6,7 @@
     <title>Forecasting 2.0 Demo</title>
     <script>
       // Bump this on each deploy to bust caches
-      window.APP_VERSION = '2025.09.30.13';
+      window.APP_VERSION = '2025.09.30.14';
       (function(){
         // Force-bust HTML once per deploy by appending ?v=APP_VERSION
         try {
@@ -966,9 +966,9 @@
             ddl.innerHTML = '<option value="">Compare with…</option>' +
                 list.slice(0, 12).map(s => {
                     const returns = s.returnRate.toFixed(1);
-                    const stars = '⭐'.repeat(Math.round(s.reviewScore));
+                    const rating = s.reviewScore.toFixed(1);
                     const warning = (s.returnRate > 15 || s.reviewScore < 3.5) ? ' ⚠️' : '';
-                    return `<option value="${s.id}" ${s.id===selectedSKU?'disabled':''}>${s.name} | ${returns}% returns | ${stars}${warning}</option>`;
+                    return `<option value="${s.id}" ${s.id===selectedSKU?'disabled':''}>${s.name} | ${returns}% returns | ${rating}/5 rating${warning}</option>`;
                 }).join('');
             const addBtn = document.getElementById('comp-add');
             if (addBtn) addBtn.onclick = () => {
