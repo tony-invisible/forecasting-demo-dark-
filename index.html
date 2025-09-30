@@ -6,7 +6,7 @@
     <title>Forecasting 2.0 Demo</title>
     <script>
       // Bump this on each deploy to bust caches
-      window.APP_VERSION = '2025.09.30.20';
+      window.APP_VERSION = '2025.09.30.21';
       (function(){
         // Force-bust HTML once per deploy by appending ?v=APP_VERSION
         try {
@@ -2379,21 +2379,44 @@
             
             const step = steps[tourStep];
             
-            // Create overlay
+            // Create base overlay
             const overlay = document.createElement('div');
             overlay.id = 'tour-overlay';
-            overlay.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.75);z-index:9998;transition:opacity 0.3s;';
+            overlay.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;z-index:9998;pointer-events:none;';
             
-            // Spotlight effect
+            // Spotlight effect with actual transparent cutout
             let spotlight = null;
+            let targetElement = null;
             if (step.selector) {
-                const target = document.querySelector(step.selector);
-                if (target) {
-                    const rect = target.getBoundingClientRect();
+                targetElement = document.querySelector(step.selector);
+                if (targetElement) {
+                    const rect = targetElement.getBoundingClientRect();
+                    
+                    // Create 4 overlay panels around the highlighted element
+                    const overlayParts = [
+                        // Top
+                        `<div style="position:fixed;top:0;left:0;right:0;height:${rect.top-8}px;background:rgba(0,0,0,0.75);z-index:9998;"></div>`,
+                        // Bottom
+                        `<div style="position:fixed;top:${rect.bottom+8}px;left:0;right:0;bottom:0;background:rgba(0,0,0,0.75);z-index:9998;"></div>`,
+                        // Left
+                        `<div style="position:fixed;top:${rect.top-8}px;left:0;width:${rect.left-8}px;height:${rect.height+16}px;background:rgba(0,0,0,0.75);z-index:9998;"></div>`,
+                        // Right
+                        `<div style="position:fixed;top:${rect.top-8}px;left:${rect.right+8}px;right:0;height:${rect.height+16}px;background:rgba(0,0,0,0.75);z-index:9998;"></div>`
+                    ];
+                    overlay.innerHTML = overlayParts.join('');
+                    
+                    // Highlight border around element
                     spotlight = document.createElement('div');
-                    spotlight.style.cssText = `position:fixed;top:${rect.top-8}px;left:${rect.left-8}px;width:${rect.width+16}px;height:${rect.height+16}px;border:3px solid #3b82f6;border-radius:12px;box-shadow:0 0 0 9999px rgba(0,0,0,0.75),0 0 20px rgba(59,130,246,0.5);z-index:9999;pointer-events:none;transition:all 0.3s;`;
+                    spotlight.style.cssText = `position:fixed;top:${rect.top-8}px;left:${rect.left-8}px;width:${rect.width+16}px;height:${rect.height+16}px;border:3px solid #3b82f6;border-radius:12px;box-shadow:0 0 20px rgba(59,130,246,0.6);z-index:9999;pointer-events:none;`;
                     document.body.appendChild(spotlight);
+                    
+                    // Boost target element z-index temporarily
+                    targetElement.style.position = 'relative';
+                    targetElement.style.zIndex = '9999';
                 }
+            } else {
+                // Full overlay for center steps
+                overlay.style.background = 'rgba(0,0,0,0.75)';
             }
             
             // Position tooltip
@@ -2449,13 +2472,21 @@
             document.body.appendChild(tooltip);
             
             document.getElementById('tour-next').onclick = () => { 
-                tourStep++; 
+                tourStep++;
+                if (targetElement) {
+                    targetElement.style.position = '';
+                    targetElement.style.zIndex = '';
+                }
                 if (spotlight) document.body.removeChild(spotlight);
                 document.body.removeChild(overlay); 
                 document.body.removeChild(tooltip); 
                 showTourStep(); 
             };
-            document.getElementById('tour-skip').onclick = () => { 
+            document.getElementById('tour-skip').onclick = () => {
+                if (targetElement) {
+                    targetElement.style.position = '';
+                    targetElement.style.zIndex = '';
+                }
                 if (spotlight) document.body.removeChild(spotlight);
                 document.body.removeChild(overlay); 
                 document.body.removeChild(tooltip); 
