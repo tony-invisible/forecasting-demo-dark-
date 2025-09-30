@@ -6,7 +6,7 @@
     <title>Forecasting 2.0 Demo</title>
     <script>
       // Bump this on each deploy to bust caches
-      window.APP_VERSION = '2025.09.30.17';
+      window.APP_VERSION = '2025.09.30.18';
       (function(){
         // Force-bust HTML once per deploy by appending ?v=APP_VERSION
         try {
@@ -2184,8 +2184,14 @@
         function showPortfolioView() {
             const mainContent = document.querySelector('main');
             mainContent.innerHTML = `
-                <!-- Hero Section -->
-                
+                <!-- Hero Section with Tour Button -->
+                <div class="mb-6 flex items-center justify-between">
+                    <div></div>
+                    <button id="start-tour-btn" class="btn btn-secondary flex items-center gap-2">
+                        <i data-lucide="help-circle" class="w-4 h-4"></i>
+                        Take a Tour
+                    </button>
+                </div>
 
                 <!-- Hero KPIs -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -2345,6 +2351,56 @@
             lucide.createIcons();
             // Ensure portfolio chart renders after DOM injection when navigating home
             setTimeout(renderPortfolioChart, 50);
+            
+            // Wire up tour button
+            const tourBtn = document.getElementById('start-tour-btn');
+            if (tourBtn) tourBtn.onclick = startTour;
+        }
+
+        // Simple tour implementation
+        let tourStep = 0;
+        function startTour() {
+            tourStep = 0;
+            showTourStep();
+        }
+
+        function showTourStep() {
+            const steps = [
+                { title: 'Welcome to Forecasting 2.0', message: 'Track portfolio performance, drill into categories, and take action on SKU-level insights. Click Next to continue.', element: null },
+                { title: 'Portfolio KPIs', message: 'Monitor key metrics at a glance: Total Revenue, Forecast Revenue, and Miss Rate. Click any card to explore.', element: '.kpi-card' },
+                { title: 'Revenue Forecast Chart', message: 'Compare Model Forecast vs Baseline vs Actuals to see performance over time.', element: '#portfolio-chart' },
+                { title: 'Category Insights', message: 'Click "View Categories" to drill into Electronics, Clothing, and Toys & Games.', element: '.card' },
+                { title: 'Tour Complete!', message: 'Explore categories, SKUs, and AI-powered recommendations. Start by clicking any category card.', element: null }
+            ];
+            
+            if (tourStep >= steps.length) { closeTour(); return; }
+            
+            const step = steps[tourStep];
+            const overlay = document.createElement('div');
+            overlay.id = 'tour-overlay';
+            overlay.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);z-index:9999;display:flex;align-items:center;justify-content:center;';
+            
+            const tooltip = document.createElement('div');
+            tooltip.style.cssText = 'background:#1e293b;border:2px solid #3b82f6;border-radius:12px;padding:24px;max-width:500px;box-shadow:0 20px 25px -5px rgba(0,0,0,0.5);';
+            tooltip.innerHTML = `
+                <h3 style="color:#e5e7eb;font-size:20px;font-weight:600;margin-bottom:12px;">${step.title}</h3>
+                <p style="color:#94a3b8;font-size:14px;line-height:1.6;margin-bottom:20px;">${step.message}</p>
+                <div style="display:flex;gap:12px;justify-content:flex-end;">
+                    <button id="tour-skip" style="background:#374151;color:#e5e7eb;padding:8px 16px;border-radius:6px;font-size:14px;border:none;cursor:pointer;">Skip Tour</button>
+                    <button id="tour-next" style="background:#3b82f6;color:#fff;padding:8px 20px;border-radius:6px;font-size:14px;border:none;cursor:pointer;font-weight:500;">${tourStep === steps.length - 1 ? 'Finish' : 'Next'}</button>
+                </div>
+            `;
+            
+            overlay.appendChild(tooltip);
+            document.body.appendChild(overlay);
+            
+            document.getElementById('tour-next').onclick = () => { tourStep++; document.body.removeChild(overlay); showTourStep(); };
+            document.getElementById('tour-skip').onclick = () => { document.body.removeChild(overlay); closeTour(); };
+            overlay.onclick = (e) => { if (e.target === overlay) { document.body.removeChild(overlay); closeTour(); } };
+        }
+
+        function closeTour() {
+            tourStep = 0;
         }
     </script>
 </body>
