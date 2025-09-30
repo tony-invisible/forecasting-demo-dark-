@@ -6,7 +6,7 @@
     <title>Forecasting 2.0 Demo</title>
     <script>
       // Bump this on each deploy to bust caches
-      window.APP_VERSION = '2025.09.30.27';
+      window.APP_VERSION = '2025.09.30.28';
       (function(){
         // Force-bust HTML once per deploy by appending ?v=APP_VERSION
         try {
@@ -403,7 +403,11 @@
                         </nav>
                     </div>
 
-                    <!-- Controls removed -->
+                    <!-- Tour Button -->
+                    <button id="global-tour-btn" class="btn btn-secondary flex items-center gap-2" onclick="startTour()">
+                        <i data-lucide="help-circle" class="w-4 h-4"></i>
+                        Take a Tour
+                    </button>
                 </div>
             </header>
 
@@ -2184,14 +2188,8 @@
         function showPortfolioView() {
             const mainContent = document.querySelector('main');
             mainContent.innerHTML = `
-                <!-- Hero Section with Tour Button -->
-                <div class="mb-6 flex items-center justify-between">
-                    <div></div>
-                    <button id="start-tour-btn" class="btn btn-secondary flex items-center gap-2">
-                        <i data-lucide="help-circle" class="w-4 h-4"></i>
-                        Take a Tour
-                    </button>
-                </div>
+                <!-- Hero Section -->
+                
 
                 <!-- Hero KPIs -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -2351,12 +2349,6 @@
             lucide.createIcons();
             // Ensure portfolio chart renders after DOM injection when navigating home
             setTimeout(renderPortfolioChart, 50);
-            
-            // Wire up tour button (after DOM settles)
-            setTimeout(() => {
-                const tourBtn = document.getElementById('start-tour-btn');
-                if (tourBtn) tourBtn.onclick = startTour;
-            }, 100);
         }
 
         // Simple contextual tour using backdrop + cloned highlighted element
