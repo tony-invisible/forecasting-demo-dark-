@@ -6,7 +6,7 @@
     <title>Forecasting 2.0 Demo</title>
     <script>
       // Bump this on each deploy to bust caches
-      window.APP_VERSION = '2025.09.30.49';
+      window.APP_VERSION = '2025.09.30.50';
       (function(){
         // Force-bust HTML once per deploy by appending ?v=APP_VERSION
         try {
@@ -2514,13 +2514,9 @@
             
             document.body.appendChild(tourTooltip);
             
-            // Force button colors after adding to DOM - use setProperty with !important to override dark mode CSS
+            // Wire up button events (color styling handled by CSS now)
             const nextBtn = document.getElementById('tour-next');
             const skipBtn = document.getElementById('tour-skip');
-            
-            nextBtn.style.setProperty('color', '#000000', 'important');
-            skipBtn.style.setProperty('color', '#1f2937', 'important');
-            skipBtn.style.setProperty('text-shadow', '0 0 8px rgba(255,255,255,0.8)', 'important');
             
             nextBtn.onclick = () => { 
                 tourStep++;
@@ -2531,14 +2527,6 @@
             
             skipBtn.onclick = () => {
                 cleanupTour();
-            };
-            skipBtn.onmouseover = () => { 
-                skipBtn.style.setProperty('color', '#000000', 'important'); 
-                skipBtn.style.setProperty('text-shadow', '0 0 12px rgba(255,255,255,1)', 'important');
-            };
-            skipBtn.onmouseout = () => { 
-                skipBtn.style.setProperty('color', '#1f2937', 'important'); 
-                skipBtn.style.setProperty('text-shadow', '0 0 8px rgba(255,255,255,0.8)', 'important');
             };
             tourBackdrop.onclick = () => {
                 cleanupTour();
