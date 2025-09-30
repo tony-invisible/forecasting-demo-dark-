@@ -6,7 +6,7 @@
     <title>Forecasting 2.0 Demo</title>
     <script>
       // Bump this on each deploy to bust caches
-      window.APP_VERSION = '2025.10.02.10';
+      window.APP_VERSION = '2025.10.02.11';
       (function(){
         // Force-bust HTML once per deploy by appending ?v=APP_VERSION
         try {
@@ -2090,57 +2090,50 @@
             if (!el) return;
             
             // AI-generated action plan with priority, action, rationale, and timeline
+            // Expert design: minimal color, clear hierarchy through typography and spacing
             const actions = [
                 {
                     priority: 1,
                     action: 'Execute Reorder Now',
                     rationale: 'Weeks of Supply at 3.2 (below target 4.0). Forecast shows +22% demand lift in next 3 months.',
-                    timeline: 'Within 48 hours',
-                    urgency: 'high'
+                    timeline: 'Within 48 hours'
                 },
                 {
                     priority: 2,
                     action: 'Monitor Competitor Pricing',
                     rationale: 'Top competitor priced 8% lower. Consider markdown to maintain market share during holiday season.',
-                    timeline: 'Review by Nov 15',
-                    urgency: 'medium'
+                    timeline: 'Review by Nov 15'
                 },
                 {
                     priority: 3,
                     action: 'Optimize Amazon Allocation',
                     rationale: 'Amazon showing 38% projected share but currently underallocated. Increase inventory allocation by 12%.',
-                    timeline: 'Within 1 week',
-                    urgency: 'medium'
+                    timeline: 'Within 1 week'
                 },
                 {
                     priority: 4,
                     action: 'Review Customer Feedback',
                     rationale: 'Rating at 4.2/5 with recent uptick in return rate (9.5%). Address quality concerns proactively.',
-                    timeline: 'Within 2 weeks',
-                    urgency: 'low'
+                    timeline: 'Within 2 weeks'
                 }
             ];
             
-            const urgencyColors = {
-                high: { bg: 'rgba(239,68,68,0.12)', border: '#EF4444', text: '#DC2626' },
-                medium: { bg: 'rgba(251,191,36,0.12)', border: '#FBBF24', text: '#D97706' },
-                low: { bg: 'rgba(16,185,129,0.12)', border: '#10B981', text: '#059669' }
-            };
-            
-            const actionsHTML = actions.map(a => {
-                const colors = urgencyColors[a.urgency];
+            const actionsHTML = actions.map((a, idx) => {
+                const isLast = idx === actions.length - 1;
                 return `
-                    <div class="border-l-4 pl-4 py-3" style="border-color: ${colors.border}; background: ${colors.bg}; border-radius: 0 8px 8px 0;">
+                    <div class="py-4 ${!isLast ? 'border-b border-gray-200' : ''}" style="padding-left: 0;">
                         <div class="flex items-start justify-between mb-2">
-                            <div class="flex items-center gap-3">
-                                <span class="flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold text-white" style="background: ${colors.border};">${a.priority}</span>
-                                <h4 class="text-base font-semibold text-gray-900">${a.action}</h4>
+                            <div class="flex items-start gap-4">
+                                <span class="flex items-center justify-center w-7 h-7 rounded-full text-sm font-semibold" style="background: rgba(148,163,184,0.12); color: #475569;">${a.priority}</span>
+                                <div class="flex-1">
+                                    <h4 class="text-base font-semibold text-gray-900 mb-1">${a.action}</h4>
+                                    <p class="text-sm text-gray-600 leading-relaxed">${a.rationale}</p>
+                                </div>
                             </div>
-                            <span class="text-xs font-medium px-2 py-1 rounded" style="color: ${colors.text}; background: ${colors.bg}; border: 1px solid ${colors.border};">
+                            <span class="text-xs font-medium text-gray-500 whitespace-nowrap ml-4" style="margin-top: 2px;">
                                 ${a.timeline}
                             </span>
                         </div>
-                        <p class="text-sm text-gray-700 mb-2">${a.rationale}</p>
                     </div>
                 `;
             }).join('');
