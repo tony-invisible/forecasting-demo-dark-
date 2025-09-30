@@ -6,7 +6,7 @@
     <title>Forecasting 2.0 Demo</title>
     <script>
       // Bump this on each deploy to bust caches
-      window.APP_VERSION = '2025.10.02.23';
+      window.APP_VERSION = '2025.10.02.24';
       (function(){
         // Force-bust HTML once per deploy by appending ?v=APP_VERSION
         try {
@@ -2284,7 +2284,7 @@
             modal.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 100000; display: flex; align-items: center; justify-content: center;';
             
             const automationMessage = isAutomated 
-                ? `<div style="background: rgba(139,92,246,0.1); border: 1px solid rgba(139,92,246,0.25); border-radius: 8px; padding: 12px; margin-top: 12px; margin-left: 48px; margin-right: 0;">
+                ? `<div style="background: rgba(139,92,246,0.1); border: 1px solid rgba(139,92,246,0.25); border-radius: 8px; padding: 12px; margin-top: 12px;">
                        <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 6px;">
                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"></path>
@@ -2308,7 +2308,7 @@
                         </div>
                         <h3 style="font-size: 18px; font-weight: 600; color: #F9FAFB;">${isAutomated ? 'Action automated successfully!' : 'Action queued successfully!'}</h3>
                     </div>
-                    <p style="font-size: 14px; color: #D1D5DB; line-height: 1.5; margin-bottom: ${isAutomated ? '0' : '24px'}; padding-left: 48px;">"${action}" has been added to your workflow. You'll receive a confirmation email shortly.</p>
+                    <p style="font-size: 14px; color: #D1D5DB; line-height: 1.5; margin-bottom: ${isAutomated ? '0' : '24px'};">"${action}" has been added to your workflow. You'll receive a confirmation email shortly.</p>
                     ${automationMessage}
                     <div style="display: flex; justify-content: flex-end; margin-top: 24px;">
                         <button id="modal-ok" style="padding: 8px 20px; border-radius: 6px; font-size: 14px; font-weight: 500; background: #2563EB; border: 1px solid #2563EB; color: #FFFFFF; cursor: pointer; transition: all 0.2s;">
