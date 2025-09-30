@@ -6,7 +6,7 @@
     <title>Forecasting 2.0 Demo</title>
     <script>
       // Bump this on each deploy to bust caches
-      window.APP_VERSION = '2025.10.02.12';
+      window.APP_VERSION = '2025.10.02.13';
       (function(){
         // Force-bust HTML once per deploy by appending ?v=APP_VERSION
         try {
@@ -1920,6 +1920,12 @@
                     </div>
                 </div>
 
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                    <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-lg" id="sku-margin-card"></div>
+                    <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-lg" id="sku-pricecost-card"></div>
+                    <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-lg" id="sku-diagnostics-card"></div>
+                </div>
+
                 <!-- AI-Generated Action Plan -->
                 <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-lg mb-8">
                     <div class="flex items-center justify-between mb-4">
@@ -1929,12 +1935,6 @@
                         </span>
                     </div>
                     <div class="space-y-4" id="action-plan-content"></div>
-                </div>
-
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-                    <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-lg" id="sku-margin-card"></div>
-                    <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-lg" id="sku-pricecost-card"></div>
-                    <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-lg" id="sku-diagnostics-card"></div>
                 </div>
 
                 <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-lg mb-8" id="sku-retailer-optim"></div>
