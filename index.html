@@ -6,7 +6,7 @@
     <title>Forecasting 2.0 Demo</title>
     <script>
       // Bump this on each deploy to bust caches
-      window.APP_VERSION = '2025.10.02.15';
+      window.APP_VERSION = '2025.10.02.16';
       (function(){
         // Force-bust HTML once per deploy by appending ?v=APP_VERSION
         try {
@@ -2090,76 +2090,62 @@
             if (!el) return;
             
             // AI-generated action plan with priority, action, rationale, and timeline
-            // Balanced design: strategic color for emphasis, hover states for engagement
+            // Consistent blue brand color, clean badges, proper dark mode buttons
             const actions = [
                 {
                     priority: 1,
                     action: 'Execute Reorder Now',
                     rationale: 'Weeks of Supply at 3.2 (below target 4.0). Forecast shows +22% demand lift in next 3 months.',
-                    timeline: 'Within 48 hours',
-                    isUrgent: true
+                    timeline: 'Within 48 hours'
                 },
                 {
                     priority: 2,
                     action: 'Monitor Competitor Pricing',
                     rationale: 'Top competitor priced 8% lower. Consider markdown to maintain market share during holiday season.',
-                    timeline: 'Review by Nov 15',
-                    isUrgent: false
+                    timeline: 'Review by Nov 15'
                 },
                 {
                     priority: 3,
                     action: 'Optimize Amazon Allocation',
                     rationale: 'Amazon showing 38% projected share but currently underallocated. Increase inventory allocation by 12%.',
-                    timeline: 'Within 1 week',
-                    isUrgent: false
+                    timeline: 'Within 1 week'
                 },
                 {
                     priority: 4,
                     action: 'Review Customer Feedback',
                     rationale: 'Rating at 4.2/5 with recent uptick in return rate (9.5%). Address quality concerns proactively.',
-                    timeline: 'Within 2 weeks',
-                    isUrgent: false
+                    timeline: 'Within 2 weeks'
                 }
             ];
             
             const actionsHTML = actions.map((a, idx) => {
                 const isLast = idx === actions.length - 1;
-                const badgeBg = a.isUrgent ? 'linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%)' : 'rgba(148,163,184,0.12)';
-                const badgeColor = a.isUrgent ? '#FFFFFF' : '#475569';
-                const timelineBg = a.isUrgent ? 'rgba(139,92,246,0.08)' : 'transparent';
-                const timelineColor = a.isUrgent ? '#7C3AED' : '#6B7280';
-                const timelineBorder = a.isUrgent ? '1px solid rgba(139,92,246,0.2)' : '1px solid rgba(148,163,184,0.15)';
-                
-                const buttonStyle = a.isUrgent 
-                    ? 'background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%); color: white; font-weight: 600;' 
-                    : 'background: white; color: #475569; border: 1px solid rgba(148,163,184,0.3); font-weight: 500;';
                 
                 return `
                     <div class="action-plan-item py-5 px-4 rounded-lg ${!isLast ? 'mb-3' : ''}" 
                          style="background: rgba(248,250,252,0.5); transition: all 0.2s ease;"
-                         onmouseover="this.style.background='rgba(139,92,246,0.03)'; this.style.boxShadow='0 0 0 1px rgba(139,92,246,0.12)'"
+                         onmouseover="this.style.background='rgba(37,99,235,0.03)'; this.style.boxShadow='0 0 0 1px rgba(37,99,235,0.1)'"
                          onmouseout="this.style.background='rgba(248,250,252,0.5)'; this.style.boxShadow='none'">
                         <div class="flex items-start justify-between mb-3">
                             <div class="flex items-start gap-4 flex-1">
-                                <span class="flex items-center justify-center w-8 h-8 rounded-full text-sm font-bold flex-shrink-0" 
-                                      style="background: ${badgeBg}; color: ${badgeColor}; box-shadow: 0 2px 8px rgba(139,92,246,0.${a.isUrgent ? '25' : '05'});">
+                                <span class="flex items-center justify-center w-7 h-7 rounded-full text-sm font-semibold flex-shrink-0" 
+                                      style="background: rgba(148,163,184,0.12); color: #475569;">
                                     ${a.priority}
                                 </span>
                                 <div class="flex-1 min-w-0">
-                                    <h4 class="text-base font-semibold text-gray-900 mb-2">${a.action}</h4>
+                                    <div class="flex items-center gap-2 mb-2">
+                                        <h4 class="text-base font-semibold text-gray-900">${a.action}</h4>
+                                        <span class="inline-flex items-center px-2 py-0.5 text-xs rounded-md" 
+                                              style="background: rgba(96,165,250,0.15); color:#60A5FA; border:1px solid rgba(96,165,250,0.25); font-weight: 500;">
+                                            ${a.timeline}
+                                        </span>
+                                    </div>
                                     <p class="text-sm text-gray-600 leading-relaxed">${a.rationale}</p>
                                 </div>
                             </div>
-                            <span class="text-xs font-medium whitespace-nowrap ml-6 px-3 py-1.5 rounded-md flex-shrink-0" 
-                                  style="background: ${timelineBg}; color: ${timelineColor}; border: ${timelineBorder}; margin-top: 2px;">
-                                ${a.timeline}
-                            </span>
                         </div>
-                        <div class="flex items-center justify-end gap-2 ml-12">
-                            <button class="action-plan-btn px-4 py-2 text-sm rounded-md transition-all" 
-                                    style="${buttonStyle}"
-                                    onmouseover="this.style.opacity='0.9'; this.style.transform='translateY(-1px)'"
-                                    onmouseout="this.style.opacity='1'; this.style.transform='translateY(0)'"
+                        <div class="flex items-center justify-end gap-2 ml-11">
+                            <button class="btn btn-primary text-sm px-4 py-2" 
                                     onclick="handleActionPlanClick(${a.priority}, '${a.action}')">
                                 Take Action
                             </button>
