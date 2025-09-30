@@ -6,7 +6,7 @@
     <title>Forecasting 2.0 Demo</title>
     <script>
       // Bump this on each deploy to bust caches
-      window.APP_VERSION = '2025.09.30.36';
+      window.APP_VERSION = '2025.09.30.37';
       (function(){
         // Force-bust HTML once per deploy by appending ?v=APP_VERSION
         try {
@@ -2378,10 +2378,10 @@
                 { title: 'View SKUs', message: 'Ready to dive deeper? Click "View SKUs" on any category card to drill down into individual SKU performance and take specific actions.', selector: '.card:first-child', page: 'categories' },
                 
                 // SKU List page (1 step - auto-navigate on Next)
-                { title: 'SKU Performance Table', message: 'This table shows individual SKU performance with key metrics: Revenue, Units, Miss Rate, Confidence, and recommended Actions. Each row represents a product you can analyze and optimize.', selector: 'table', page: 'sku', autoNavigate: () => { selectedCategory = 'electronics'; showSKUView(); } },
+                { title: 'SKU Performance Table', message: 'This table shows individual SKU performance with key metrics: Revenue, Units, Miss Rate, Confidence, and recommended Actions. Each row represents a product you can analyze and optimize.', selector: 'table', page: 'sku', autoNavigate: () => { selectedCategory = 'electronics'; selectedSubcategory = null; currentView = 'sku'; updateBreadcrumbs(); showSKUView(); updateURL('sku', selectedCategory, null); } },
                 
                 // SKU Detail page (1 step - auto-navigate on Next)
-                { title: 'Compare with Competitors', message: 'Use the "Compare with..." dropdown to overlay competitor SKU performance on the Historical Performance chart. This helps you understand how your products stack up against alternatives and identify opportunities.', selector: 'select', page: 'sku-detail', autoNavigate: () => { selectedSKU = 'electronics_0'; showSKUDetail(); } },
+                { title: 'Compare with Competitors', message: 'Use the "Compare with..." dropdown to overlay competitor SKU performance on the Historical Performance chart. This helps you understand how your products stack up against alternatives and identify opportunities.', selector: 'select', page: 'sku-detail', autoNavigate: () => { selectedCategory = 'electronics'; selectedSKU = 'electronics_0'; selectedSKUName = 'Premium Bluetooth Headphones'; currentView = 'sku-detail'; updateBreadcrumbs(); showSKUDetail(); updateURL('sku-detail', selectedCategory, selectedSKU); } },
                 
                 // Final completion step
                 { title: 'Tour Complete! 🎉', message: 'You\'ve explored the key features of Forecasting 2.0! You can now navigate freely, analyze SKU performance, compare competitors, and take action on recommendations. Click "Finish" to close this tour.', selector: null, page: 'sku-detail' }
@@ -2439,22 +2439,30 @@
                     tourHighlight._originalPosition = originalPosition;
                     tourHighlight._originalZIndex = originalZIndex;
                     
-                    // Position tooltip below highlight
-                    tourTooltip.style.top = `${rect.bottom + 24}px`;
-                    tourTooltip.style.left = `${rect.left + rect.width/2}px`;
-                    tourTooltip.style.transform = 'translateX(-50%)';
+                    // Smart positioning to avoid cutoff
+                    const tooltipHeight = 250; // Estimated tooltip height
+                    const spaceBelow = window.innerHeight - rect.bottom;
+                    const spaceAbove = rect.top;
                     
-                    // If tooltip goes off bottom, put it above
-                    if (rect.bottom + 24 + 250 > window.innerHeight) {
-                        tourTooltip.style.top = 'auto';
+                    // If element is in bottom half and not enough space below, put tooltip above
+                    if (spaceBelow < tooltipHeight + 50 && spaceAbove > tooltipHeight + 50) {
+                        // Position above
                         tourTooltip.style.bottom = `${window.innerHeight - rect.top + 24}px`;
-                    }
-                    
-                    // If tooltip goes off top, center it vertically
-                    if (rect.top < 100) {
+                        tourTooltip.style.top = 'auto';
+                        tourTooltip.style.left = `${rect.left + rect.width/2}px`;
+                        tourTooltip.style.transform = 'translateX(-50%)';
+                    } else if (spaceAbove < 100 || spaceBelow < 100) {
+                        // Not enough space above or below, center vertically
                         tourTooltip.style.top = '50%';
+                        tourTooltip.style.left = '50%';
                         tourTooltip.style.bottom = 'auto';
                         tourTooltip.style.transform = 'translate(-50%, -50%)';
+                    } else {
+                        // Position below (default)
+                        tourTooltip.style.top = `${rect.bottom + 24}px`;
+                        tourTooltip.style.left = `${rect.left + rect.width/2}px`;
+                        tourTooltip.style.bottom = 'auto';
+                        tourTooltip.style.transform = 'translateX(-50%)';
                     }
                 }
             } else {
