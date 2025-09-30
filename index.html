@@ -6,7 +6,7 @@
     <title>Forecasting 2.0 Demo</title>
     <script>
       // Bump this on each deploy to bust caches
-      window.APP_VERSION = '2025.09.30.10';
+      window.APP_VERSION = '2025.09.30.11';
       (function(){
         // Force-bust HTML once per deploy by appending ?v=APP_VERSION
         try {
@@ -154,6 +154,18 @@
             background-color: var(--surface) !important; 
             border-color: var(--border) !important; 
             color: var(--text-primary) !important; 
+        }
+        
+        /* Ensure checkboxes are visible in dark mode */
+        [data-theme='dark'] input[type="checkbox"] {
+            appearance: auto !important;
+            -webkit-appearance: checkbox !important;
+            opacity: 1 !important;
+            position: relative !important;
+            width: 1rem !important;
+            height: 1rem !important;
+            cursor: pointer !important;
+            accent-color: #60A5FA !important;
         }
         
         /* Fix confidence badges - preserve colored backgrounds with proper contrast */
