@@ -6,7 +6,7 @@
     <title>Forecasting 2.0 Demo</title>
     <script>
       // Bump this on each deploy to bust caches
-      window.APP_VERSION = '2025.09.30.29';
+      window.APP_VERSION = '2025.09.30.30';
       (function(){
         // Force-bust HTML once per deploy by appending ?v=APP_VERSION
         try {
@@ -2366,10 +2366,18 @@
             cleanupTour();
             
             const steps = [
-                { title: 'Welcome to Forecasting 2.0', message: 'Track portfolio performance, drill into categories, and take action on SKU-level insights. Let\'s take a quick tour.', selector: null },
-                { title: 'Portfolio KPIs', message: 'Monitor key metrics at a glance: Total Revenue, Forecast Revenue, and Miss Rate. Click any card to explore categories.', selector: '.kpi-card:first-child' },
-                { title: 'Revenue Forecast Chart', message: 'Compare Model Forecast vs Baseline vs Actuals. The chart shows historical performance and forward projections through 2024-12.', selector: '.recharts-wrapper' },
-                { title: 'You\'re All Set!', message: 'You\'ve seen the key features! Click any category card below or use "View Categories" to explore SKU-level details, compare competitors, and see retailer optimization. Enjoy!', selector: null }
+                // Homepage steps
+                { title: 'Welcome to Forecasting 2.0', message: 'Track portfolio performance, drill into categories, and take action on SKU-level insights. Let\'s take a quick tour.', selector: null, page: 'portfolio' },
+                { title: 'Portfolio KPIs', message: 'Monitor key metrics at a glance: Total Revenue, Forecast Revenue, and Miss Rate. Click any card to explore categories.', selector: '.kpi-card:first-child', page: 'portfolio' },
+                { title: 'Revenue Forecast Chart', message: 'Compare Model Forecast vs Baseline vs Actuals. The chart shows historical performance and forward projections through 2024-12.', selector: '.recharts-wrapper', page: 'portfolio' },
+                
+                // Categories page steps
+                { title: 'Category Overview', message: 'Now let\'s explore the Categories page. Here you can see performance by category: Electronics, Clothing, and Toys & Games.', selector: null, page: 'categories', navigate: true },
+                { title: 'Category Cards', message: 'Each category shows revenue, forecast confidence, and actionable recommendations. Click "View SKUs" to drill into individual products.', selector: '.card:first-child', page: 'categories' },
+                { title: 'Category Performance Chart', message: 'Compare category performance over time. Switch between Category and Portfolio views using the tabs.', selector: '.recharts-wrapper', page: 'categories' },
+                
+                // Finish
+                { title: 'Tour Complete!', message: 'You\'ve explored the key features! Use "View SKUs" to see product-level details, compare competitors, and optimize by retailer. Enjoy!', selector: null, page: 'categories' }
             ];
             
             if (tourStep >= steps.length) { 
@@ -2378,6 +2386,20 @@
             }
             
             const step = steps[tourStep];
+            
+            // Check if we need to navigate to a different page
+            if (step.navigate) {
+                if (step.page === 'categories' && currentView !== 'category') {
+                    showCategories();
+                    // Wait for DOM to update before showing step
+                    setTimeout(() => showTourStep(), 300);
+                    return;
+                } else if (step.page === 'portfolio' && currentView !== 'portfolio') {
+                    goToPortfolio();
+                    setTimeout(() => showTourStep(), 300);
+                    return;
+                }
+            }
             
             // Create dark backdrop
             tourBackdrop = document.createElement('div');
