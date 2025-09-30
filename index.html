@@ -6,7 +6,7 @@
     <title>Forecasting 2.0 Demo</title>
     <script>
       // Bump this on each deploy to bust caches
-      window.APP_VERSION = '2025.09.30.33';
+      window.APP_VERSION = '2025.09.30.34';
       (function(){
         // Force-bust HTML once per deploy by appending ?v=APP_VERSION
         try {
@@ -2362,8 +2362,10 @@
         }
 
         function showTourStep() {
-            // Clean up previous step
+            // Clean up previous step and any navigation prompts
             cleanupTour();
+            const existingPrompt = document.getElementById('tour-nav-prompt');
+            if (existingPrompt) document.body.removeChild(existingPrompt);
             
             const steps = [
                 // Portfolio page (2 steps)
@@ -2395,8 +2397,14 @@
                                 (step.page === 'sku' && currentView === 'sku') ||
                                 (step.page === 'sku-detail' && currentView === 'sku-detail');
             
-            // If user is not on the right page yet, show a non-blocking prompt
-            if (!pageMatches && step.prompt) {
+            // If user is not on the right page yet, show a non-blocking prompt (if we have one)
+            if (!pageMatches) {
+                if (!step.prompt) {
+                    // No prompt defined, skip to next step (shouldn't happen but safety check)
+                    tourStep++;
+                    showTourStep();
+                    return;
+                }
                 // Show a dismissible prompt box at top of screen
                 const promptBox = document.createElement('div');
                 promptBox.id = 'tour-nav-prompt';
@@ -2430,9 +2438,9 @@
                 return;
             }
             
-            // Create dark backdrop
+            // Create darker backdrop
             tourBackdrop = document.createElement('div');
-            tourBackdrop.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.85);z-index:99998;transition:opacity 0.3s;';
+            tourBackdrop.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.92);z-index:99998;transition:opacity 0.3s;';
             document.body.appendChild(tourBackdrop);
             
             // Create tooltip
