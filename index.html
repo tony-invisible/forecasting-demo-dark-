@@ -6,7 +6,7 @@
     <title>Forecasting 2.0 Demo</title>
     <script>
       // Bump this on each deploy to bust caches
-      window.APP_VERSION = '2025.09.30.41';
+      window.APP_VERSION = '2025.09.30.42';
       (function(){
         // Force-bust HTML once per deploy by appending ?v=APP_VERSION
         try {
@@ -2504,7 +2504,7 @@
                 <p style="color:#cbd5e1;font-size:14px;line-height:1.6;margin-bottom:20px;">${step.message}</p>
                 <div style="display:flex;gap:12px;justify-content:flex-end;align-items:center;">
                     <button id="tour-skip" style="background:transparent;color:#94a3b8;padding:8px 14px;font-size:13px;border:none;cursor:pointer;transition:color 0.2s;" onmouseover="this.style.color='#e2e8f0'" onmouseout="this.style.color='#94a3b8'">Skip Tour</button>
-                    <button id="tour-next" style="background:#FBBF24;color:#0f172a;padding:10px 20px;border-radius:8px;font-size:14px;border:none;cursor:pointer;font-weight:600;transition:background 0.2s;" onmouseover="this.style.background='#F59E0B'" onmouseout="this.style.background='#FBBF24'">${tourStep === steps.length - 1 ? 'Finish ✓' : 'Next →'}</button>
+                    <button id="tour-next" style="background:#FBBF24;color:#000000;padding:10px 20px;border-radius:8px;font-size:14px;border:none;cursor:pointer;font-weight:700;transition:background 0.2s;" onmouseover="this.style.background='#F59E0B'" onmouseout="this.style.background='#FBBF24'">${tourStep === steps.length - 1 ? 'Finish ✓' : 'Next →'}</button>
                 </div>
             `;
             
