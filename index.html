@@ -6,7 +6,7 @@
     <title>Forecasting 2.0 Demo</title>
     <script>
       // Bump this on each deploy to bust caches
-      window.APP_VERSION = '2025.10.02.18';
+      window.APP_VERSION = '2025.10.02.19';
       (function(){
         // Force-bust HTML once per deploy by appending ?v=APP_VERSION
         try {
@@ -2157,7 +2157,7 @@
         }
 
         function handleActionPlanClick(priority, action) {
-            // Simple confirmation modal for action plan items
+            // Custom modal for action plan items
             const messages = {
                 1: 'This will queue a reorder of 340 units. The ops team will be notified within the next hour.',
                 2: 'This will flag the SKU for pricing review. The pricing team will analyze competitor positioning.',
@@ -2167,9 +2167,114 @@
             
             const message = messages[priority] || 'This action will be queued for the appropriate team.';
             
-            if (confirm(`Take Action: ${action}\n\n${message}\n\nProceed?`)) {
-                alert(`✓ Action queued successfully!\n\n"${action}" has been added to your workflow. You'll receive a confirmation email shortly.`);
-            }
+            showActionModal(action, message, priority);
+        }
+
+        function showActionModal(action, message, priority) {
+            // Create custom modal
+            const modal = document.createElement('div');
+            modal.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 100000; display: flex; align-items: center; justify-content: center;';
+            
+            modal.innerHTML = `
+                <div style="background: #1F2937; border-radius: 12px; padding: 24px; max-width: 480px; width: 90%; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.5);">
+                    <h3 style="font-size: 18px; font-weight: 600; color: #F9FAFB; margin-bottom: 12px;">Take Action: ${action}</h3>
+                    <p style="font-size: 14px; color: #D1D5DB; line-height: 1.5; margin-bottom: 24px;">${message}</p>
+                    <div style="display: flex; gap: 12px; justify-content: flex-end;">
+                        <button id="modal-cancel" style="padding: 8px 16px; border-radius: 6px; font-size: 14px; font-weight: 500; background: transparent; border: 1px solid #4B5563; color: #D1D5DB; cursor: pointer; transition: all 0.2s;">
+                            Cancel
+                        </button>
+                        <button id="modal-confirm" style="padding: 8px 16px; border-radius: 6px; font-size: 14px; font-weight: 500; background: #2563EB; border: 1px solid #2563EB; color: #FFFFFF; cursor: pointer; transition: all 0.2s;">
+                            Proceed
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            const cancelBtn = modal.querySelector('#modal-cancel');
+            const confirmBtn = modal.querySelector('#modal-confirm');
+            
+            // Hover effects
+            cancelBtn.addEventListener('mouseover', () => {
+                cancelBtn.style.background = 'rgba(75,85,99,0.3)';
+            });
+            cancelBtn.addEventListener('mouseout', () => {
+                cancelBtn.style.background = 'transparent';
+            });
+            
+            confirmBtn.addEventListener('mouseover', () => {
+                confirmBtn.style.background = '#1D4ED8';
+            });
+            confirmBtn.addEventListener('mouseout', () => {
+                confirmBtn.style.background = '#2563EB';
+            });
+            
+            // Click handlers
+            cancelBtn.addEventListener('click', () => {
+                document.body.removeChild(modal);
+            });
+            
+            confirmBtn.addEventListener('click', () => {
+                document.body.removeChild(modal);
+                showSuccessModal(action);
+            });
+            
+            // Close on backdrop click
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    document.body.removeChild(modal);
+                }
+            });
+        }
+
+        function showSuccessModal(action) {
+            // Create success modal
+            const modal = document.createElement('div');
+            modal.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 100000; display: flex; align-items: center; justify-content: center;';
+            
+            modal.innerHTML = `
+                <div style="background: #1F2937; border-radius: 12px; padding: 24px; max-width: 480px; width: 90%; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.5);">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                        <div style="width: 36px; height: 36px; border-radius: 50%; background: rgba(34,197,94,0.2); display: flex; align-items: center; justify-content: center;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </div>
+                        <h3 style="font-size: 18px; font-weight: 600; color: #F9FAFB;">Action queued successfully!</h3>
+                    </div>
+                    <p style="font-size: 14px; color: #D1D5DB; line-height: 1.5; margin-bottom: 24px; padding-left: 48px;">"${action}" has been added to your workflow. You'll receive a confirmation email shortly.</p>
+                    <div style="display: flex; justify-content: flex-end;">
+                        <button id="modal-ok" style="padding: 8px 20px; border-radius: 6px; font-size: 14px; font-weight: 500; background: #2563EB; border: 1px solid #2563EB; color: #FFFFFF; cursor: pointer; transition: all 0.2s;">
+                            OK
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            const okBtn = modal.querySelector('#modal-ok');
+            
+            // Hover effect
+            okBtn.addEventListener('mouseover', () => {
+                okBtn.style.background = '#1D4ED8';
+            });
+            okBtn.addEventListener('mouseout', () => {
+                okBtn.style.background = '#2563EB';
+            });
+            
+            // Click handlers
+            okBtn.addEventListener('click', () => {
+                document.body.removeChild(modal);
+            });
+            
+            // Close on backdrop click
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    document.body.removeChild(modal);
+                }
+            });
         }
 
         function getSKUMarginData() {
