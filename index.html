@@ -6,7 +6,7 @@
     <title>Forecasting 2.0 Demo</title>
     <script>
       // Bump this on each deploy to bust caches
-      window.APP_VERSION = '2025.09.30.37';
+      window.APP_VERSION = '2025.09.30.38';
       (function(){
         // Force-bust HTML once per deploy by appending ?v=APP_VERSION
         try {
@@ -2384,7 +2384,7 @@
                 { title: 'Compare with Competitors', message: 'Use the "Compare with..." dropdown to overlay competitor SKU performance on the Historical Performance chart. This helps you understand how your products stack up against alternatives and identify opportunities.', selector: 'select', page: 'sku-detail', autoNavigate: () => { selectedCategory = 'electronics'; selectedSKU = 'electronics_0'; selectedSKUName = 'Premium Bluetooth Headphones'; currentView = 'sku-detail'; updateBreadcrumbs(); showSKUDetail(); updateURL('sku-detail', selectedCategory, selectedSKU); } },
                 
                 // Final completion step
-                { title: 'Tour Complete! 🎉', message: 'You\'ve explored the key features of Forecasting 2.0! You can now navigate freely, analyze SKU performance, compare competitors, and take action on recommendations. Click "Finish" to close this tour.', selector: null, page: 'sku-detail' }
+                { title: 'Tour Complete!', message: 'You\'ve explored the key features of Forecasting 2.0! You can now navigate freely, analyze SKU performance, compare competitors, and take action on recommendations. Click "Finish" to close this tour.', selector: null, page: 'sku-detail' }
             ];
             
             if (tourStep >= steps.length) { 
