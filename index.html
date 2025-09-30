@@ -194,8 +194,9 @@
         /* KPI cards: requested fill color */
         [data-theme='dark'] .kpi-card { background-color: #28324E !important; }
         /* Subtle risk borders only */
-        [data-theme='dark'] .kpi-inventory-border { border-color: rgba(239,68,68,0.35) !important; border-width: 2px !important; }
-        [data-theme='dark'] .kpi-stockout-border { border-color: rgba(16,185,129,0.35) !important; border-width: 2px !important; }
+        /* Reusable subtle border tints */
+        [data-theme='dark'] .border-tint-red { border-color: rgba(239,68,68,0.35) !important; border-width: 2px !important; }
+        [data-theme='dark'] .border-tint-green { border-color: rgba(16,185,129,0.35) !important; border-width: 2px !important; }
         /* (reverted) risk coloring */
         
         body {
@@ -2015,7 +2016,7 @@
                 <!-- Role-specific KPIs -->
                 <div id="role-specific-kpis" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                     <!-- Ops KPIs -->
-                <div class="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
+                <div class="bg-white rounded-lg border border-gray-200 p-6 shadow-sm border-tint-red">
                         <div class="flex items-center justify-between">
                             <div>
                                 <p class="text-sm font-medium text-gray-500 mb-1">Inventory Risk</p>
@@ -2028,7 +2029,7 @@
                         </div>
                     </div>
 
-                    <div class="bg-white rounded-lg border border-gray-200 p-6 shadow-sm kpi-stockout-border">
+                    <div class="bg-white rounded-lg border border-gray-200 p-6 shadow-sm border-tint-green">
                         <div class="flex items-center justify-between">
                             <div>
                                 <p class="text-sm font-medium text-gray-500 mb-1">Stockout Risk</p>
