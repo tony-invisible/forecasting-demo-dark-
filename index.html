@@ -6,7 +6,7 @@
     <title>Forecasting 2.0 Demo</title>
     <script>
       // Bump this on each deploy to bust caches
-      window.APP_VERSION = '2025.09.30.32';
+      window.APP_VERSION = '2025.09.30.33';
       (function(){
         // Force-bust HTML once per deploy by appending ?v=APP_VERSION
         try {
@@ -2395,37 +2395,36 @@
                                 (step.page === 'sku' && currentView === 'sku') ||
                                 (step.page === 'sku-detail' && currentView === 'sku-detail');
             
-            // If user is not on the right page yet, show a prompt and wait
+            // If user is not on the right page yet, show a non-blocking prompt
             if (!pageMatches && step.prompt) {
-                // Show centered prompt telling user where to go
-                const overlay = document.createElement('div');
-                overlay.id = 'tour-overlay';
-                overlay.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.85);z-index:99998;display:flex;align-items:center;justify-content:center;';
-                
+                // Show a dismissible prompt box at top of screen
                 const promptBox = document.createElement('div');
-                promptBox.style.cssText = 'background:#1e293b;border:2px solid #3b82f6;border-radius:12px;padding:24px;max-width:500px;box-shadow:0 20px 25px -5px rgba(0,0,0,0.8);';
+                promptBox.id = 'tour-nav-prompt';
+                promptBox.style.cssText = 'position:fixed;top:80px;left:50%;transform:translateX(-50%);z-index:100000;background:#1e293b;border:2px solid #3b82f6;border-radius:12px;padding:20px 24px;max-width:500px;box-shadow:0 20px 25px -5px rgba(0,0,0,0.8);';
                 promptBox.innerHTML = `
                     <div style="margin-bottom:6px;color:#94a3b8;font-size:11px;font-weight:600;letter-spacing:0.5px;">STEP ${tourStep + 1} OF ${steps.length}</div>
-                    <h3 style="color:#f1f5f9;font-size:19px;font-weight:600;margin-bottom:12px;line-height:1.3;">${step.title}</h3>
-                    <div style="background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.3);border-radius:8px;padding:16px;margin-bottom:20px;">
-                        <p style="color:#60a5fa;font-size:14px;line-height:1.6;margin:0;">💡 ${step.prompt}</p>
+                    <h3 style="color:#f1f5f9;font-size:18px;font-weight:600;margin-bottom:10px;line-height:1.3;">${step.title}</h3>
+                    <div style="background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.3);border-radius:8px;padding:12px;margin-bottom:16px;">
+                        <p style="color:#60a5fa;font-size:13px;line-height:1.5;margin:0;">💡 ${step.prompt}</p>
                     </div>
+                    <p style="color:#94a3b8;font-size:12px;margin-bottom:16px;">Once you've navigated, click "Continue Tour" below.</p>
                     <div style="display:flex;gap:12px;justify-content:flex-end;">
                         <button id="tour-skip-prompt" style="background:transparent;color:#94a3b8;padding:8px 14px;font-size:13px;border:none;cursor:pointer;">Skip Tour</button>
-                        <button id="tour-check-again" style="background:#3b82f6;color:#fff;padding:10px 20px;border-radius:8px;font-size:14px;border:none;cursor:pointer;font-weight:500;">I'm Ready →</button>
+                        <button id="tour-continue" style="background:#3b82f6;color:#fff;padding:9px 18px;border-radius:8px;font-size:14px;border:none;cursor:pointer;font-weight:500;">Continue Tour →</button>
                     </div>
                 `;
                 
-                overlay.appendChild(promptBox);
-                document.body.appendChild(overlay);
+                document.body.appendChild(promptBox);
                 
-                document.getElementById('tour-check-again').onclick = () => {
-                    document.body.removeChild(overlay);
+                document.getElementById('tour-continue').onclick = () => {
+                    const existingPrompt = document.getElementById('tour-nav-prompt');
+                    if (existingPrompt) document.body.removeChild(existingPrompt);
                     // Re-check if they've navigated
                     showTourStep();
                 };
                 document.getElementById('tour-skip-prompt').onclick = () => {
-                    document.body.removeChild(overlay);
+                    const existingPrompt = document.getElementById('tour-nav-prompt');
+                    if (existingPrompt) document.body.removeChild(existingPrompt);
                     cleanupTour();
                 };
                 return;
