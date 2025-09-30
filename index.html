@@ -6,7 +6,7 @@
     <title>Forecasting 2.0 Demo</title>
     <script>
       // Bump this on each deploy to bust caches
-      window.APP_VERSION = '2025.09.30.44';
+      window.APP_VERSION = '2025.09.30.46';
       (function(){
         // Force-bust HTML once per deploy by appending ?v=APP_VERSION
         try {
@@ -135,9 +135,13 @@
         [data-theme='dark'] .card > .bg-white { background-color: var(--surface) !important; }
         
         /* NUCLEAR APPROACH: Override ALL possible text color combinations */
-        [data-theme='dark'] * { color: var(--text-primary) !important; }
+        [data-theme='dark'] *:not(#tour-next):not(#tour-skip) { color: var(--text-primary) !important; }
         [data-theme='dark'] .text-yellow-500,
         [data-theme='dark'] .text-amber-600 { color: inherit !important; }
+        
+        /* Tour button colors - must override the nuclear selector */
+        #tour-next { color: #000000 !important; }
+        #tour-skip { color: #1f2937 !important; text-shadow: 0 0 8px rgba(255,255,255,0.8) !important; }
         
         /* Preserve specific colored elements */
         [data-theme='dark'] .text-positive { color: #10B981 !important; }
@@ -2510,13 +2514,13 @@
             
             document.body.appendChild(tourTooltip);
             
-            // Force button colors after adding to DOM
+            // Force button colors after adding to DOM - use setProperty with !important to override dark mode CSS
             const nextBtn = document.getElementById('tour-next');
             const skipBtn = document.getElementById('tour-skip');
             
-            nextBtn.style.color = '#000000';
-            skipBtn.style.color = '#1f2937';
-            skipBtn.style.textShadow = '0 0 8px rgba(255,255,255,0.8)';
+            nextBtn.style.setProperty('color', '#000000', 'important');
+            skipBtn.style.setProperty('color', '#1f2937', 'important');
+            skipBtn.style.setProperty('text-shadow', '0 0 8px rgba(255,255,255,0.8)', 'important');
             
             nextBtn.onclick = () => { 
                 tourStep++;
@@ -2529,12 +2533,12 @@
                 cleanupTour();
             };
             skipBtn.onmouseover = () => { 
-                skipBtn.style.color = '#000000'; 
-                skipBtn.style.textShadow = '0 0 12px rgba(255,255,255,1)';
+                skipBtn.style.setProperty('color', '#000000', 'important'); 
+                skipBtn.style.setProperty('text-shadow', '0 0 12px rgba(255,255,255,1)', 'important');
             };
             skipBtn.onmouseout = () => { 
-                skipBtn.style.color = '#1f2937'; 
-                skipBtn.style.textShadow = '0 0 8px rgba(255,255,255,0.8)';
+                skipBtn.style.setProperty('color', '#1f2937', 'important'); 
+                skipBtn.style.setProperty('text-shadow', '0 0 8px rgba(255,255,255,0.8)', 'important');
             };
             tourBackdrop.onclick = () => {
                 cleanupTour();
