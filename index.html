@@ -6,7 +6,7 @@
     <title>Forecasting 2.0 Demo</title>
     <script>
       // Bump this on each deploy to bust caches
-      window.APP_VERSION = '2025.09.30.25';
+      window.APP_VERSION = '2025.09.30.26';
       (function(){
         // Force-bust HTML once per deploy by appending ?v=APP_VERSION
         try {
@@ -2404,10 +2404,21 @@
                 if (target) {
                     const rect = target.getBoundingClientRect();
                     
-                    // Create highlight box
+                    // CRITICAL: Boost target element z-index so it appears ABOVE the dark backdrop
+                    const originalPosition = target.style.position;
+                    const originalZIndex = target.style.zIndex;
+                    target.style.position = 'relative';
+                    target.style.zIndex = '99999';
+                    
+                    // Create highlight border box
                     tourHighlight = document.createElement('div');
-                    tourHighlight.style.cssText = `position:fixed;top:${rect.top-8}px;left:${rect.left-8}px;width:${rect.width+16}px;height:${rect.height+16}px;border:3px solid #3b82f6;border-radius:12px;box-shadow:0 0 0 4px rgba(59,130,246,0.2),0 0 30px rgba(59,130,246,0.5);z-index:99999;pointer-events:none;background:rgba(59,130,246,0.05);`;
+                    tourHighlight.style.cssText = `position:fixed;top:${rect.top-8}px;left:${rect.left-8}px;width:${rect.width+16}px;height:${rect.height+16}px;border:3px solid #3b82f6;border-radius:12px;box-shadow:0 0 0 4px rgba(59,130,246,0.2),0 0 30px rgba(59,130,246,0.5);z-index:100000;pointer-events:none;`;
                     document.body.appendChild(tourHighlight);
+                    
+                    // Store original styles for cleanup
+                    tourHighlight._target = target;
+                    tourHighlight._originalPosition = originalPosition;
+                    tourHighlight._originalZIndex = originalZIndex;
                     
                     // Position tooltip below highlight
                     tourTooltip.style.top = `${rect.bottom + 24}px`;
@@ -2461,6 +2472,11 @@
                 tourTooltip = null;
             }
             if (tourHighlight) {
+                // Restore original element styles
+                if (tourHighlight._target) {
+                    tourHighlight._target.style.position = tourHighlight._originalPosition || '';
+                    tourHighlight._target.style.zIndex = tourHighlight._originalZIndex || '';
+                }
                 document.body.removeChild(tourHighlight);
                 tourHighlight = null;
             }
