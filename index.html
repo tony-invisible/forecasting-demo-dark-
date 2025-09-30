@@ -6,7 +6,7 @@
     <title>Forecasting 2.0 Demo</title>
     <script>
       // Bump this on each deploy to bust caches
-      window.APP_VERSION = '2025.10.02.26';
+      window.APP_VERSION = '2025.10.02.27';
       (function(){
         // Force-bust HTML once per deploy by appending ?v=APP_VERSION
         try {
@@ -2096,30 +2096,43 @@
                     priority: 1,
                     action: 'Execute Reorder Now',
                     rationale: 'Weeks of Supply at 3.2 (below target 4.0). Forecast shows +22% demand lift in next 3 months.',
-                    timeline: 'Within 48 hours'
+                    timeline: 'Within 48 hours',
+                    urgency: 'critical'
                 },
                 {
                     priority: 2,
                     action: 'Monitor Competitor Pricing',
                     rationale: 'Top competitor priced 8% lower. Consider markdown to maintain market share during holiday season.',
-                    timeline: 'Review by Nov 15'
+                    timeline: 'Review by Nov 15',
+                    urgency: 'high'
                 },
                 {
                     priority: 3,
                     action: 'Optimize Amazon Allocation',
                     rationale: 'Amazon showing 38% projected share but currently underallocated. Increase inventory allocation by 12%.',
-                    timeline: 'Within 1 week'
+                    timeline: 'Within 1 week',
+                    urgency: 'medium'
                 },
                 {
                     priority: 4,
                     action: 'Review Customer Feedback',
                     rationale: 'Rating at 4.2/5 with recent uptick in return rate (9.5%). Address quality concerns proactively.',
-                    timeline: 'Within 2 weeks'
+                    timeline: 'Within 2 weeks',
+                    urgency: 'low'
                 }
             ];
             
+            // Badge styles matching the confidence badge
+            const badgeStyles = {
+                critical: { bg: 'rgba(239,68,68,0.15)', color: '#EF4444', border: 'rgba(239,68,68,0.3)' },  // Red
+                high: { bg: 'rgba(251,191,36,0.15)', color: '#F59E0B', border: 'rgba(251,191,36,0.3)' },     // Amber
+                medium: { bg: 'rgba(59,130,246,0.15)', color: '#3B82F6', border: 'rgba(59,130,246,0.3)' },   // Blue
+                low: { bg: 'rgba(34,197,94,0.15)', color: '#22C55E', border: 'rgba(34,197,94,0.3)' }         // Green
+            };
+            
             const actionsHTML = actions.map((a, idx) => {
                 const isLast = idx === actions.length - 1;
+                const badge = badgeStyles[a.urgency];
                 
                 return `
                     <div class="action-plan-item py-2.5 px-4 rounded-lg ${!isLast ? 'mb-1.5' : ''}" 
@@ -2135,8 +2148,8 @@
                                 <div class="flex-1 min-w-0">
                                     <div class="flex items-center gap-2 mb-0.5">
                                         <h4 class="text-sm font-semibold text-gray-900">${a.action}</h4>
-                                        <span class="inline-flex items-center px-2 py-0.5 text-xs rounded-md" 
-                                              style="background: rgba(96,165,250,0.15); color:#60A5FA; border:1px solid rgba(96,165,250,0.25); font-weight: 500;">
+                                        <span class="inline-flex items-center px-2 py-0.5 text-xs rounded-md font-semibold" 
+                                              style="background: ${badge.bg}; color: ${badge.color}; border: 1px solid ${badge.border};">
                                             ${a.timeline}
                                         </span>
                                     </div>
