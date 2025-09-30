@@ -6,7 +6,7 @@
     <title>Forecasting 2.0 Demo</title>
     <script>
       // Bump this on each deploy to bust caches
-      window.APP_VERSION = '2025.09.30.4';
+      window.APP_VERSION = '2025.09.30.5';
       (function(){
         // Force-bust HTML once per deploy by appending ?v=APP_VERSION
         try {
@@ -1542,8 +1542,7 @@
                     <h1 class="text-3xl font-semibold text-gray-900 mb-2">SKUs - ${selectedCategory}</h1>
                     <p class="text-gray-500">Individual SKU performance and actions</p>
                 </div>
-                <div id="subcategory-filter-sku" class="mb-4"></div>
-                <div id="campaign-filter-sku" class="mb-4"></div>
+                <div id="unified-filter-bar" class="mb-6"></div>
                 <div class="bg-white rounded-xl border border-gray-200 shadow-lg overflow-hidden">
                     <div class="overflow-x-auto">
                         <table class="w-full">
@@ -1568,42 +1567,56 @@
             // Re-initialize icons
             lucide.createIcons();
 
-            // Render subcategory chips for SKU list
-            const subWrap2 = document.getElementById('subcategory-filter-sku');
-            if (subWrap2) {
+            // Render unified filter bar (subcategory tabs + campaign dropdown)
+            const filterBar = document.getElementById('unified-filter-bar');
+            if (filterBar) {
                 const subs = subcategories[selectedCategory] || [];
-                const allActive = !selectedSubcategory ? 'bg-white shadow-sm border' : 'text-gray-600';
-                const chips = [`<button id="sub2-all" class="px-3 py-1 text-sm rounded-md mr-2 ${allActive}">All</button>`]
+                const campaigns = ['Holiday 2025', 'Back to School', 'Summer Sale'];
+                
+                // Build subcategory tabs (larger, primary)
+                const allActive = !selectedSubcategory ? 'bg-white shadow-sm border border-gray-300 text-gray-900 font-medium' : 'text-gray-500 hover:text-gray-700';
+                const subTabs = [`<button id="sub2-all" class="px-4 py-2 text-sm rounded-md mr-2 transition-colors ${allActive}">All</button>`]
                     .concat(subs.map(s => {
-                        const active = selectedSubcategory === s ? 'bg-white shadow-sm border' : 'text-gray-600';
-                        return `<button data-sub2="${s}" class="px-3 py-1 text-sm rounded-md mr-2 ${active}">${s}</button>`;
+                        const active = selectedSubcategory === s ? 'bg-white shadow-sm border border-gray-300 text-gray-900 font-medium' : 'text-gray-500 hover:text-gray-700';
+                        return `<button data-sub2="${s}" class="px-4 py-2 text-sm rounded-md mr-2 transition-colors ${active}">${s}</button>`;
                     })).join('');
-                subWrap2.innerHTML = `<div class="inline-flex bg-gray-100 rounded-md p-1">${chips}</div>`;
+                
+                // Build campaign dropdown (compact, secondary)
+                const campaignLabel = selectedCampaign || 'All Campaigns';
+                const campaignDropdown = `
+                    <div class="relative inline-block">
+                        <label class="text-xs text-gray-400 uppercase tracking-wide mr-2">Campaign:</label>
+                        <select id="campaign-select" class="input text-sm py-1.5 px-3 pr-8 appearance-none cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors" style="background-image: url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27currentColor%27 stroke-width=%272%27%3e%3cpolyline points=%276 9 12 15 18 9%27/%3e%3c/svg%3e'); background-repeat: no-repeat; background-position: right 0.5rem center; background-size: 1.25em;">
+                            <option value="">All Campaigns</option>
+                            ${campaigns.map(c => `<option value="${c}" ${selectedCampaign === c ? 'selected' : ''}>${c}</option>`).join('')}
+                        </select>
+                    </div>
+                `;
+                
+                filterBar.innerHTML = `
+                    <div class="flex items-center justify-between bg-gray-50 border border-gray-200 rounded-lg p-3">
+                        <div class="inline-flex bg-gray-100 rounded-md p-1">${subTabs}</div>
+                        ${campaignDropdown}
+                    </div>
+                `;
+                
+                // Wire up subcategory tab clicks
                 const allBtn2 = document.getElementById('sub2-all');
                 if (allBtn2) allBtn2.onclick = () => { selectedSubcategory = null; updateURL('sku', selectedCategory, null); showSKUView(); };
                 subs.forEach(s => {
-                    const el = subWrap2.querySelector(`[data-sub2=\"${s}\"]`);
+                    const el = filterBar.querySelector(`[data-sub2="${s}"]`);
                     if (el) el.onclick = () => { selectedSubcategory = s; updateURL('sku', selectedCategory, null); showSKUView(); };
                 });
-            }
-
-            // Render campaign filter chips
-            const campWrap = document.getElementById('campaign-filter-sku');
-            if (campWrap) {
-                const campaigns = ['Holiday 2025', 'Back to School', 'Summer Sale'];
-                const allCampActive = !selectedCampaign ? 'bg-white shadow-sm border' : 'text-gray-600';
-                const campChips = [`<button id="camp-all" class="px-3 py-1 text-sm rounded-md mr-2 ${allCampActive}">All</button>`]
-                    .concat(campaigns.map(c => {
-                        const active = selectedCampaign === c ? 'bg-white shadow-sm border' : 'text-gray-600';
-                        return `<button data-camp="${c}" class="px-3 py-1 text-sm rounded-md mr-2 ${active}">${c}</button>`;
-                    })).join('');
-                campWrap.innerHTML = `<div class="text-xs text-gray-500 mb-1">Filter by Campaign:</div><div class="inline-flex bg-gray-100 rounded-md p-1">${campChips}</div>`;
-                const allCampBtn = document.getElementById('camp-all');
-                if (allCampBtn) allCampBtn.onclick = () => { selectedCampaign = null; updateURL('sku', selectedCategory, null); showSKUView(); };
-                campaigns.forEach(c => {
-                    const el = campWrap.querySelector(`[data-camp=\"${c}\"]`);
-                    if (el) el.onclick = () => { selectedCampaign = c; updateURL('sku', selectedCategory, null); showSKUView(); };
-                });
+                
+                // Wire up campaign dropdown
+                const campaignSelect = document.getElementById('campaign-select');
+                if (campaignSelect) {
+                    campaignSelect.onchange = (e) => {
+                        selectedCampaign = e.target.value || null;
+                        updateURL('sku', selectedCategory, null);
+                        showSKUView();
+                    };
+                }
             }
         }
 
