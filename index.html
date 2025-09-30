@@ -6,7 +6,7 @@
     <title>Forecasting 2.0 Demo</title>
     <script>
       // Bump this on each deploy to bust caches
-      window.APP_VERSION = '2025.09.30.2';
+      window.APP_VERSION = '2025.09.30.3';
       (function(){
         // Force-bust HTML once per deploy by appending ?v=APP_VERSION
         try {
@@ -1273,13 +1273,25 @@
         // No spark in Option A layout
 
         function openActionModal(rec) {
+            // Get manufacturer from selected SKU
+            const skuList = generateSKUs(selectedCategory || 'electronics');
+            const sku = skuList.find(s => s.id === selectedSKU);
+            const manufacturer = sku ? sku.manufacturer : 'Unknown';
+            const skuName = sku ? sku.name : selectedSKU;
+            
+            // Build action-specific message
+            let message = `This will queue the action for Ops. Proceed?`;
+            if (rec.action === 'Reorder') {
+                message = `This will queue a reorder from <strong>${manufacturer}</strong> for ${skuName}. Proceed?`;
+            }
+            
             // Simple confirm modal
             const overlay = document.createElement('div');
             overlay.className = 'fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50';
             overlay.innerHTML = `
                 <div class="bg-white rounded-lg border border-gray-200 p-6 w-full max-w-md shadow-lg">
                     <h4 class="text-lg font-semibold text-gray-900 mb-2">Confirm ${rec.action}</h4>
-                    <p class="text-sm text-gray-600 mb-4">This will queue the action for Ops. Proceed?</p>
+                    <p class="text-sm text-gray-600 mb-4">${message}</p>
                     <div class="flex justify-end space-x-2">
                         <button id="modal-cancel" class="btn btn-secondary">Cancel</button>
                         <button id="modal-confirm" class="btn btn-primary">Confirm</button>
@@ -1288,7 +1300,7 @@
             document.body.appendChild(overlay);
             document.getElementById('modal-cancel').onclick = () => overlay.remove();
             document.getElementById('modal-confirm').onclick = () => {
-                console.log('Action executed:', rec.action, 'for', selectedSKU);
+                console.log('Action executed:', rec.action, 'for', selectedSKU, 'from', manufacturer);
                 overlay.remove();
                 alert('Action queued successfully.');
             };
@@ -1620,18 +1632,26 @@
                 clothing: ['Nike Air Max','Adidas Ultraboost','Levi\'s 501 Jeans','North Face Jacket','Uniqlo Hoodie','Patagonia Tee','Lululemon Shorts','Zara Dress','Columbia Fleece','H&M Chinos','Birkenstock Sandals','New Balance 990'],
                 toys: ['LEGO Set','Hot Wheels Pack','Barbie Dreamhouse','Nerf Blaster','Puzzle 1000pc','Uno Cards','Monopoly Classic','Play-Doh Kit','RC Car','Jenga','Rubik\'s Cube','Action Figure']
             };
+            const manufacturers = {
+                electronics: ['Apple','Samsung','Apple','Apple','Sony','Google','Apple','Microsoft','GoPro','Amazon','Dell','Nintendo'],
+                clothing: ['Nike','Adidas','Levi Strauss & Co.','The North Face','Uniqlo','Patagonia','Lululemon','Inditex','Columbia Sportswear','H&M','Birkenstock','New Balance'],
+                toys: ['LEGO Group','Mattel','Mattel','Hasbro','Ravensburger','Mattel','Hasbro','Hasbro','JJRC','Hasbro','Spin Master','Hasbro']
+            };
             const baseCat = categoryId === 'clothing' ? 'Clothing' : categoryId === 'toys' ? 'Toys & Games' : 'Electronics';
             const dots = ['bg-gray-400','bg-gray-500','bg-gray-600'];
             const actions = ['Reorder','Investigate','Markdown','Hold'];
             let names = catalogs[categoryId] || catalogs.electronics;
+            let mfrs = manufacturers[categoryId] || manufacturers.electronics;
             if (subcat && (subcategories[categoryId] || []).length) {
                 const subList = subcategories[categoryId];
                 const idx = Math.max(0, subList.indexOf(subcat));
                 // Partition catalog deterministically so each subcategory shows a distinct subset
                 names = names.filter((_, i) => i % subList.length === idx);
+                mfrs = mfrs.filter((_, i) => i % subList.length === idx);
             }
             return names.slice(0, 12).map((name, i) => {
                 const id = `${categoryId}_${i}`;
+                const manufacturer = mfrs[i] || mfrs[0];
                 const units = 20 + (i * 7 % 180);
                 const revenueVal = 2000 + (i * 137 % 7000);
                 const revenue = `$${(revenueVal).toLocaleString()}`;
@@ -1644,6 +1664,7 @@
                 return {
                     id,
                     name,
+                    manufacturer,
                     categoryLabel: baseCat,
                     units,
                     revenue,
@@ -1849,8 +1870,13 @@
             const cost = avg('cost');
             const profit = price - cost;
             const profitPct = Math.round((profit / price) * 100);
+            // Get manufacturer from selected SKU
+            const skuList = generateSKUs(selectedCategory || 'electronics');
+            const sku = skuList.find(s => s.id === selectedSKU);
+            const manufacturer = sku ? sku.manufacturer : 'Unknown';
             el.innerHTML = `
                 <h3 class="text-lg font-semibold text-gray-900 mb-4">Price & Cost</h3>
+                <div class="text-sm text-gray-500 mb-3">Manufacturer: <span class="font-medium text-gray-300">${manufacturer}</span></div>
                 <div class="grid grid-cols-3 gap-4 mb-4">
                     <div>
                         <div class="text-sm text-gray-500">Avg Price</div>
