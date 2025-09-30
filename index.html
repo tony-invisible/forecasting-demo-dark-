@@ -6,7 +6,7 @@
     <title>Forecasting 2.0 Demo</title>
     <script>
       // Bump this on each deploy to bust caches
-      window.APP_VERSION = '2025.09.30.9';
+      window.APP_VERSION = '2025.09.30.10';
       (function(){
         // Force-bust HTML once per deploy by appending ?v=APP_VERSION
         try {
@@ -1706,7 +1706,7 @@
                 <tr class="hover:bg-gray-50 cursor-pointer" onclick="selectSKU('${row.id}','${encodeURIComponent(row.name)}')">
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="flex items-center">
-                            <div class="w-2 h-2 ${row.dotClass} rounded-full mr-3"></div>
+                            <input type="checkbox" class="sku-checkbox w-4 h-4 mr-3 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer" data-sku-id="${row.id}" onclick="event.stopPropagation();">
                                             <div>
                                 <div class="text-sm font-medium text-gray-900 flex items-center mb-1.5">${row.name}${campaignBadge}</div>
                                 <div class="text-xs text-gray-500">${row.categoryLabel} · ${relativeBadge(row.revenue, avgRevenue)}</div>
