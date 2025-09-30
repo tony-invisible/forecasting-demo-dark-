@@ -6,7 +6,7 @@
     <title>Forecasting 2.0 Demo</title>
     <script>
       // Bump this on each deploy to bust caches
-      window.APP_VERSION = '2025.09.30.21';
+      window.APP_VERSION = '2025.09.30.22';
       (function(){
         // Force-bust HTML once per deploy by appending ?v=APP_VERSION
         try {
@@ -2359,143 +2359,116 @@
             }, 100);
         }
 
-        // Contextual product tour (like Appcues/Userpilot)
+        // Simple contextual tour using backdrop + cloned highlighted element
         let tourStep = 0;
+        let tourBackdrop = null;
+        let tourTooltip = null;
+        let tourHighlight = null;
+        
         function startTour() {
             tourStep = 0;
             showTourStep();
         }
 
         function showTourStep() {
+            // Clean up previous step
+            cleanupTour();
+            
             const steps = [
-                { title: 'Welcome to Forecasting 2.0', message: 'Track portfolio performance, drill into categories, and take action on SKU-level insights.', selector: null, position: 'center' },
-                { title: 'Portfolio KPIs', message: 'Monitor key metrics: Total Revenue, Forecast Revenue, and Miss Rate. Click any card to explore categories.', selector: '.kpi-card', position: 'bottom' },
-                { title: 'Revenue Forecast', message: 'Compare Model vs Baseline vs Actuals. The forecast shows projected performance through 2024-12.', selector: '.recharts-wrapper', position: 'top' },
-                { title: 'Category Insights', message: 'Scroll down to see category-level insights cards with actionable recommendations.', selector: '.grid.grid-cols-1.md\\:grid-cols-3.gap-6.mb-8:last-of-type .card', position: 'right' },
-                { title: 'You\'re Ready!', message: 'Explore categories and SKUs to discover AI-powered recommendations. Click "View Categories" to get started.', selector: null, position: 'center' }
+                { title: 'Welcome to Forecasting 2.0', message: 'Track portfolio performance, drill into categories, and take action on SKU-level insights. Let\'s take a quick tour.', selector: null },
+                { title: 'Portfolio KPIs', message: 'Monitor key metrics at a glance: Total Revenue, Forecast Revenue, and Miss Rate. Click any card to explore categories.', selector: '.kpi-card:first-child' },
+                { title: 'Revenue Forecast Chart', message: 'Compare Model Forecast vs Baseline vs Actuals. The chart shows historical performance and forward projections through 2024-12.', selector: '.recharts-wrapper' },
+                { title: 'Category Navigation', message: 'Scroll down to see category cards (Electronics, Clothing, Toys & Games) with actionable recommendations and insights.', selector: null },
+                { title: 'You\'re All Set!', message: 'Click "View Categories" below to explore SKU-level details, compare competitors, and see retailer optimization insights. Enjoy!', selector: null }
             ];
             
-            if (tourStep >= steps.length) { closeTour(); return; }
+            if (tourStep >= steps.length) { 
+                cleanupTour();
+                return; 
+            }
             
             const step = steps[tourStep];
             
-            // Create base overlay
-            const overlay = document.createElement('div');
-            overlay.id = 'tour-overlay';
-            overlay.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;z-index:9998;pointer-events:none;';
+            // Create dark backdrop
+            tourBackdrop = document.createElement('div');
+            tourBackdrop.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.85);z-index:99998;transition:opacity 0.3s;';
+            document.body.appendChild(tourBackdrop);
             
-            // Spotlight effect with actual transparent cutout
-            let spotlight = null;
-            let targetElement = null;
+            // Create tooltip
+            tourTooltip = document.createElement('div');
+            tourTooltip.style.cssText = 'position:fixed;z-index:100000;background:#1e293b;border:2px solid #3b82f6;border-radius:12px;padding:20px 24px;max-width:420px;box-shadow:0 20px 25px -5px rgba(0,0,0,0.8);';
+            
+            // Position tooltip and highlight
             if (step.selector) {
-                targetElement = document.querySelector(step.selector);
-                if (targetElement) {
-                    const rect = targetElement.getBoundingClientRect();
-                    
-                    // Create 4 overlay panels around the highlighted element
-                    const overlayParts = [
-                        // Top
-                        `<div style="position:fixed;top:0;left:0;right:0;height:${rect.top-8}px;background:rgba(0,0,0,0.75);z-index:9998;"></div>`,
-                        // Bottom
-                        `<div style="position:fixed;top:${rect.bottom+8}px;left:0;right:0;bottom:0;background:rgba(0,0,0,0.75);z-index:9998;"></div>`,
-                        // Left
-                        `<div style="position:fixed;top:${rect.top-8}px;left:0;width:${rect.left-8}px;height:${rect.height+16}px;background:rgba(0,0,0,0.75);z-index:9998;"></div>`,
-                        // Right
-                        `<div style="position:fixed;top:${rect.top-8}px;left:${rect.right+8}px;right:0;height:${rect.height+16}px;background:rgba(0,0,0,0.75);z-index:9998;"></div>`
-                    ];
-                    overlay.innerHTML = overlayParts.join('');
-                    
-                    // Highlight border around element
-                    spotlight = document.createElement('div');
-                    spotlight.style.cssText = `position:fixed;top:${rect.top-8}px;left:${rect.left-8}px;width:${rect.width+16}px;height:${rect.height+16}px;border:3px solid #3b82f6;border-radius:12px;box-shadow:0 0 20px rgba(59,130,246,0.6);z-index:9999;pointer-events:none;`;
-                    document.body.appendChild(spotlight);
-                    
-                    // Boost target element z-index temporarily
-                    targetElement.style.position = 'relative';
-                    targetElement.style.zIndex = '9999';
-                }
-            } else {
-                // Full overlay for center steps
-                overlay.style.background = 'rgba(0,0,0,0.75)';
-            }
-            
-            // Position tooltip
-            const tooltip = document.createElement('div');
-            tooltip.id = 'tour-tooltip';
-            tooltip.style.cssText = 'position:fixed;z-index:10000;background:#1e293b;border:2px solid #3b82f6;border-radius:12px;padding:20px 24px;max-width:380px;box-shadow:0 20px 25px -5px rgba(0,0,0,0.6);';
-            
-            if (step.selector && step.position !== 'center') {
                 const target = document.querySelector(step.selector);
                 if (target) {
                     const rect = target.getBoundingClientRect();
-                    if (step.position === 'bottom') {
-                        tooltip.style.top = `${rect.bottom + 20}px`;
-                        tooltip.style.left = `${rect.left + rect.width/2}px`;
-                        tooltip.style.transform = 'translateX(-50%)';
-                    } else if (step.position === 'top') {
-                        tooltip.style.bottom = `${window.innerHeight - rect.top + 20}px`;
-                        tooltip.style.left = `${rect.left + rect.width/2}px`;
-                        tooltip.style.transform = 'translateX(-50%)';
-                    } else if (step.position === 'left') {
-                        tooltip.style.top = `${rect.top + rect.height/2}px`;
-                        tooltip.style.right = `${window.innerWidth - rect.left + 20}px`;
-                        tooltip.style.transform = 'translateY(-50%)';
-                    } else if (step.position === 'right') {
-                        tooltip.style.top = `${rect.top + rect.height/2}px`;
-                        tooltip.style.left = `${rect.right + 20}px`;
-                        tooltip.style.transform = 'translateY(-50%)';
+                    
+                    // Create highlight box
+                    tourHighlight = document.createElement('div');
+                    tourHighlight.style.cssText = `position:fixed;top:${rect.top-8}px;left:${rect.left-8}px;width:${rect.width+16}px;height:${rect.height+16}px;border:3px solid #3b82f6;border-radius:12px;box-shadow:0 0 0 4px rgba(59,130,246,0.2),0 0 30px rgba(59,130,246,0.5);z-index:99999;pointer-events:none;background:rgba(59,130,246,0.05);`;
+                    document.body.appendChild(tourHighlight);
+                    
+                    // Position tooltip below highlight
+                    tourTooltip.style.top = `${rect.bottom + 24}px`;
+                    tourTooltip.style.left = `${rect.left + rect.width/2}px`;
+                    tourTooltip.style.transform = 'translateX(-50%)';
+                    
+                    // If tooltip goes off bottom, put it above
+                    if (rect.bottom + 24 + 200 > window.innerHeight) {
+                        tourTooltip.style.top = 'auto';
+                        tourTooltip.style.bottom = `${window.innerHeight - rect.top + 24}px`;
                     }
-                } else {
-                    // Fallback if element not found
-                    tooltip.style.top = '50%';
-                    tooltip.style.left = '50%';
-                    tooltip.style.transform = 'translate(-50%, -50%)';
                 }
             } else {
-                // Center position
-                tooltip.style.top = '50%';
-                tooltip.style.left = '50%';
-                tooltip.style.transform = 'translate(-50%, -50%)';
+                // Center for non-highlighted steps
+                tourTooltip.style.top = '50%';
+                tourTooltip.style.left = '50%';
+                tourTooltip.style.transform = 'translate(-50%, -50%)';
             }
             
-            tooltip.innerHTML = `
-                <div style="margin-bottom:4px;color:#94a3b8;font-size:12px;font-weight:500;">STEP ${tourStep + 1} OF ${steps.length}</div>
-                <h3 style="color:#e5e7eb;font-size:18px;font-weight:600;margin-bottom:10px;">${step.title}</h3>
-                <p style="color:#94a3b8;font-size:14px;line-height:1.5;margin-bottom:18px;">${step.message}</p>
-                <div style="display:flex;gap:10px;justify-content:flex-end;align-items:center;">
-                    <button id="tour-skip" style="background:transparent;color:#94a3b8;padding:8px 12px;font-size:13px;border:none;cursor:pointer;">Skip Tour</button>
-                    <button id="tour-next" style="background:#3b82f6;color:#fff;padding:9px 18px;border-radius:6px;font-size:14px;border:none;cursor:pointer;font-weight:500;">${tourStep === steps.length - 1 ? 'Finish' : 'Next →'}</button>
+            tourTooltip.innerHTML = `
+                <div style="margin-bottom:6px;color:#94a3b8;font-size:11px;font-weight:600;letter-spacing:0.5px;">STEP ${tourStep + 1} OF ${steps.length}</div>
+                <h3 style="color:#f1f5f9;font-size:19px;font-weight:600;margin-bottom:12px;line-height:1.3;">${step.title}</h3>
+                <p style="color:#cbd5e1;font-size:14px;line-height:1.6;margin-bottom:20px;">${step.message}</p>
+                <div style="display:flex;gap:12px;justify-content:flex-end;align-items:center;">
+                    <button id="tour-skip" style="background:transparent;color:#94a3b8;padding:8px 14px;font-size:13px;border:none;cursor:pointer;transition:color 0.2s;" onmouseover="this.style.color='#e2e8f0'" onmouseout="this.style.color='#94a3b8'">Skip Tour</button>
+                    <button id="tour-next" style="background:#3b82f6;color:#fff;padding:10px 20px;border-radius:8px;font-size:14px;border:none;cursor:pointer;font-weight:500;transition:background 0.2s;" onmouseover="this.style.background='#2563eb'" onmouseout="this.style.background='#3b82f6'">${tourStep === steps.length - 1 ? 'Finish ✓' : 'Next →'}</button>
                 </div>
             `;
             
-            document.body.appendChild(overlay);
-            document.body.appendChild(tooltip);
+            document.body.appendChild(tourTooltip);
             
             document.getElementById('tour-next').onclick = () => { 
                 tourStep++;
-                if (targetElement) {
-                    targetElement.style.position = '';
-                    targetElement.style.zIndex = '';
-                }
-                if (spotlight) document.body.removeChild(spotlight);
-                document.body.removeChild(overlay); 
-                document.body.removeChild(tooltip); 
                 showTourStep(); 
             };
             document.getElementById('tour-skip').onclick = () => {
-                if (targetElement) {
-                    targetElement.style.position = '';
-                    targetElement.style.zIndex = '';
-                }
-                if (spotlight) document.body.removeChild(spotlight);
-                document.body.removeChild(overlay); 
-                document.body.removeChild(tooltip); 
-                closeTour(); 
+                cleanupTour();
             };
+            tourBackdrop.onclick = () => {
+                cleanupTour();
+            };
+        }
+
+        function cleanupTour() {
+            if (tourBackdrop) {
+                document.body.removeChild(tourBackdrop);
+                tourBackdrop = null;
+            }
+            if (tourTooltip) {
+                document.body.removeChild(tourTooltip);
+                tourTooltip = null;
+            }
+            if (tourHighlight) {
+                document.body.removeChild(tourHighlight);
+                tourHighlight = null;
+            }
         }
 
         function closeTour() {
             tourStep = 0;
+            cleanupTour();
         }
     </script>
 </body>
