@@ -6,7 +6,7 @@
     <title>Forecasting 2.0 Demo</title>
     <script>
       // Bump this on each deploy to bust caches
-      window.APP_VERSION = '2025.10.02.31';
+      window.APP_VERSION = '2025.10.02.32';
       (function(){
         // Force-bust HTML once per deploy by appending ?v=APP_VERSION
         try {
@@ -2198,12 +2198,12 @@
             modal.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 100000; display: flex; align-items: center; justify-content: center;';
             
             modal.innerHTML = `
-                <div style="background: #1F2937; border-radius: 12px; padding: 24px; max-width: 560px; width: 90%; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.5);">
+                <div style="background: #1F2937; border-radius: 12px; padding: 24px; max-width: 520px; width: 90%; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.5);">
                     <h3 style="font-size: 18px; font-weight: 600; color: #F9FAFB; margin-bottom: 12px;">Take Action: ${action}</h3>
                     <p style="font-size: 14px; color: #D1D5DB; line-height: 1.5; margin-bottom: 20px;">${message}</p>
                     
                     <!-- Automation Toggle -->
-                    <div style="background: rgba(37,99,235,0.05); border: 1px solid rgba(37,99,235,0.2); border-radius: 8px; padding: 14px 16px; margin-bottom: 20px;">
+                    <div style="background: rgba(37,99,235,0.05); border: 1px solid rgba(37,99,235,0.2); border-radius: 8px; padding: 14px; margin-bottom: 20px;">
                         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
                             <div style="display: flex; align-items: center; gap: 8px;">
                                 <span style="font-size: 14px; font-weight: 600; color: #F9FAFB;">Automate This Action</span>
@@ -2214,9 +2214,11 @@
                                 <span id="toggle-slider" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #374151; border-radius: 24px; transition: 0.3s; overflow: hidden;"></span>
                             </label>
                         </div>
-                        <div id="automation-preview" style="display: none; font-size: 11px; color: #9CA3AF; line-height: 1.5; padding-left: 4px; white-space: nowrap;">
-                            <div><span style="color: #60A5FA;">If</span> <span style="color: #D1D5DB;">${rule.condition}</span></div>
-                            <div><span style="color: #60A5FA;">Then</span> <span style="color: #D1D5DB;">${rule.action}</span></div>
+                        <div id="automation-preview" style="display: none;">
+                            <div style="font-size: 11px; color: #9CA3AF; line-height: 1.6; padding: 4px; overflow-x: auto; -webkit-overflow-scrolling: touch;">
+                                <div style="white-space: nowrap;"><span style="color: #60A5FA;">If</span> <span style="color: #D1D5DB;">${rule.condition}</span></div>
+                                <div style="white-space: nowrap;"><span style="color: #60A5FA;">Then</span> <span style="color: #D1D5DB;">${rule.action}</span></div>
+                            </div>
                         </div>
                     </div>
                     
@@ -2304,15 +2306,15 @@
                            </svg>
                            <span style="font-size: 13px; font-weight: 600; color: #C4B5FD;">Automation Enabled</span>
                        </div>
-                       <div style="font-size: 11px; color: #D1D5DB; line-height: 1.5; white-space: nowrap;">
-                           <div><span style="color: #60A5FA;">If</span> <span style="color: #D1D5DB;">${rule.condition}</span></div>
-                           <div><span style="color: #60A5FA;">Then</span> <span style="color: #D1D5DB;">${rule.action}</span></div>
+                       <div style="font-size: 11px; color: #D1D5DB; line-height: 1.6; padding: 4px; overflow-x: auto; -webkit-overflow-scrolling: touch;">
+                           <div style="white-space: nowrap;"><span style="color: #60A5FA;">If</span> <span style="color: #D1D5DB;">${rule.condition}</span></div>
+                           <div style="white-space: nowrap;"><span style="color: #60A5FA;">Then</span> <span style="color: #D1D5DB;">${rule.action}</span></div>
                        </div>
                    </div>`
                 : '';
             
             modal.innerHTML = `
-                <div style="background: #1F2937; border-radius: 12px; padding: 24px; max-width: 560px; width: 90%; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.5);">
+                <div style="background: #1F2937; border-radius: 12px; padding: 24px; max-width: 520px; width: 90%; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.5);">
                     <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
                         <div style="width: 36px; height: 36px; border-radius: 50%; background: rgba(34,197,94,0.2); display: flex; align-items: center; justify-content: center;">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
