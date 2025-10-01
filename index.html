@@ -6,7 +6,7 @@
     <title>Forecasting 2.0 Demo</title>
     <script>
       // Bump this on each deploy to bust caches
-      window.APP_VERSION = '2025.10.02.56';
+      window.APP_VERSION = '2025.10.02.57';
       (function(){
         // Force-bust HTML once per deploy by appending ?v=APP_VERSION
         try {
@@ -478,7 +478,7 @@
                             </div>
                         </div>
                         <div class="text-right">
-                            <p class="text-3xl font-bold text-red-600">3</p>
+                            <p class="text-3xl font-bold text-red-600">2</p>
                             <p class="text-xs text-gray-500 font-medium">at risk</p>
                         </div>
                     </div>
@@ -791,7 +791,7 @@
         // Role-specific KPIs
             const roleKPIs = {
             ops: [
-                { title: 'Inventory Risk', value: 'High', subtitle: '3 categories at risk', icon: 'boxes' },
+                { title: 'Inventory Risk', value: 'High', subtitle: '2 categories at risk', icon: 'boxes' },
                 { title: 'Stockout Risk', value: 'Low', subtitle: '2 SKUs flagged', icon: 'package-x' }
             ],
             engineer: [
@@ -1406,7 +1406,7 @@
                         <div>
                             <p class="text-sm font-medium text-gray-500 mb-1">${kpi.title}</p>
                             <p class="text-2xl font-semibold text-gray-900">${kpi.value}</p>
-                            <p class="text-sm mt-1"><span class="text-blue-600 hover:text-blue-700 hover:underline cursor-pointer">${kpi.subtitle}</span></p>
+                            <p class="text-sm mt-1"><span class="text-blue-600 hover:text-blue-700 hover:underline cursor-pointer" onclick="event.stopPropagation(); if('${kpi.title}' === 'Inventory Risk') showCategoryView();">${kpi.subtitle}</span></p>
                         </div>
                         <div class="text-blue-600">
                             <i data-lucide="${kpi.icon}" class="w-6 h-6"></i>
@@ -2658,7 +2658,7 @@
                             <div>
                                 <p class="text-sm font-medium text-gray-500 mb-1">Inventory Risk</p>
                                 <p class="text-2xl font-semibold text-gray-900">Medium</p>
-                                <p class="text-sm mt-1"><span class="text-blue-600 hover:text-blue-700 hover:underline cursor-pointer">3 categories at risk</span></p>
+                                <p class="text-sm mt-1"><span class="text-blue-600 hover:text-blue-700 hover:underline cursor-pointer" onclick="showCategoryView()">2 categories at risk</span></p>
                             </div>
                             <div class="text-blue-600">
                                 <i data-lucide="package" class="w-6 h-6"></i>
