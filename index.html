@@ -6,7 +6,7 @@
     <title>Forecasting 2.0 Demo</title>
     <script>
       // Bump this on each deploy to bust caches
-      window.APP_VERSION = '2025.10.02.61';
+      window.APP_VERSION = '2025.10.02.62';
       (function(){
         // Force-bust HTML once per deploy by appending ?v=APP_VERSION
         try {
@@ -532,14 +532,14 @@
             </div>
 
             <!-- Insights + Nav Row -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
-                <!-- Top Insights (left) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                <!-- Priority Actions (left) -->
                 <div class="card p-5 transition-all duration-200 hover:shadow-lg" style="background: linear-gradient(135deg, rgba(139,92,246,0.02) 0%, rgba(255,255,255,1) 100%);">
                     <div class="flex items-center space-x-2 mb-4">
                         <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background: rgba(139,92,246,0.1);">
                             <i data-lucide="sparkles" class="w-4 h-4 text-purple-600"></i>
                         </div>
-                        <h3 class="text-base font-semibold text-gray-900">Top Insights</h3>
+                        <h3 class="text-base font-semibold text-gray-900">Priority Actions</h3>
                     </div>
                     <div class="space-y-3">
                         <div class="flex items-start space-x-2.5">
@@ -616,29 +616,6 @@
                                 <i data-lucide="arrow-right" class="w-3.5 h-3.5 text-gray-400"></i>
                             </div>
                         </a>
-                    </div>
-                </div>
-                <!-- View Misses (right) -->
-                <div class="card p-5 transition-all duration-200 hover:shadow-lg" style="background: linear-gradient(135deg, rgba(251,191,36,0.02) 0%, rgba(255,255,255,1) 100%);">
-                    <div class="flex items-center space-x-2 mb-4">
-                        <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background: rgba(251,191,36,0.1);">
-                            <i data-lucide="alert-triangle" class="w-4 h-4 text-yellow-600"></i>
-                        </div>
-                        <h4 class="text-base font-semibold text-gray-900">View Misses</h4>
-                    </div>
-                    <div class="space-y-2.5 text-sm">
-                        <div class="p-2 rounded-lg hover:bg-yellow-50 transition-colors cursor-pointer">
-                            <span class="text-xs font-medium text-gray-500">High miss:</span>
-                            <p class="text-sm text-gray-900 mt-0.5">Electronics − MAPE 24%</p>
-                        </div>
-                        <div class="p-2 rounded-lg hover:bg-yellow-50 transition-colors cursor-pointer">
-                            <span class="text-xs font-medium text-gray-500">Low confidence:</span>
-                            <p class="text-sm text-gray-900 mt-0.5">Clothing − Sparse history</p>
-                        </div>
-                        <div class="p-2 rounded-lg hover:bg-yellow-50 transition-colors cursor-pointer">
-                            <span class="text-xs font-medium text-gray-500">Overstock:</span>
-                            <p class="text-sm text-gray-900 mt-0.5">Toys − WOS > 8</p>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -2735,9 +2712,9 @@
                 </div>
 
                 <!-- Insights + Nav Row -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
                     <div class="card p-6">
-                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Top Insights</h3>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Priority Actions</h3>
                         <div class="space-y-3">
                             <div class="flex items-start space-x-3">
                                 <div class="w-2 h-2 bg-green-600 rounded-full mt-2"></div>
@@ -2814,18 +2791,6 @@
                                 </div>
                             </a>
                         </div>
-                    </div>
-                    <!-- View Misses (right) -->
-                    <div class="card p-6">
-                        <div class="flex items-center space-x-3 mb-2">
-                            <i data-lucide="alert-triangle" class="w-5 h-5 text-yellow-500"></i>
-                            <h4 class="font-semibold text-gray-900">View Misses</h4>
-                        </div>
-                        <ul class="text-sm space-y-2">
-                            <li><span>High miss:</span> <span class="text-blue-600 hover:underline cursor-pointer">Electronics − Baseline MAPE 24%</span></li>
-                            <li><span>Low confidence:</span> <span class="text-blue-600 hover:underline cursor-pointer">Clothing − Investigate sparse history</span></li>
-                            <li><span>Overstock:</span> <span class="text-blue-600 hover:underline cursor-pointer">Toys & Games − WOS > 8, apply markdown</span></li>
-                        </ul>
                     </div>
                 </div>
 
