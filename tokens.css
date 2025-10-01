@@ -53,7 +53,7 @@
 }
 /* Dark theme */
 [data-theme='dark']{
-  --surface:#0B1220; --surface-muted:#0F172A; --border:#243244;
+  --surface:#0B1220; --surface-muted:#161E33; --border:#243244;
   --text-primary:#E5E7EB; --text-secondary:#94A3B8;
   --brand-600:#1E40AF; --brand-700:#1E3A8A;
 }

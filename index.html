@@ -89,7 +89,7 @@
         
         /* Dark theme */
         [data-theme='dark']{
-          --surface:#0B1220; --surface-muted:#0F172A; --border:#243244;
+          --surface:#0B1220; --surface-muted:#161E33; --border:#243244;
           --text-primary:#E5E7EB; --text-secondary:#94A3B8;
           --brand-600:#1E40AF; --brand-700:#1E3A8A;
         }
@@ -414,7 +414,7 @@
 
             <!-- Hero KPIs - BOLD VERSION -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div class="card p-6 cursor-pointer transition-all duration-200 hover:shadow-xl hover:-translate-y-1 border-l-4" style="border-left-color: #22C55E; background: rgba(34,197,94,0.08);" onclick="drillDown('portfolio')">
+                <div class="card p-6 cursor-pointer transition-all duration-200 hover:shadow-xl hover:-translate-y-1 border-l-4" style="border-left-color: #22C55E; background: #232E3F;" onclick="drillDown('portfolio')">
                     <div class="flex items-center justify-between mb-4">
                         <div class="w-12 h-12 rounded-xl flex items-center justify-center" style="background: rgba(34,197,94,0.2);">
                             <i data-lucide="trending-up" class="w-6 h-6 text-green-600"></i>
@@ -430,7 +430,7 @@
                     </div>
                 </div>
 
-                <div class="card p-6 cursor-pointer transition-all duration-200 hover:shadow-xl hover:-translate-y-1 border-l-4" style="border-left-color: #3B82F6; background: rgba(59,130,246,0.08);" onclick="showCategories()">
+                <div class="card p-6 cursor-pointer transition-all duration-200 hover:shadow-xl hover:-translate-y-1 border-l-4" style="border-left-color: #3B82F6; background: #232E3F;" onclick="showCategories()">
                     <div class="flex items-center justify-between mb-4">
                         <div class="w-12 h-12 rounded-xl flex items-center justify-center" style="background: rgba(59,130,246,0.2);">
                             <i data-lucide="zap" class="w-6 h-6 text-blue-600"></i>
@@ -446,7 +446,7 @@
                     </div>
                 </div>
 
-                <div class="card p-6 cursor-pointer transition-all duration-200 hover:shadow-xl hover:-translate-y-1 border-l-4" style="border-left-color: #22C55E; background: rgba(34,197,94,0.08);" onclick="showCategories()">
+                <div class="card p-6 cursor-pointer transition-all duration-200 hover:shadow-xl hover:-translate-y-1 border-l-4" style="border-left-color: #22C55E; background: #232E3F;" onclick="showCategories()">
                     <div class="flex items-center justify-between mb-4">
                         <div class="w-12 h-12 rounded-xl flex items-center justify-center" style="background: rgba(34,197,94,0.2);">
                             <i data-lucide="target" class="w-6 h-6 text-green-600"></i>
@@ -466,7 +466,7 @@
             <!-- Role-specific KPIs - BOLD VERSION -->
             <div id="role-specific-kpis" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 <!-- Inventory Risk -->
-                <div class="card p-6 transition-all duration-200 hover:shadow-lg border-l-4" style="background: rgba(239,68,68,0.1); border-left-color: #EF4444;">
+                <div class="bg-white rounded-lg p-6 transition-all duration-200 hover:shadow-lg" style="background: rgba(239,68,68,0.1); border: 2px solid #EF4444; box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05);">
                     <div class="flex items-center justify-between">
                         <div class="flex items-center space-x-4">
                             <div class="w-14 h-14 rounded-xl flex items-center justify-center" style="background: rgba(239,68,68,0.2);">
@@ -488,7 +488,7 @@
                 <div id="subcategory-filter" class="mb-4"></div>
 
                 <!-- Stockout Risk -->
-                <div class="card p-6 transition-all duration-200 hover:shadow-lg border-l-4" style="background: rgba(34,197,94,0.1); border-left-color: #22C55E;">
+                <div class="bg-white rounded-lg p-6 transition-all duration-200 hover:shadow-lg" style="background: rgba(34,197,94,0.1); border: 2px solid #22C55E; box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05);">
                     <div class="flex items-center justify-between">
                         <div class="flex items-center space-x-4">
                             <div class="w-14 h-14 rounded-xl flex items-center justify-center" style="background: rgba(34,197,94,0.2);">
@@ -1390,8 +1390,18 @@
             if (!kpiContainer) return;
             const kpis = roleKPIs[currentRole];
             
-            kpiContainer.innerHTML = kpis.map(kpi => `
-                    <div class="bg-white rounded-lg border border-gray-200 p-6 shadow-sm kpi-inventory-border">
+            kpiContainer.innerHTML = kpis.map((kpi, index) => {
+                // Determine border style for ops role cards
+                let borderStyle = 'border: 2px solid #E5E7EB;'; // Default gray border
+                if (currentRole === 'ops') {
+                    if (index === 0) {
+                        borderStyle = 'border: 2px solid #EF4444;'; // Red for Inventory Risk
+                    } else if (index === 1) {
+                        borderStyle = 'border: 2px solid #22C55E;'; // Green for Stockout Risk
+                    }
+                }
+                return `
+                    <div class="bg-white rounded-lg p-6 shadow-sm" style="${borderStyle}">
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-sm font-medium text-gray-500 mb-1">${kpi.title}</p>
@@ -1409,7 +1419,8 @@
                         </div>
                     ` : ''}
                 </div>
-            `).join('');
+                `;
+            }).join('');
             
             // Re-initialize icons
             lucide.createIcons();
@@ -2599,7 +2610,7 @@
 
                 <!-- Hero KPIs -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                    <div class="kpi-card card-hover rounded-xl p-6 shadow-lg cursor-pointer" onclick="showCategories()">
+                    <div class="kpi-card card-hover rounded-xl p-6 shadow-lg cursor-pointer" style="background: #232E3F !important;" onclick="showCategories()">
                         <div class="flex items-center justify-between">
                             <div>
                                 <p class="text-sm font-medium text-gray-500 mb-1">Total Revenue</p>
@@ -2612,7 +2623,7 @@
                         </div>
                     </div>
 
-                    <div class="kpi-card card-hover rounded-xl p-6 shadow-lg cursor-pointer" onclick="showCategories()">
+                    <div class="kpi-card card-hover rounded-xl p-6 shadow-lg cursor-pointer" style="background: #232E3F !important;" onclick="showCategories()">
                         <div class="flex items-center justify-between">
                             <div>
                                 <p class="text-sm font-medium text-gray-500 mb-1">Forecast Revenue</p>
@@ -2625,7 +2636,7 @@
                         </div>
                     </div>
 
-                    <div class="kpi-card card-hover rounded-xl p-6 shadow-lg cursor-pointer" onclick="showCategories()">
+                    <div class="kpi-card card-hover rounded-xl p-6 shadow-lg cursor-pointer" style="background: #232E3F !important;" onclick="showCategories()">
                         <div class="flex items-center justify-between">
                             <div>
                                 <p class="text-sm font-medium text-gray-500 mb-1">Miss Rate</p>
@@ -2642,7 +2653,7 @@
                 <!-- Role-specific KPIs -->
                 <div id="role-specific-kpis" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                     <!-- Ops KPIs -->
-                <div class="bg-white rounded-lg border border-gray-200 p-6 shadow-sm" style="border-color: rgba(239,68,68,0.35) !important; border-width: 2px !important; border-style: solid !important;">
+                <div class="bg-white rounded-lg p-6 shadow-sm" style="border: 2px solid #EF4444;">
                         <div class="flex items-center justify-between">
                             <div>
                                 <p class="text-sm font-medium text-gray-500 mb-1">Inventory Risk</p>
@@ -2655,7 +2666,7 @@
                         </div>
                     </div>
 
-                    <div class="bg-white rounded-lg border border-gray-200 p-6 shadow-sm" style="border-color: rgba(16,185,129,0.35) !important; border-width: 2px !important; border-style: solid !important;">
+                    <div class="bg-white rounded-lg p-6 shadow-sm" style="border: 2px solid #22C55E;">
                         <div class="flex items-center justify-between">
                             <div>
                                 <p class="text-sm font-medium text-gray-500 mb-1">Stockout Risk</p>
