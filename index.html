@@ -6,7 +6,7 @@
     <title>Forecasting 2.0 Demo</title>
     <script>
       // Bump this on each deploy to bust caches
-      window.APP_VERSION = '2025.10.02.50';
+      window.APP_VERSION = '2025.10.02.51';
       (function(){
         // Force-bust HTML once per deploy by appending ?v=APP_VERSION
         try {
@@ -466,7 +466,7 @@
             <!-- Role-specific KPIs - BOLD VERSION -->
             <div id="role-specific-kpis" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 <!-- Inventory Risk -->
-                <div class="bg-white rounded-lg p-6 transition-all duration-200 hover:shadow-lg" style="background: rgba(239,68,68,0.1); border: 2px solid #EF4444; box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05);">
+                <div class="bg-white rounded-lg p-6 transition-all duration-200 hover:shadow-lg" style="background: rgba(239,68,68,0.1); border: 1px solid #EF4444; box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05);">
                     <div class="flex items-center justify-between">
                         <div class="flex items-center space-x-4">
                             <div class="w-14 h-14 rounded-xl flex items-center justify-center" style="background: rgba(239,68,68,0.2);">
@@ -488,7 +488,7 @@
                 <div id="subcategory-filter" class="mb-4"></div>
 
                 <!-- Stockout Risk -->
-                <div class="bg-white rounded-lg p-6 transition-all duration-200 hover:shadow-lg" style="background: rgba(34,197,94,0.1); border: 2px solid #22C55E; box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05);">
+                <div class="bg-white rounded-lg p-6 transition-all duration-200 hover:shadow-lg" style="background: rgba(34,197,94,0.1); border: 1px solid #22C55E; box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05);">
                     <div class="flex items-center justify-between">
                         <div class="flex items-center space-x-4">
                             <div class="w-14 h-14 rounded-xl flex items-center justify-center" style="background: rgba(34,197,94,0.2);">
@@ -1392,12 +1392,12 @@
             
             kpiContainer.innerHTML = kpis.map((kpi, index) => {
                 // Determine border style for ops role cards
-                let borderStyle = 'border: 2px solid #E5E7EB;'; // Default gray border
+                let borderStyle = 'border: 1px solid #E5E7EB;'; // Default gray border
                 if (currentRole === 'ops') {
                     if (index === 0) {
-                        borderStyle = 'border: 2px solid #EF4444;'; // Red for Inventory Risk
+                        borderStyle = 'border: 1px solid #EF4444;'; // Red for Inventory Risk
                     } else if (index === 1) {
-                        borderStyle = 'border: 2px solid #22C55E;'; // Green for Stockout Risk
+                        borderStyle = 'border: 1px solid #22C55E;'; // Green for Stockout Risk
                     }
                 }
                 return `
@@ -2653,7 +2653,7 @@
                 <!-- Role-specific KPIs -->
                 <div id="role-specific-kpis" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                     <!-- Ops KPIs -->
-                <div class="bg-white rounded-lg p-6 shadow-sm" style="border: 2px solid #EF4444;">
+                <div class="bg-white rounded-lg p-6 shadow-sm" style="border: 1px solid #EF4444;">
                         <div class="flex items-center justify-between">
                             <div>
                                 <p class="text-sm font-medium text-gray-500 mb-1">Inventory Risk</p>
@@ -2666,7 +2666,7 @@
                         </div>
                     </div>
 
-                    <div class="bg-white rounded-lg p-6 shadow-sm" style="border: 2px solid #22C55E;">
+                    <div class="bg-white rounded-lg p-6 shadow-sm" style="border: 1px solid #22C55E;">
                         <div class="flex items-center justify-between">
                             <div>
                                 <p class="text-sm font-medium text-gray-500 mb-1">Stockout Risk</p>
