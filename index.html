@@ -6,7 +6,7 @@
     <title>Forecasting 2.0 Demo</title>
     <script>
       // Bump this on each deploy to bust caches
-      window.APP_VERSION = '2025.10.02.57';
+      window.APP_VERSION = '2025.10.02.58';
       (function(){
         // Force-bust HTML once per deploy by appending ?v=APP_VERSION
         try {
@@ -1406,7 +1406,7 @@
                         <div>
                             <p class="text-sm font-medium text-gray-500 mb-1">${kpi.title}</p>
                             <p class="text-2xl font-semibold text-gray-900">${kpi.value}</p>
-                            <p class="text-sm mt-1"><span class="text-blue-600 hover:text-blue-700 hover:underline cursor-pointer" onclick="event.stopPropagation(); if('${kpi.title}' === 'Inventory Risk') showCategoryView();">${kpi.subtitle}</span></p>
+                            <p class="text-sm mt-1"><span class="text-blue-600 hover:text-blue-700 hover:underline cursor-pointer" onclick="event.stopPropagation(); if('${kpi.title}' === 'Inventory Risk') showCategoryView(); else if('${kpi.title}' === 'Stockout Risk') selectCategory('toys');">${kpi.subtitle}</span></p>
                         </div>
                         <div class="text-blue-600">
                             <i data-lucide="${kpi.icon}" class="w-6 h-6"></i>
@@ -2671,7 +2671,7 @@
                             <div>
                                 <p class="text-sm font-medium text-gray-500 mb-1">Stockout Risk</p>
                                 <p class="text-2xl font-semibold text-gray-900">Low</p>
-                                <p class="text-sm mt-1"><span class="text-blue-600 hover:text-blue-700 hover:underline cursor-pointer">2 SKUs flagged</span></p>
+                                <p class="text-sm mt-1"><span class="text-blue-600 hover:text-blue-700 hover:underline cursor-pointer" onclick="selectCategory('toys')">2 SKUs flagged</span></p>
                             </div>
                             <div class="text-blue-600">
                                 <i data-lucide="alert-triangle" class="w-6 h-6"></i>
