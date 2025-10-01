@@ -6,7 +6,7 @@
     <title>Forecasting 2.0 Demo</title>
     <script>
       // Bump this on each deploy to bust caches
-      window.APP_VERSION = '2025.10.02.44';
+      window.APP_VERSION = '2025.10.02.45';
       (function(){
         // Force-bust HTML once per deploy by appending ?v=APP_VERSION
         try {
@@ -508,7 +508,7 @@
             </div>
 
             <!-- Main Chart -->
-            <div class="card p-6 mb-6 transition-all duration-200 hover:shadow-lg" style="background: linear-gradient(135deg, rgba(59,130,246,0.015) 0%, rgba(255,255,255,1) 100%);">
+            <div id="portfolio-chart-card" class="card p-6 mb-6 transition-all duration-200 hover:shadow-lg" style="background: linear-gradient(135deg, rgba(59,130,246,0.015) 0%, rgba(255,255,255,1) 100%);">
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="text-lg font-semibold text-gray-900">Revenue Forecast vs Actuals</h3>
                     <div class="flex items-center space-x-4">
@@ -1549,7 +1549,7 @@
                     </div>
                 </div>
 
-                <div class="card p-6">
+                <div id="category-chart-card" class="card p-6">
                     <div class="flex items-center justify-between mb-2">
                         <h3 class="text-lg font-semibold text-gray-900">Category Performance</h3>
                         <div class="inline-flex bg-gray-100 rounded-md p-1">
@@ -2787,11 +2787,11 @@
             const steps = [
                 // Portfolio page (2 steps)
                 { title: 'Portfolio KPIs', message: 'Monitor key metrics at a glance: Total Revenue, Forecast Revenue, and Miss Rate. You can navigate and drill down into categories from here by clicking on any card.', selector: '.kpi-card:first-child', page: 'portfolio' },
-                { title: 'Revenue Forecast Chart', message: 'Compare Model Forecast vs Baseline vs Actuals. The chart shows historical performance and forward projections through 2024-12.', selector: '.recharts-wrapper', page: 'portfolio' },
+                { title: 'Revenue Forecast Chart', message: 'Compare Model Forecast vs Baseline vs Actuals. The chart shows historical performance and forward projections through 2024-12.', selector: '#portfolio-chart-card', page: 'portfolio' },
                 
                 // Categories page (3 steps - auto-navigate on Next)
                 { title: 'Category Cards', message: 'Each category shows revenue, forecast confidence, and actionable recommendations. Click "View SKUs" to drill into individual products.', selector: '.card:first-child', page: 'categories', autoNavigate: () => showCategories() },
-                { title: 'Category Performance Chart', message: 'Compare category performance over time. Use the Category/Portfolio toggle in the upper right to switch views and analyze different data perspectives.', selector: '.recharts-wrapper', page: 'categories' },
+                { title: 'Category Performance Chart', message: 'Compare category performance over time. Use the Category/Portfolio toggle in the upper right to switch views and analyze different data perspectives.', selector: '#category-chart-card', page: 'categories' },
                 { title: 'View SKUs', message: 'Ready to dive deeper? Click "View SKUs" on any category card to drill down into individual SKU performance and take specific actions.', selector: '.card:first-child', page: 'categories' },
                 
                 // SKU List page (1 step - auto-navigate on Next)
