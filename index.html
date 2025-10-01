@@ -6,7 +6,7 @@
     <title>Forecasting 2.0 Demo</title>
     <script>
       // Bump this on each deploy to bust caches
-      window.APP_VERSION = '2025.10.02.43';
+      window.APP_VERSION = '2025.10.02.44';
       (function(){
         // Force-bust HTML once per deploy by appending ?v=APP_VERSION
         try {
@@ -412,80 +412,74 @@
             <main class="flex-1 overflow-auto p-6">
             <!-- Hero Section intentionally left empty -->
 
-            <!-- Hero KPIs -->
+            <!-- Hero KPIs - BOLD VERSION -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div class="kpi-card card-hover card p-6 cursor-pointer transition-all duration-200 hover:shadow-xl hover:-translate-y-0.5" onclick="drillDown('portfolio')" style="background: linear-gradient(135deg, rgba(34,197,94,0.03) 0%, rgba(255,255,255,1) 100%);">
-                    <div class="flex items-center justify-between mb-3">
-                        <div>
-                            <p class="text-sm font-medium text-gray-500 mb-1">Total Revenue</p>
-                            <p class="text-3xl font-semibold text-gray-900">$2.4M</p>
+                <div class="card p-6 cursor-pointer transition-all duration-200 hover:shadow-xl hover:-translate-y-1 border-l-4" style="border-left-color: #22C55E; background: rgba(34,197,94,0.08);" onclick="drillDown('portfolio')">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 rounded-xl flex items-center justify-center" style="background: rgba(34,197,94,0.2);">
+                            <i data-lucide="trending-up" class="w-6 h-6 text-green-600"></i>
                         </div>
-                        <div>
-                            <span class="text-lg font-semibold text-green-600">+12.3%</span>
+                        <div class="text-right">
+                            <span class="text-2xl font-bold text-green-600">+12.3%</span>
                         </div>
                     </div>
-                    <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Total Revenue</p>
+                        <p class="text-4xl font-bold text-gray-900 mb-1">$2.4M</p>
                         <p class="text-sm text-gray-500">Last 24 months</p>
-                        <svg class="w-20 h-8" viewBox="0 0 80 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M0 28 L10 24 L20 26 L30 20 L40 22 L50 16 L60 18 L70 12 L80 8" stroke="rgba(34,197,94,0.4)" stroke-width="2" fill="none"/>
-                        </svg>
                     </div>
                 </div>
 
-                <div class="kpi-card card-hover card p-6 cursor-pointer transition-all duration-200 hover:shadow-xl hover:-translate-y-0.5" onclick="showCategories()" style="background: linear-gradient(135deg, rgba(59,130,246,0.03) 0%, rgba(255,255,255,1) 100%);">
-                    <div class="flex items-center justify-between mb-3">
-                        <div>
-                            <p class="text-sm font-medium text-gray-500 mb-1">Forecast Revenue</p>
-                            <p class="text-3xl font-semibold text-gray-900">$2.7M</p>
+                <div class="card p-6 cursor-pointer transition-all duration-200 hover:shadow-xl hover:-translate-y-1 border-l-4" style="border-left-color: #3B82F6; background: rgba(59,130,246,0.08);" onclick="showCategories()">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 rounded-xl flex items-center justify-center" style="background: rgba(59,130,246,0.2);">
+                            <i data-lucide="zap" class="w-6 h-6 text-blue-600"></i>
                         </div>
-                        <div>
-                            <span class="text-lg font-semibold text-blue-600">+12.3%</span>
+                        <div class="text-right">
+                            <span class="text-2xl font-bold text-blue-600">+12.3%</span>
                         </div>
                     </div>
-                    <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Forecast Revenue</p>
+                        <p class="text-4xl font-bold text-gray-900 mb-1">$2.7M</p>
                         <p class="text-sm text-gray-500">Next 3 months</p>
-                        <svg class="w-20 h-8" viewBox="0 0 80 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M0 20 L10 18 L20 16 L30 14 L40 12 L50 10 L60 8 L70 6 L80 4" stroke="rgba(59,130,246,0.4)" stroke-width="2" fill="none"/>
-                        </svg>
                     </div>
                 </div>
 
-                <div class="kpi-card card-hover card p-6 cursor-pointer transition-all duration-200 hover:shadow-xl hover:-translate-y-0.5" onclick="showCategories()" style="background: linear-gradient(135deg, rgba(239,68,68,0.03) 0%, rgba(255,255,255,1) 100%);">
-                    <div class="flex items-center justify-between mb-3">
-                        <div>
-                            <p class="text-sm font-medium text-gray-500 mb-1">Miss Rate</p>
-                            <p class="text-3xl font-semibold text-gray-900">8.2%</p>
+                <div class="card p-6 cursor-pointer transition-all duration-200 hover:shadow-xl hover:-translate-y-1 border-l-4" style="border-left-color: #22C55E; background: rgba(34,197,94,0.08);" onclick="showCategories()">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 rounded-xl flex items-center justify-center" style="background: rgba(34,197,94,0.2);">
+                            <i data-lucide="target" class="w-6 h-6 text-green-600"></i>
                         </div>
-                        <div>
-                            <span class="text-lg font-semibold text-green-600">-5.2%</span>
+                        <div class="text-right">
+                            <span class="text-2xl font-bold text-green-600">-5.2%</span>
                         </div>
                     </div>
-                    <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Miss Rate</p>
+                        <p class="text-4xl font-bold text-gray-900 mb-1">8.2%</p>
                         <p class="text-sm text-gray-500">Model vs Baseline</p>
-                        <svg class="w-20 h-8" viewBox="0 0 80 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M0 8 L10 10 L20 12 L30 14 L40 16 L50 18 L60 20 L70 22 L80 24" stroke="rgba(34,197,94,0.4)" stroke-width="2" fill="none"/>
-                        </svg>
                     </div>
                 </div>
             </div>
 
-            <!-- Role-specific KPIs - Compact Side-by-Side -->
-            <div id="role-specific-kpis" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <!-- Role-specific KPIs - BOLD VERSION -->
+            <div id="role-specific-kpis" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 <!-- Inventory Risk -->
-                <div class="card p-5 transition-all duration-200 hover:shadow-lg" style="background: linear-gradient(135deg, rgba(239,68,68,0.04) 0%, rgba(255,255,255,1) 100%); border-left: 3px solid rgba(239,68,68,0.3);">
+                <div class="card p-6 transition-all duration-200 hover:shadow-lg border-l-4" style="background: rgba(239,68,68,0.1); border-left-color: #EF4444;">
                     <div class="flex items-center justify-between">
-                        <div class="flex items-center space-x-3">
-                            <div class="w-10 h-10 rounded-lg flex items-center justify-center" style="background: rgba(239,68,68,0.1);">
-                                <i data-lucide="package" class="w-5 h-5 text-red-600"></i>
+                        <div class="flex items-center space-x-4">
+                            <div class="w-14 h-14 rounded-xl flex items-center justify-center" style="background: rgba(239,68,68,0.2);">
+                                <i data-lucide="alert-octagon" class="w-7 h-7 text-red-600"></i>
                             </div>
                             <div>
-                                <p class="text-xs font-medium text-gray-500 mb-0.5">Inventory Risk</p>
-                                <p class="text-xl font-semibold text-gray-900">High</p>
+                                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Inventory Risk</p>
+                                <p class="text-2xl font-bold text-gray-900">High</p>
                             </div>
                         </div>
                         <div class="text-right">
-                            <p class="text-sm font-medium text-gray-900">3</p>
-                            <p class="text-xs text-gray-500">categories</p>
+                            <p class="text-3xl font-bold text-red-600">3</p>
+                            <p class="text-xs text-gray-500 font-medium">at risk</p>
                         </div>
                     </div>
                 </div>
@@ -494,20 +488,20 @@
                 <div id="subcategory-filter" class="mb-4"></div>
 
                 <!-- Stockout Risk -->
-                <div class="card p-5 transition-all duration-200 hover:shadow-lg" style="background: linear-gradient(135deg, rgba(34,197,94,0.04) 0%, rgba(255,255,255,1) 100%); border-left: 3px solid rgba(34,197,94,0.3);">
+                <div class="card p-6 transition-all duration-200 hover:shadow-lg border-l-4" style="background: rgba(34,197,94,0.1); border-left-color: #22C55E;">
                     <div class="flex items-center justify-between">
-                        <div class="flex items-center space-x-3">
-                            <div class="w-10 h-10 rounded-lg flex items-center justify-center" style="background: rgba(34,197,94,0.1);">
-                                <i data-lucide="alert-triangle" class="w-5 h-5 text-green-600"></i>
+                        <div class="flex items-center space-x-4">
+                            <div class="w-14 h-14 rounded-xl flex items-center justify-center" style="background: rgba(34,197,94,0.2);">
+                                <i data-lucide="check-circle" class="w-7 h-7 text-green-600"></i>
                             </div>
                             <div>
-                                <p class="text-xs font-medium text-gray-500 mb-0.5">Stockout Risk</p>
-                                <p class="text-xl font-semibold text-gray-900">Low</p>
+                                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Stockout Risk</p>
+                                <p class="text-2xl font-bold text-gray-900">Low</p>
                             </div>
                         </div>
                         <div class="text-right">
-                            <p class="text-sm font-medium text-gray-900">2</p>
-                            <p class="text-xs text-gray-500">SKUs</p>
+                            <p class="text-3xl font-bold text-green-600">2</p>
+                            <p class="text-xs text-gray-500 font-medium">flagged</p>
                         </div>
                     </div>
                 </div>
@@ -2261,9 +2255,9 @@
                 
                 return `
                     <div class="action-plan-item py-2.5 px-4 rounded-lg ${!isLast ? 'mb-1.5' : ''}" 
-                         style="background: rgba(248,250,252,0.5); transition: all 0.2s ease;"
-                         onmouseover="this.style.background='rgba(37,99,235,0.03)'; this.style.boxShadow='0 0 0 1px rgba(37,99,235,0.1)'"
-                         onmouseout="this.style.background='rgba(248,250,252,0.5)'; this.style.boxShadow='none'">
+                         style="background: transparent; transition: all 0.2s ease;"
+                         onmouseover="this.style.background='rgba(59,130,246,0.08)'; this.style.boxShadow='0 0 0 1px rgba(59,130,246,0.2)'"
+                         onmouseout="this.style.background='transparent'; this.style.boxShadow='none'">
                         <div class="flex items-start justify-between">
                             <div class="flex items-start gap-3 flex-1">
                                 <span class="flex items-center justify-center w-6 h-6 rounded-full text-xs font-semibold flex-shrink-0" 
