@@ -6,7 +6,7 @@
     <title>Forecasting 2.0 Demo</title>
     <script>
       // Bump this on each deploy to bust caches
-      window.APP_VERSION = '2025.10.02.53';
+      window.APP_VERSION = '2025.10.02.54';
       (function(){
         // Force-bust HTML once per deploy by appending ?v=APP_VERSION
         try {
@@ -791,8 +791,8 @@
         // Role-specific KPIs
             const roleKPIs = {
             ops: [
-                { title: 'Inventory Risk', value: 'High', subtitle: '3 categories at risk', icon: 'package' },
-                { title: 'Stockout Risk', value: 'Low', subtitle: '2 SKUs flagged', icon: 'alert-triangle' }
+                { title: 'Inventory Risk', value: 'High', subtitle: '3 categories at risk', icon: 'boxes' },
+                { title: 'Stockout Risk', value: 'Low', subtitle: '2 SKUs flagged', icon: 'package-x' }
             ],
             engineer: [
                 { title: 'Model Accuracy', value: '87.3%', subtitle: 'MAPE improvement', icon: 'bar-chart-3', change: '+2.1%' },
