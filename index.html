@@ -6,7 +6,7 @@
     <title>Forecasting 2.0 Demo</title>
     <script>
       // Bump this on each deploy to bust caches
-      window.APP_VERSION = '2025.10.02.67';
+      window.APP_VERSION = '2025.10.02.68';
       (function(){
         // Force-bust HTML once per deploy by appending ?v=APP_VERSION
         try {
@@ -318,7 +318,10 @@
 
             .card { @apply bg-white border; border-color: var(--border); box-shadow: var(--shadow-card); border-radius: var(--radius-lg); border-width: 2px; }
             .input { @apply w-full px-3 py-2 text-sm border rounded-md; border-color: var(--border); }
-            select.input { padding-right: 2.5rem !important; }
+            select.input { 
+                padding-right: 2.5rem !important; 
+                background-position: right 0.75rem center !important;
+            }
             .badge { @apply inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-md; }
             .badge-muted { @apply bg-gray-100 text-gray-700; }
 
